@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'LexendDeca', sans-serif;
+}
+
+@font-face {
+    font-family: 'LexendDeca';
+    src: url('../fonts/LexendDeca.ttf') format('truetype');
+}
+
+:root {
+    --mainColor: #223552;
+    --secondColor: #EEF2F8;
+
+    --mainBackgroundColor: #FFFFFF;
+    --mainComponentColor: #FFFFFF;
+
+    --borderColor: #E0E0E0;
+    --secondBorderColor: #CDD9EB;
+    --grayComponent: #F5F5F5;
+
+    --mainTextColor: #000000;
+    --secondTextColor: #616161;
+    --thirdTextColor: #EEEEEE;
+
+    --error: #BA1A1A;
+
+    --airQualityVeryGood-main: #E8F5E9;
+    --airQualityVeryGood-border: #C8E6C9;
+
+    --airQualityModerate-main: #FFF8E1;
+    --airQualityModerate-border: #FFE082;
+
+    --airQualityBad-main: #FFF3E0;
+    --airQualityBad-border: #FFCC80;
+
+    --airQualityUnhealthy-main: #FFEBEE;
+    --airQualityUnhealthy-border: #EF9A9A;
+
+    --airQualityVeryUnhealthy-main: #F3E5F5;
+    --airQualityVeryUnhealthy-border: #CE93D8;
+
+    --airQualityHazardous-main: #FFCDD2;
+    --airQualityHazardous-border: #EF5350;
+}
+
+::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: var(--secondColor);
+    border: 2px solid var(--mainComponentColor);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #708bad;
+    border-radius: 2px;
+    height: 12px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #5c728d;
+}
+
+body {
+    background-color: #FDFDFD;
+}
+
+.page {
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+}
+
+.main-content {
+    width: calc(100vw - 300px);
+    /*padding: 25px 30px;*/
+    background: var(--secondColor);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.top-bar {
+    padding: 25px 30px 0 25px;
+    display: flex;
+    justify-content: flex-start;
+    position: sticky;
+    top: 0;
+    background-color: transparent;
+    z-index: 9;
+    width: 100%;
+    /*margin-bottom: 20px;*/
+}
+
+.notification {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(calc(100% + 20px)) scale(0.9);
+    background-color: var(--mainColor);
+    color: var(--mainComponentColor);
+    z-index: 100;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.notification--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
+}
