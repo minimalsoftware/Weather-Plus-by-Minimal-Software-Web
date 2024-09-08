@@ -8,5 +8,7 @@
     <orderEntry type="library" name="scale" level="application" />
     <orderEntry type="library" name="@popperjs" level="application" />
     <orderEntry type="library" name="tippy.js" level="application" />
+    <orderEntry type="library" name="leaflet" level="application" />
+    <orderEntry type="library" name="@types/leaflet" level="application" />
   </component>
 </module>

@@ -2,7 +2,10 @@ let fetchedData;
 const weatherPage = document.querySelector(".weather-page");
 
 function fetchWeather() {
+    if (locations.length === 0) return;
+
     weatherPage.classList.remove("weather-page--active");
+
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${activeLocation.lat}&longitude=${activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14`)
         .then(respone => respone.json())
         .then(data => {

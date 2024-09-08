@@ -5,26 +5,31 @@ let locations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
     new Location("Sydney", -33.865143, 151.209900),
 ])];
 
-let activeLocation = JSON.parse(localStorage.getItem("activeLocation")) ?? locations[0];
 
 let settings = {
     sidebarState: JSON.parse(localStorage.getItem("sidebarState")) ?? true,
     locations: locations,
-    activeLocation: activeLocation,
+    activeLocation: undefined,
     firstConfigurationShown: false,
+    // TODO: Sidebar width
 }
+
+settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
+let activeLocation = settings.locations[0];
+
+// let activeLocation = JSON.parse(localStorage.getItem("activeLocation")) ?? locations[0];
+console.log(activeLocation);
+
 
 function saveSettings() {
     localStorage.setItem("settings", JSON.stringify(settings));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
-
     if (!settings.firstConfigurationShown) showWelcomePage();
 });
 
 function saveLocations() {
     localStorage.setItem("locations", JSON.stringify(locations));
-    localStorage.setItem("activeLocation", JSON.stringify(activeLocation));
+    // localStorage.setItem("activeLocation", JSON.stringify(activeLocation));
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Weather+ by Minimal Software">
-    <meta name="keywords" content="weather, forecast, minimal, software">
+    <meta name="keywords" content="weather, forecast, minimal software, air quality">
     <meta name="author" content="Minimal Software">
 
     <title>(Beta) Weather+ by Minimal Software</title>
@@ -15,18 +15,21 @@
     <link rel="stylesheet" href="styles/locations.css">
     <link rel="stylesheet" href="styles/weather-page.css">
     <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/map.css">
 
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <script src="scripts/main.js" defer></script>
     <script src="scripts/locations.js" defer></script>
     <script src="scripts/storage.js" defer></script>
     <script src="scripts/sidebar.js" defer></script>
-    <script src="scripts/weather.js" defer></script>
     <script src="scripts/bottomNotification.js" defer></script>
+    <script src="scripts/map.js" defer></script>
+    <script src="scripts/weather.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
 
@@ -34,10 +37,39 @@
     <script src="libraries/astronomy.browser.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 <div class="page">
     <div class="modal"></div>
+    <div class="map">
+        <div class="map__layer-switcher segmented-button">
+            <button class="segmented-button__item segmented-button__item--selected" onclick="switchMapLayer(mapLayers[0])">Standard</button>
+            <button class="segmented-button__item" onclick="switchMapLayer(mapLayers[1])">Satellite</button>
+        </div>
+        <div class="map__zoom-controls" id="map__zoom-controls">
+            <button class="map__zoom-in">
+                <img src="graphics/svg/add-main-color.svg" alt="Zoom in">
+            </button>
+            <button class="map__zoom-out">
+                <img src="graphics/svg/remove-main-color.svg" alt="Zoom out">
+            </button>
+        </div>
+        <button class="map__close-button" onclick="closeMap()">
+            <img src="graphics/svg/close-main-color.svg" alt="Close">
+            <span>Close</span>
+        </button>
+        <div class="map__selected-location">
+            <div class="title">Click on the map to select location</div>
+            <div class="name"></div>
+            <div class="coordinates">
+                <div class="lat"></div>
+                <div class="lon"></div>
+            </div>
+            <button class="select-location-btn" onclick="fetchSelectedLocation()">Select</button>
+        </div>
+        <div class="osm" id="osm"></div>
+    </div>
     <div class="welcome">
         <div class="welcome__header">
             <h1>Welcome to</h1>
@@ -113,7 +145,7 @@
                 <button class="location__delete-btn">Delete</button>
             </template>
             <div class="sidebar-buttons">
-                <button class="sidebar-buttons__item">
+                <button class="sidebar-buttons__item" onclick="openMap()">
                     <img src="graphics/svg/map_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Map">
                     <span>Find on a map</span>
                 </button>

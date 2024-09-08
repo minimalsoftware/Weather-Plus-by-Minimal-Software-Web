@@ -8,16 +8,28 @@ class Location {
 
 const locationsContainer = document.querySelector(".locations-container");
 
+function displayNoLocationsInformation() {
+    locationsContainer.innerHTML = "";
+    let noLocations = document.createElement("div");
+    noLocations.classList.add("no-locations");
+    noLocations.textContent = "Add first location to see the weather";
+    locationsContainer.append(noLocations);
+}
+
 function fetchLocationsData() {
     const lats = locations.map(location => location.lat).join(",");
     const lons = locations.map(location => location.lon).join(",");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`)
-        .then(response => response.json())
-        .then(data => {
-            displayLocations(data);
-        })
-        .catch(error => console.error("Error:", error));
+    if (locations.length >= 1) {
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`)
+            .then(response => response.json())
+            .then(data => {
+                displayLocations(data);
+            })
+            .catch(error => console.error("Error:", error));
+    } else {
+        displayNoLocationsInformation();
+    }
 }
 
 function displayLocations(data) {
@@ -55,7 +67,7 @@ function displayLocations(data) {
 
             location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
                 event.stopPropagation();
-                deleteLocation(i, location);
+                deleteLocation(i, location, locations[i].name);
             });
 
             locationsContainer.append(location);
@@ -79,7 +91,7 @@ function displayLocations(data) {
 
         location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
             event.stopPropagation();
-            deleteLocation(0, location);
+            deleteLocation(0, location, locations[0].name);
         });
 
         locationsContainer.append(location);
@@ -168,14 +180,13 @@ function searchLocations(query) {
         const signal = currentFetchController.signal;
 
         fetch(`https://photon.komoot.io/api/?q=${query}&layer=city&layer=locality&osm_tag=place:city&osm_tag=place:town&osm_tag=place:village&lang=default`)
-            // fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=10`)
             .then(response => response.json())
             .then(data => {
                 displaySearchResults(data.features);
             })
             .catch(error => {
                 if (error.name === "AbortError") {
-                    return;
+
                 }
             });
     } else {
@@ -253,12 +264,21 @@ function toggleEditLocationMode() {
     }
 }
 
-function deleteLocation(locationIndex, locationElement) {
+function deleteLocation(locationIndex, locationElement, locationName) {
     locations.splice(locationIndex, 1);
     if (activeLocation.name === locationElement.querySelector(".location__name").textContent) {
         activeLocation = locations[0];
         fetchWeather();
     }
+
     locationElement.remove();
+
+    showNotification(`Location ${locationName} successfully removed`);
+
     saveLocations();
+
+    if (locations.length === 0) {
+        displayNoLocationsInformation();
+        toggleEditLocationMode();
+    }
 }
