@@ -20,6 +20,8 @@ function hideModal() {
 
 // TODO: Implement format date functionality
 function formatDate(date) {
+
+
     return date;
 }
 

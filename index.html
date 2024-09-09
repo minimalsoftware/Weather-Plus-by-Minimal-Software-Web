@@ -30,6 +30,7 @@
     <script src="scripts/bottomNotification.js" defer></script>
     <script src="scripts/map.js" defer></script>
     <script src="scripts/weather.js" defer></script>
+    <script src="scripts/weather-insights.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
 
@@ -126,10 +127,13 @@
                 </div>
             </template>
             <div class="autocomplete">
-                <div class="location-search-bar">
-                    <img class="search-bar__icon" src="graphics/svg/search--gray.svg" alt="Search">
-                    <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)" value="">
-                    <img class="search-bar__cancel-icon" src="graphics/svg/cancel--black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                <div class="location-search-bar-container">
+                    <div class="location-search-bar">
+                        <img class="search-bar__icon" src="graphics/svg/search--gray.svg" alt="Search">
+                        <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                        <img class="search-bar__cancel-icon" src="graphics/svg/cancel--black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                    </div>
+<!--                    <div class="loader"></div>-->
                 </div>
                 <div class="autocomplete-results"></div>
             </div>
@@ -193,43 +197,43 @@
                         </div>
                         <div class="hourly-forecast-item-details__content">
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Precipitation</div>
+                                <div class="title">Precipitation:</div>
                                 <div class="value precipitation"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Relative Humidity</div>
+                                <div class="title">Relative Humidity:</div>
                                 <div class="value relative-humidity"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Dewpoint</div>
+                                <div class="title">Dewpoint:</div>
                                 <div class="value dewpoint"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Apparent Temperature</div>
+                                <div class="title">Apparent Temperature:</div>
                                 <div class="value apparent-temperature"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Precipitation Probability</div>
+                                <div class="title">Precipitation Probability:</div>
                                 <div class="value precipitation-probability"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Pressure</div>
+                                <div class="title">Pressure:</div>
                                 <div class="value pressure"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Cloud cover</div>
+                                <div class="title">Cloud cover:</div>
                                 <div class="value cloud-cover"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Visibility</div>
+                                <div class="title">Visibility:</div>
                                 <div class="value visibility"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Wind Speed</div>
+                                <div class="title">Wind Speed:</div>
                                 <div class="value wind-speed"></div>
                             </div>
                             <div class="hourly-forecast-item-details__item">
-                                <div class="title">Wind Gusts</div>
+                                <div class="title">Wind Gusts:</div>
                                 <div class="value wind-gusts"></div>
                             </div>
                         </div>

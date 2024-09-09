@@ -11,6 +11,11 @@
     color: var(--mainColor);
 }
 
+.location-search-bar-container {
+    display: flex;
+    width: 100%;
+}
+
 .location-search-bar {
     display: flex;
     margin-bottom: 15px;

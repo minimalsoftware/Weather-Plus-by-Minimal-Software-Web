@@ -2,11 +2,11 @@ let fetchedData;
 const weatherPage = document.querySelector(".weather-page");
 
 function fetchWeather() {
-    if (locations.length === 0) return;
+    if (settings.locations.length === 0) return;
 
     weatherPage.classList.remove("weather-page--active");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${activeLocation.lat}&longitude=${activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14`)
         .then(respone => respone.json())
         .then(data => {
             console.log(data);
@@ -24,6 +24,17 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 
     while (hourlyForecastItems.firstChild) {
         hourlyForecastItems.removeChild(hourlyForecastItems.firstChild);
+    }
+
+    let isAfterSunset = new Date(data.daily.sunset[0]) < currentTime;
+    let isBeforeSunset = new Date(data.daily.sunset[0]) > currentTime;
+
+    const weatherInsights = getHourlyWeatherInsights(data, isAfterSunset, isBeforeSunset, new Date(data.daily.sunset[0]).getHours() + 1);
+    if (weatherInsights) {
+        document.querySelector(".hourly-forecast .weather-component__title").textContent = weatherInsights;
+    } else {
+        // document.querySelector(".hourly-forecast .weather-component__title").textContent = "No significant weather conditions expected.";
+        document.querySelector(".hourly-forecast .weather-component__title").textContent = "Hourly forecast";
     }
 
     for (let i = currentTime.getHours(); i < length + currentTime.getHours(); i++) {
@@ -65,7 +76,10 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 
         hourlyForecastItemDetails.append(hourlyForecastItemDetailsTemplate.content.cloneNode(true));
 
-        hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__datetime").textContent = new Date(data.hourly.time[i]).toLocaleDateString("en-US", { hour: "2-digit", minute: "2-digit" });
+        hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__datetime").textContent = new Date(data.hourly.time[i]).toLocaleDateString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
         hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__condition").textContent = getWeatherConditionDescription(data.hourly.weather_code[i]);
 
         hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${Math.round(data.hourly.precipitation[i])} mm`;
@@ -79,12 +93,6 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         hourlyForecastItemDetails.querySelector(".visibility").textContent = `${Math.round(data.hourly.visibility[i])} m`;
         hourlyForecastItemDetails.querySelector(".wind-gusts").textContent = `${Math.round(data.hourly.wind_gusts_10m[i])} km/h`;
         hourlyForecastItemDetails.querySelector(".wind-speed").textContent = `${Math.round(data.hourly.wind_speed_10m[i])} km/h`;
-
-        const roundedArrow = `
-            <svg width="16" height="6" viewBox="0 0 16 6" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 6s1.796-.013 4.67-3.615C5.851.9 6.93.006 8 0c1.07-.006 2.148.887 3.343 2.385C14.233 6.005 16 6 16 6H0z" fill="currentColor"/>
-            </svg>
-        `;
 
         tippy(forecastItem, {
             content: hourlyForecastItemDetails,
@@ -105,7 +113,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 }
 
 function displayCurrentData(data) {
-    document.querySelector(".current-weather__location").textContent = `${activeLocation.name}`;
+    document.querySelector(".current-weather__location").textContent = `${settings.activeLocation.name}`;
     document.querySelector(".current-weather__temperature").textContent = `${Math.round(data["current"]["temperature_2m"])}°C`;
     document.querySelector(".current-weather__weather-condition").textContent = `${getWeatherConditionDescription(data["current"]["weather_code"])}, feels like ${Math.round(data["current"]["apparent_temperature"])}°`;
     document.querySelector(".current-weather__max-min-temperature").textContent = `H: ${Math.round(data["daily"]["temperature_2m_max"][0])}° L: ${Math.round(data["daily"]["temperature_2m_min"][0])}°`;
@@ -142,8 +150,6 @@ function displayDailyWeather(data) {
 function displayAirQuality(data) {
     document.querySelector(".aqi__value").textContent = data.current.european_aqi;
     document.querySelector(".aqi__description").textContent = `European Air Quality Index: ${getAQIDescription(data.current.european_aqi)}`;
-
-    let pollutants = ["pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide", "sulphur_dioxide", "ozone"];
 
     document.querySelector("#pm10 .aqi-pollutant__value").textContent = data.hourly.pm10[0];
     document.querySelector("#pm2_5 .aqi-pollutant__value").textContent = data.hourly.pm2_5[0];
@@ -200,7 +206,7 @@ function updateSunPosition() {
 function displayMoonData() {
     const date = new Date(); // Current date and time
 
-    const observer = new Astronomy.Observer(activeLocation.lat, activeLocation.lon, 0);
+    const observer = new Astronomy.Observer(settings.activeLocation.lat, settings.activeLocation.lon, 0);
 
     const illuminationInfo = Astronomy.Illumination('Moon', date, observer);
     const moonrise = Astronomy.SearchRiseSet('Moon', observer, +1, date, 300);
@@ -265,7 +271,7 @@ function displayWeatherData(data) {
     displayDailyWeather(data);
 
     // Display air quality data
-    fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${activeLocation.lat}&longitude=${activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi`)
+    fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -425,7 +431,6 @@ const path = document.getElementById("curve");
 
 function updatePath() {
     const width = sunriseLine.offsetWidth;
-    console.log(width);
     const height = sunriseLine.offsetHeight;
     sunriseLine.setAttribute("viewBox", `0 0 ${width} ${height}`);
     const d = `M10 46 Q ${width / 2} -28 ${width - 10} 46`;

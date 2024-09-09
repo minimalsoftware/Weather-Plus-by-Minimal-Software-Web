@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resizer.classList.add("resizer");
     resizer.addEventListener("dblclick", restoreSidebarWidth);
     sidebar.appendChild(resizer);
+    sidebar.style.width = `${settings.sidebarWidth}px`;
+    mainContent.style.width = `calc(100vw - ${settings.sidebarWidth}px)`;
 
     let isResizing = false;
 
@@ -40,6 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 mainContent.style.width = `calc(100vw - ${newWidth}px)`;
                 sidebar.style.width = `${newWidth}px`;
                 hasToggled = false;
+
+                settings.sidebarWidth = newWidth;
+                saveSettings();
             }
         }
     }
@@ -59,8 +64,8 @@ function toggleSidebar() {
     sidebar.style.transitionDuration = "300ms";
     sidebar.classList.toggle("sidebar--closed");
     // Remove inline CSS
-    sidebar.style.width = sidebar.classList.contains("sidebar--closed") ? "0" : "";
-    mainContent.style.width = sidebar.classList.contains("sidebar--closed") ? "100vw" : "";
+    sidebar.style.width = sidebar.classList.contains("sidebar--closed") ? "0" : `${settings.sidebarWidth}px`;
+    mainContent.style.width = sidebar.classList.contains("sidebar--closed") ? "100vw" : `calc(100vw - ${settings.sidebarWidth}px)`;
     mainContent.style.transitionDuration = "300ms";
     document.querySelector(".sidebar__toggle-button").classList.toggle("sidebar__toggle-button--reversed");
     setTimeout(() => {
@@ -80,6 +85,9 @@ function closeSidebar() {
 function restoreSidebarWidth() {
     sidebar.style.width = "";
     mainContent.style.width = "";
+
+    settings.sidebarWidth = 300;
+    saveSettings();
 }
 
 window.addEventListener("DOMContentLoaded", () => {

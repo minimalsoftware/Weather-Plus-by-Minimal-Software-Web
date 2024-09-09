@@ -1,4 +1,4 @@
-let locations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
+let defaultLocations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
     new Location("London", 51.509865, -0.118092),
     new Location("New York", 40.730610, -73.935242),
     new Location("Tokyo", 35.652832, 139.839478),
@@ -8,18 +8,13 @@ let locations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
 
 let settings = {
     sidebarState: JSON.parse(localStorage.getItem("sidebarState")) ?? true,
-    locations: locations,
-    activeLocation: undefined,
+    locations: defaultLocations,
+    activeLocation: defaultLocations[0],
     firstConfigurationShown: false,
-    // TODO: Sidebar width
+    sidebarWidth: 300,
 }
 
 settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
-let activeLocation = settings.locations[0];
-
-// let activeLocation = JSON.parse(localStorage.getItem("activeLocation")) ?? locations[0];
-console.log(activeLocation);
-
 
 function saveSettings() {
     localStorage.setItem("settings", JSON.stringify(settings));
@@ -28,8 +23,3 @@ function saveSettings() {
 window.addEventListener("DOMContentLoaded", () => {
     if (!settings.firstConfigurationShown) showWelcomePage();
 });
-
-function saveLocations() {
-    localStorage.setItem("locations", JSON.stringify(locations));
-    // localStorage.setItem("activeLocation", JSON.stringify(activeLocation));
-}

@@ -17,10 +17,10 @@ function displayNoLocationsInformation() {
 }
 
 function fetchLocationsData() {
-    const lats = locations.map(location => location.lat).join(",");
-    const lons = locations.map(location => location.lon).join(",");
+    const lats = settings.locations.map(location => location.lat).join(",");
+    const lons = settings.locations.map(location => location.lon).join(",");
 
-    if (locations.length >= 1) {
+    if (settings.locations.length >= 1) {
         fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`)
             .then(response => response.json())
             .then(data => {
@@ -34,16 +34,16 @@ function fetchLocationsData() {
 
 function displayLocations(data) {
     locationsContainer.innerHTML = "";
-    if (locations.length > 1) {
+    if (settings.locations.length > 1) {
         for (let i = 0; i < data.length; i++) {
             let location = document.createElement("div");
             location.classList.add("location");
 
-            if (activeLocation.name === locations[i].name) location.classList.add("location--active");
+            if (settings.activeLocation.name === settings.locations[i].name) location.classList.add("location--active");
 
             location.append(document.querySelector("#location-template").content.cloneNode(true));
 
-            location.querySelector(".location__name").insertAdjacentText("afterbegin", locations[i].name);
+            location.querySelector(".location__name").insertAdjacentText("afterbegin", settings.locations[i].name);
             location.querySelector(".location__time").insertAdjacentText("afterbegin", new Date().toLocaleTimeString("en-US", {
                 timeZone: data[i]["timezone"],
                 hour: "2-digit",
@@ -52,13 +52,13 @@ function displayLocations(data) {
             location.querySelector(".location__temperature").insertAdjacentText("afterbegin", Math.round(data[i]["current"]["temperature_2m"]) + "°C");
 
             location.addEventListener("click", () => {
-                activeLocation = locations[i];
+                settings.activeLocation = settings.locations[i];
+                saveSettings();
                 fetchWeather();
                 let locationElements = document.querySelectorAll(".location");
                 locationElements.forEach((locationElement, index) => {
                     locationElement.classList.toggle("location--active", index === i);
                 });
-                saveLocations();
             });
 
             const weatherCode = data[i]["current"]["weather_code"];
@@ -67,17 +67,17 @@ function displayLocations(data) {
 
             location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
                 event.stopPropagation();
-                deleteLocation(i, location, locations[i].name);
+                deleteLocation(i, location, settings.locations[i].name);
             });
 
             locationsContainer.append(location);
         }
-    } else if (locations.length === 1) {
+    } else if (settings.locations.length === 1) {
         let location = document.createElement("div");
         location.classList.add("location", "location--active");
 
         location.append(document.querySelector("#location-template").content.cloneNode(true));
-        location.querySelector(".location__name").insertAdjacentText("afterbegin", locations[0].name);
+        location.querySelector(".location__name").insertAdjacentText("afterbegin", settings.locations[0].name);
         location.querySelector(".location__time").insertAdjacentText("afterbegin", new Date().toLocaleTimeString("en-US", {
             timeZone: data["timezone"],
             hour: "2-digit",
@@ -91,7 +91,7 @@ function displayLocations(data) {
 
         location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
             event.stopPropagation();
-            deleteLocation(0, location, locations[0].name);
+            deleteLocation(0, location, settings.locations[0].name);
         });
 
         locationsContainer.append(location);
@@ -101,7 +101,8 @@ function displayLocations(data) {
 function attachLocationClickListeners() {
     document.querySelectorAll(".location").forEach((locationElement, index) => {
         locationElement.addEventListener("click", () => {
-            activeLocation = locations[index];
+            settings.activeLocation = settings.locations[index];
+            saveSettings();
             fetchWeather();
             fetchLocationsData();
         });
@@ -116,10 +117,10 @@ window.addEventListener("DOMContentLoaded", () => {
         animation: 150,
         ghostClass: 'sortable-ghost',
         onEnd: function (/**Event*/evt) {
-            const movedItem = locations.splice(evt.oldIndex, 1)[0];
-            locations.splice(evt.newIndex, 0, movedItem);
+            const movedItem = settings.locations.splice(evt.oldIndex, 1)[0];
+            settings.locations.splice(evt.newIndex, 0, movedItem);
             attachLocationClickListeners();
-            saveLocations();
+            saveSettings();
         },
     });
 });
@@ -147,21 +148,21 @@ function displaySearchResults(data) {
 }
 
 function addAndFetchLocation(location) {
-    if (locations.some(loc => loc.name === location.name)) {
+    if (settings.locations.some(loc => loc.name === location.name)) {
         showNotification(`Location ${location.name} is already on the list`);
         return;
     }
 
     mainContent.scrollTo(0, 0);
 
-    locations.unshift(location);
-    activeLocation = location;
+    settings.locations.unshift(location);
+    settings.activeLocation = location;
+    saveSettings();
 
     showNotification(`Successfully added location: ${location.name}`);
     fetchLocationsData();
     fetchWeather();
     clearLocationSearchBar();
-    saveLocations();
 }
 
 const searchBarIcon = locationSearchBar.querySelector(".search-bar__cancel-icon");
@@ -265,9 +266,10 @@ function toggleEditLocationMode() {
 }
 
 function deleteLocation(locationIndex, locationElement, locationName) {
-    locations.splice(locationIndex, 1);
-    if (activeLocation.name === locationElement.querySelector(".location__name").textContent) {
-        activeLocation = locations[0];
+    settings.locations.splice(locationIndex, 1);
+    if (settings.activeLocation.name === locationElement.querySelector(".location__name").textContent) {
+        settings.activeLocation = settings.locations[0];
+        saveSettings();
         fetchWeather();
     }
 
@@ -275,9 +277,7 @@ function deleteLocation(locationIndex, locationElement, locationName) {
 
     showNotification(`Location ${locationName} successfully removed`);
 
-    saveLocations();
-
-    if (locations.length === 0) {
+    if (settings.locations.length === 0) {
         displayNoLocationsInformation();
         toggleEditLocationMode();
     }

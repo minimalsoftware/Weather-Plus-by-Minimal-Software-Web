@@ -16,7 +16,10 @@ let mapLayers = [
 ];
 
 function openMap() {
-    if (map) clearMap();
+    if (map) {
+        clearMap();
+        console.log("Map cleared");
+    }
 
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") closeMap();
@@ -31,7 +34,7 @@ function openMap() {
             attributionControl: false,
             zoom: 10,
             zoomControl: false
-        }).setView([activeLocation.lat, activeLocation.lon]);
+        }).setView([settings.activeLocation.lat, settings.activeLocation.lon]);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             minZoom: 0,
@@ -89,7 +92,7 @@ function openMap() {
                 });
         });
     } else {
-        map.setView([activeLocation.lat, activeLocation.lon]);
+        map.setView([settings.activeLocation.lat, settings.activeLocation.lon]);
     }
 
 }
@@ -109,6 +112,9 @@ function clearMap() {
     });
 
     document.querySelector(".map__selected-location").classList.remove("map__selected-location--active");
+    document.querySelector(".map__selected-location .name").textContent = "";
+    document.querySelector(".map__selected-location .lat").textContent = "";
+    document.querySelector(".map__selected-location .lon").textContent = "";
 }
 
 function fetchSelectedLocation() {
