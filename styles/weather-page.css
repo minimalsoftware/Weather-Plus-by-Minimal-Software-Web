@@ -28,6 +28,7 @@
 }
 
 .current-weather__location {
+    color: var(--mainTextColor);
     font-size: 20px;
     margin: 10px 0;
 }
@@ -50,7 +51,7 @@
     padding: 20px;
     border-radius: 15px;
     background-color: var(--mainComponentColor);
-    border: 1px solid #EEEEEE;
+    border: 1px solid var(--componentBorder);
 }
 
 .hourly-forecast {
@@ -78,6 +79,7 @@
 
 .weather-component__title {
     font-weight: 500;
+    color: var(--mainTextColor);
 }
 
 .hourly-forecast-item {
@@ -96,9 +98,8 @@
 
 .hourly-forecast-item__time {
     font-weight: 500;
-    /*font-size: 13px;*/
-    /*color: var(--secondTextColor);*/
     margin-bottom: 15px;
+    color: var(--mainTextColor);
 }
 
 .hourly-forecast-item__icon {
@@ -123,6 +124,7 @@
 .hourly-forecast-item__temperature {
     margin-top: 15px;
     font-size: 18px;
+    color: var(--mainTextColor);
 }
 
 .hourly-forecast-separator {
@@ -223,6 +225,7 @@
     cursor: pointer;
     transition-duration: 300ms;
     white-space: nowrap;
+    color: var(--mainTextColor);
 }
 
 .segmented-button__item:last-child {
@@ -296,6 +299,10 @@
     margin-bottom: 2px;
 }
 
+.daily-forecast-item__weather-condition {
+    color: var(--mainTextColor);
+}
+
 .daily-forecast-item__left-section {
     margin-right: 15px;
 }
@@ -328,6 +335,7 @@
 
 .daily-forecast-item__max-min-temperature {
     margin-left: 15px;
+    color: var(--mainTextColor);
 }
 
 .daily-forecast-item__details-button {
@@ -363,6 +371,7 @@
     font-size: 25px;
     font-weight: 500;
     margin-bottom: 5px;
+    color: var(--mainTextColor);
 }
 
 .aqi__description {
@@ -418,6 +427,7 @@
 .aqi-pollutant__value {
     font-size: 14px;
     font-weight: 500;
+    color: var(--mainTextColor);
 }
 
 .wind {
@@ -463,6 +473,7 @@
     font-weight: 500;
     margin-right: 15px;
     text-align: right;
+    color: var(--mainTextColor);
 }
 
 .wind-speed__title,
@@ -481,6 +492,7 @@
 .wind-speed__title .name,
 .wind-gust__title .name {
     font-size: 14px;
+    color: var(--mainTextColor);
 }
 
 .wind__container {
@@ -531,6 +543,7 @@
 
 .sunrise-sunset-item__value {
     font-weight: 500;
+    color: var(--mainTextColor);
 }
 
 .sunrise-sunset__section {
@@ -580,6 +593,7 @@
 
 .moon-item__value {
     font-weight: 500;
+    color: var(--mainTextColor);
 }
 
 .uv-index {
@@ -609,10 +623,12 @@
     margin-right: 15px;
     text-align: right;
     margin-bottom: 5px;
+    color: var(--mainTextColor);
 }
 
 .uv-index__description {
     font-size: 14px;
+    color: var(--mainTextColor);
 }
 
 .uv-index-indicator {
@@ -654,10 +670,12 @@
     font-weight: 500;
     margin-right: 15px;
     margin-bottom: 5px;
+    color: var(--mainTextColor);
 }
 
 .forecast-precipitation__description {
     font-size: 14px;
+    color: var(--mainTextColor);
 }
 
 .weather-page__column-section {

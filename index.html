@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles/weather-page.css">
     <link rel="stylesheet" href="styles/modal.css">
     <link rel="stylesheet" href="styles/map.css">
+    <link rel="stylesheet" href="styles/settings.css">
 
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
@@ -25,12 +26,14 @@
 
     <script src="scripts/main.js" defer></script>
     <script src="scripts/locations.js" defer></script>
+    <script src="scripts/theme.js" defer></script>
     <script src="scripts/storage.js" defer></script>
     <script src="scripts/sidebar.js" defer></script>
     <script src="scripts/bottomNotification.js" defer></script>
     <script src="scripts/map.js" defer></script>
     <script src="scripts/weather.js" defer></script>
     <script src="scripts/weather-insights.js" defer></script>
+    <script src="scripts/settings.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
 
@@ -42,7 +45,7 @@
 </head>
 <body>
 <div class="page">
-    <div class="modal"></div>
+    <div class="overlay"></div>
     <div class="map">
         <div class="map__layer-switcher segmented-button">
             <button class="segmented-button__item segmented-button__item--selected" onclick="switchMapLayer(mapLayers[0])">Standard</button>
@@ -50,14 +53,14 @@
         </div>
         <div class="map__zoom-controls" id="map__zoom-controls">
             <button class="map__zoom-in">
-                <img src="graphics/svg/add-main-color.svg" alt="Zoom in">
+                <img class="icon--main-color" src="graphics/svg/add-main-color.svg" alt="Zoom in">
             </button>
             <button class="map__zoom-out">
-                <img src="graphics/svg/remove-main-color.svg" alt="Zoom out">
+                <img class="icon--main-color" src="graphics/svg/remove-main-color.svg" alt="Zoom out">
             </button>
         </div>
         <button class="map__close-button" onclick="closeMap()">
-            <img src="graphics/svg/close-main-color.svg" alt="Close">
+            <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
             <span>Close</span>
         </button>
         <div class="map__selected-location">
@@ -71,7 +74,54 @@
         </div>
         <div class="osm" id="osm"></div>
     </div>
-    <div class="welcome">
+    <div class="settings modal">
+        <div class="modal__header">
+            <div class="title">Settings</div>
+            <button class="close-button" onclick="closeSettings()">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="settings__label">General</div>
+        <div class="settings-item">
+            <div class="settings-item__title">Appearance</div>
+            <div class="settings-item__content">
+                <div class="segmented-button" id="segmented-button--theme">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="toggleTheme(themes.LIGHT)">Light</button>
+                    <button class="segmented-button__item" onclick="toggleTheme(themes.DARK)">Dark</button>
+                    <button class="segmented-button__item" onclick="toggleTheme(themes.AUTO)">Auto</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings__label">Units</div>
+        <div class="settings-item">
+            <div class="settings-item__title">Temperature unit</div>
+            <div class="settings-item__content">
+                <div class="segmented-button">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="switchTemperatureUnit('c')">°C</button>
+                    <button class="segmented-button__item" onclick="switchTemperatureUnit('f')">°F</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-item">
+            <div class="settings-item__title">Wind speed unit</div>
+            <div class="settings-item__content">
+                <div class="segmented-button">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="switchWindSpeedUnit('km/h')">km/h</button>
+                    <button class="segmented-button__item" onclick="switchWindSpeedUnit('mph')">mph</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-item">
+            <div class="settings-item__title">Pressure unit</div>
+            <div class="settings-item__content">
+                <div class="segmented-button">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="switchPressureUnit('hPa')">hPa</button>
+                    <button class="segmented-button__item" onclick="switchPressureUnit('inHg')">mbar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="welcome modal">
         <div class="welcome__header">
             <h1>Welcome to</h1>
             <h1 class="main-color">Weather+</h1>
@@ -129,11 +179,11 @@
             <div class="autocomplete">
                 <div class="location-search-bar-container">
                     <div class="location-search-bar">
-                        <img class="search-bar__icon" src="graphics/svg/search--gray.svg" alt="Search">
+                        <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
                         <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
-                        <img class="search-bar__cancel-icon" src="graphics/svg/cancel--black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                        <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel--black.svg" onclick="clearLocationSearchBar()" alt="Clear">
                     </div>
-<!--                    <div class="loader"></div>-->
+                    <!--                    <div class="loader"></div>-->
                 </div>
                 <div class="autocomplete-results"></div>
             </div>
@@ -150,11 +200,15 @@
             </template>
             <div class="sidebar-buttons">
                 <button class="sidebar-buttons__item" onclick="openMap()">
-                    <img src="graphics/svg/map_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Map">
+                    <img class="icon--main-color" src="graphics/svg/map_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Map">
                     <span>Find on a map</span>
                 </button>
+                <button class="sidebar-buttons__item" onclick="openSettings()">
+                    <img class="icon--main-color" src="graphics/svg/settings--main-color.svg" alt="Settings">
+                    <span>Settings</span>
+                </button>
                 <button class="sidebar-buttons__item edit-locations-btn" onclick="toggleEditLocationMode()">
-                    <img src="graphics/svg/edit-main-color.svg" alt="Edit">
+                    <img class="icon--main-color" src="graphics/svg/edit-main-color.svg" alt="Edit">
                     <span>Edit locations</span>
                 </button>
             </div>
@@ -169,7 +223,7 @@
         <div class="notification"></div>
         <div class="top-bar">
             <button class="sidebar__toggle-button" onclick="toggleSidebar()">
-                <img src="graphics/svg/menu_open--main-color.svg" alt="Toggle sidebar">
+                <img class="icon--main-color" src="graphics/svg/menu_open--main-color.svg" alt="Toggle sidebar">
             </button>
         </div>
         <div class="weather-page">
@@ -399,8 +453,8 @@
                         <div class="weather-component astronomy">
                             <div class="weather-component__header">
                                 <div class="weather-component__title">Astronomy</div>
-                                <div class="segmented-button">
-                                    <button class="segmented-button__item segmented-button__item--selected" onclick="changeAstronomyType(astronomyTypes.SUN)">Sun</button>
+                                <div class="segmented-button" id="segmented-button--astronomy">
+                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.SUN)">Sun</button>
                                     <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.MOON)">Moon</button>
                                 </div>
                             </div>

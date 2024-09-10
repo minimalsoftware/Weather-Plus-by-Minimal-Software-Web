@@ -25,7 +25,7 @@ function openMap() {
         if (e.key === "Escape") closeMap();
     });
 
-    showModal();
+    showOverlay();
 
     document.querySelector(".map").classList.add("map--active");
 
@@ -99,7 +99,7 @@ function openMap() {
 
 function closeMap() {
     document.querySelector(".map").classList.remove("map--active");
-    hideModal();
+    hideOverlay();
 }
 
 function clearMap() {

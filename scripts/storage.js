@@ -5,13 +5,13 @@ let defaultLocations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
     new Location("Sydney", -33.865143, 151.209900),
 ])];
 
-
 let settings = {
     sidebarState: JSON.parse(localStorage.getItem("sidebarState")) ?? true,
     locations: defaultLocations,
     activeLocation: defaultLocations[0],
     firstConfigurationShown: false,
     sidebarWidth: 300,
+    theme: themes.LIGHT
 }
 
 settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
@@ -22,4 +22,5 @@ function saveSettings() {
 
 window.addEventListener("DOMContentLoaded", () => {
     if (!settings.firstConfigurationShown) showWelcomePage();
+    toggleTheme(settings.theme, true);
 });

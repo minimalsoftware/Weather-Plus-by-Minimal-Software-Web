@@ -4,6 +4,7 @@
 
 .logo__title {
     font-size: 18px;
+    color: var(--mainTextColor);
 }
 
 .logo__company {
@@ -36,6 +37,7 @@
     background-color: transparent;
     outline: none;
     font-size: 15px;
+    color: var(--mainTextColor);
 }
 
 .location-search-bar:focus-within {
@@ -125,6 +127,10 @@
     /*padding: 0 15px;*/
 }
 
+.autocomplete-result--active .autocomplete-result__name {
+    color: var(--mainComponentColor);
+}
+
 .autocomplete-result--active .autocomplete-result__state {
     color: var(--thirdTextColor);
 }
@@ -132,6 +138,7 @@
 .autocomplete-result__name {
     margin-bottom: 5px;
     font-size: 14px;
+    color: var(--mainTextColor);
 }
 
 .autocomplete-result__state {
@@ -166,7 +173,7 @@
 }
 
 .location--active {
-    background-color: #d5dcef;
+    background-color: var(--thirdColor);
 }
 
 .location--active .location__name {
@@ -191,6 +198,7 @@
 .location__name {
     font-size: 16px;
     margin-bottom: 5px;
+    color: var(--mainTextColor);
 }
 
 .location__time {
