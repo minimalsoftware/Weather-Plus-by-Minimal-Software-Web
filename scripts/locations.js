@@ -52,6 +52,7 @@ function displayLocations(data) {
             location.querySelector(".location__temperature").insertAdjacentText("afterbegin", Math.round(data[i]["current"]["temperature_2m"]) + "°C");
 
             location.addEventListener("click", () => {
+                if (editMode) return;
                 settings.activeLocation = settings.locations[i];
                 saveSettings();
                 fetchWeather();
@@ -61,14 +62,13 @@ function displayLocations(data) {
                 });
             });
 
+            let deleteButton = location.querySelector(".location__delete-btn");
+
+            deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${i});`);
+
             const weatherCode = data[i]["current"]["weather_code"];
 
             location.querySelector(".location__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
-
-            location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
-                event.stopPropagation();
-                deleteLocation(i, location, settings.locations[i].name);
-            });
 
             locationsContainer.append(location);
         }
@@ -89,10 +89,9 @@ function displayLocations(data) {
 
         location.querySelector(".location__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
 
-        location.querySelector(".location__delete-btn").addEventListener("click", (event) => {
-            event.stopPropagation();
-            deleteLocation(0, location, settings.locations[0].name);
-        });
+        let deleteButton = location.querySelector(".location__delete-btn");
+
+        deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${0});`);
 
         locationsContainer.append(location);
     }
@@ -100,7 +99,7 @@ function displayLocations(data) {
 
 function attachLocationClickListeners() {
     document.querySelectorAll(".location").forEach((locationElement, index) => {
-        locationElement.addEventListener("click", () => {
+        locationElement.addEventListener("click", (event) => {
             settings.activeLocation = settings.locations[index];
             saveSettings();
             fetchWeather();
@@ -265,20 +264,36 @@ function toggleEditLocationMode() {
     }
 }
 
-function deleteLocation(locationIndex, locationElement, locationName) {
-    settings.locations.splice(locationIndex, 1);
-    if (settings.activeLocation.name === locationElement.querySelector(".location__name").textContent) {
-        settings.activeLocation = settings.locations[0];
-        saveSettings();
-        fetchWeather();
+function reattachDeleteButtons() {
+    const locationElements = document.querySelectorAll(".location");
+    locationElements.forEach((locationElement, index) => {
+        const deleteButton = locationElement.querySelector(".location__delete-btn");
+        deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${index});`);
+    });
+}
+
+function deleteLocation(deleteButton, index) {
+    let location = deleteButton.closest(".location");
+    location.remove();
+    settings.locations.splice(index, 1);
+
+    console.log(settings.locations.length);
+    if (settings.locations.length !== 0) {
+        let locationName = location.querySelector(".location__name").textContent;
+        if (locationName === settings.activeLocation.name) {
+            let firstLocation = document.querySelectorAll(".location")[0];
+            firstLocation.classList.add("location--active");
+            settings.activeLocation = settings.locations[0];
+        }
     }
-
-    locationElement.remove();
-
-    showNotification(`Location ${locationName} successfully removed`);
 
     if (settings.locations.length === 0) {
         displayNoLocationsInformation();
         toggleEditLocationMode();
+
+        settings.activeLocation = undefined;
     }
+
+    saveSettings();
+    reattachDeleteButtons();
 }

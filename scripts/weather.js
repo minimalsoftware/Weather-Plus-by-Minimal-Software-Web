@@ -2,7 +2,7 @@ let fetchedData;
 const weatherPage = document.querySelector(".weather-page");
 
 function fetchWeather() {
-    if (settings.locations.length === 0) return;
+    if (settings.locations.length === 0 || !settings.activeLocation) return;
 
     weatherPage.classList.remove("weather-page--active");
 
