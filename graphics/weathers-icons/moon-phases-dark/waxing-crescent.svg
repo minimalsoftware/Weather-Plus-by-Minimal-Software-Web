@@ -1,0 +1,21 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="400" cy="400" r="391" fill="#A7B0BC" stroke="#010202" stroke-width="18" stroke-miterlimit="1" stroke-linecap="round"/>
+<ellipse cx="206.184" cy="178.085" rx="93.7272" ry="77" transform="rotate(-47.1835 206.184 178.085)" fill="#979EA9"/>
+<circle cx="308.827" cy="141.464" r="97.1319" transform="rotate(-39.9244 308.827 141.464)" fill="#979EA9"/>
+<circle cx="134.258" cy="309.258" r="87.5" transform="rotate(-39.9244 134.258 309.258)" fill="#979EA9"/>
+<circle cx="179.045" cy="522.618" r="82.3792" transform="rotate(-39.9244 179.045 522.618)" fill="#979EA9"/>
+<circle cx="288.285" cy="585.285" r="55.5736" transform="rotate(-39.9244 288.285 585.285)" fill="#979EA9"/>
+<circle cx="196.638" cy="643.638" r="36.6574" transform="rotate(-39.9244 196.638 643.638)" fill="#979EA9"/>
+<circle cx="386.272" cy="382.272" r="64.7929" transform="rotate(-39.9244 386.272 382.272)" fill="#979EA9"/>
+<circle cx="555.272" cy="309.272" r="64.7929" transform="rotate(-39.9244 555.272 309.272)" fill="#979EA9"/>
+<circle cx="527.577" cy="208.577" r="49.3917" transform="rotate(-39.9244 527.577 208.577)" fill="#979EA9"/>
+<circle cx="620.217" cy="359.217" r="53.3956" transform="rotate(-39.9244 620.217 359.217)" fill="#979EA9"/>
+<circle cx="676.636" cy="263.038" r="17.4598" transform="rotate(-39.9244 676.636 263.038)" fill="#979EA9"/>
+<circle cx="630.389" cy="450.287" r="22.9928" transform="rotate(-39.9244 630.389 450.287)" fill="#979EA9"/>
+<circle cx="354.582" cy="681.582" r="26.6793" transform="rotate(-39.9244 354.582 681.582)" fill="#979EA9"/>
+<circle cx="339.771" cy="313.771" r="36.752" transform="rotate(-39.9244 339.771 313.771)" fill="#979EA9"/>
+<circle cx="451.465" cy="453.465" r="18.7873" transform="rotate(-39.9244 451.465 453.465)" fill="#979EA9"/>
+<circle cx="408.2" cy="282.2" r="11.5" transform="rotate(-39.9244 408.2 282.2)" fill="#979EA9"/>
+<path d="M408 800C355.471 800 303.457 789.654 254.927 769.552C206.396 749.45 162.301 719.986 125.157 682.843C88.0138 645.699 58.55 601.604 38.4481 553.073C18.3463 504.543 8 452.529 8 400C8 347.471 18.3463 295.457 38.4481 246.927C58.55 198.396 88.0138 154.301 125.157 117.157C162.301 80.0138 206.396 50.5501 254.927 30.4482C303.457 10.3463 355.471 -4.59221e-06 408 0L516.384 166.745C608.579 308.583 608.579 491.417 516.384 633.255L408 800Z" fill="black" fill-opacity="0.5"/>
+<circle cx="400" cy="400" r="391" stroke="white" stroke-width="18"/>
+</svg>

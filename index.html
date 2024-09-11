@@ -36,6 +36,7 @@
     <script src="scripts/settings.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
+    <script src="assets/compass.js" defer></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script src="libraries/astronomy.browser.js"></script>
@@ -46,7 +47,7 @@
 <body>
 <div class="page">
     <div class="overlay"></div>
-    <div class="map">
+    <div class="map no-user-select">
         <div class="map__layer-switcher segmented-button">
             <button class="segmented-button__item segmented-button__item--selected" onclick="switchMapLayer(mapLayers[0])">Standard</button>
             <button class="segmented-button__item" onclick="switchMapLayer(mapLayers[1])">Satellite</button>
@@ -74,7 +75,7 @@
         </div>
         <div class="osm" id="osm"></div>
     </div>
-    <div class="settings modal">
+    <div class="settings no-user-select modal">
         <div class="modal__header">
             <div class="title">Settings</div>
             <button class="close-button" onclick="closeSettings()">
@@ -132,7 +133,7 @@
             <div class="welcome-points">
                 <div class="welcome-point">
                     <div class="welcome-point__icon">
-                        <img src="graphics/svg/weather_mix_32dp_000000_FILL0_wght600_GRAD0_opsz40.svg" alt="Welcome point nr. 1">
+                        <img src="graphics/svg/weather-mix-black.svg" alt="Welcome point nr. 1">
                     </div>
                     <div class="welcome-point__section">
                         <div class="welcome-point__title">Weather for today and the next 9 days</div>
@@ -141,7 +142,7 @@
                 </div>
                 <div class="welcome-point">
                     <div class="welcome-point__icon">
-                        <img src="graphics/svg/routine_32dp_000000_FILL0_wght600_GRAD0_opsz40.svg" alt="Welcome point nr. 1">
+                        <img src="graphics/svg/routine-black.svg" alt="Welcome point nr. 1">
                     </div>
                     <div class="welcome-point__section">
                         <div class="welcome-point__title">Sunrise and sunset</div>
@@ -150,7 +151,7 @@
                 </div>
                 <div class="welcome-point">
                     <div class="welcome-point__icon">
-                        <img src="graphics/svg/air_32dp_000000_FILL0_wght600_GRAD0_opsz40.svg" alt="Welcome point nr. 1">
+                        <img src="graphics/svg/air-black.svg" alt="Welcome point nr. 1">
                     </div>
                     <div class="welcome-point__section">
                         <div class="welcome-point__title">Air quality</div>
@@ -160,7 +161,10 @@
             </div>
         </div>
         <div class="welcome__footer">
-            <button class="welcome__button" onclick="hideWelcomePage()">Get started</button>
+            <button class="welcome__button" onclick="hideWelcomePage()">Select first location</button>
+        </div>
+        <div class="modal-subpage">
+
         </div>
     </div>
     <div class="sidebar">
@@ -181,7 +185,7 @@
                     <div class="location-search-bar">
                         <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
                         <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
-                        <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel--black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                        <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
                     </div>
                     <!--                    <div class="loader"></div>-->
                 </div>
@@ -195,16 +199,18 @@
                     </div>
                     <div class="location__temperature"></div>
                 </div>
-                <div class="location__weather-condition"></div>
+                <div class="location__weather-condition marquee">
+                    <span></span>
+                </div>
                 <button class="location__delete-btn">Delete</button>
             </template>
             <div class="sidebar-buttons">
                 <button class="sidebar-buttons__item" onclick="openMap()">
-                    <img class="icon--main-color" src="graphics/svg/map_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Map">
+                    <img class="icon--main-color" src="graphics/svg/map-main-color.svg" alt="Map">
                     <span>Find on a map</span>
                 </button>
                 <button class="sidebar-buttons__item" onclick="openSettings()">
-                    <img class="icon--main-color" src="graphics/svg/settings--main-color.svg" alt="Settings">
+                    <img class="icon--main-color" src="graphics/svg/settings-main-color.svg" alt="Settings">
                     <span>Settings</span>
                 </button>
                 <button class="sidebar-buttons__item edit-locations-btn" onclick="toggleEditLocationMode()">
@@ -223,10 +229,10 @@
         <div class="notification"></div>
         <div class="top-bar">
             <button class="sidebar__toggle-button" onclick="toggleSidebar()">
-                <img class="icon--main-color" src="graphics/svg/menu_open--main-color.svg" alt="Toggle sidebar">
+                <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
             </button>
         </div>
-        <div class="weather-page">
+        <div class="weather-page no-user-select">
             <div class="current-weather">
                 <div class="current-weather__location"></div>
                 <div class="current-weather__temperature"></div>
@@ -483,7 +489,7 @@
                             </div>
                             <div class="moon">
                                 <div class="moon__content">
-                                    <img class="moon__phase-graphic" src="graphics/weathers-icons/moon-phases/full_moon.svg" alt="Moon phase">
+                                    <img class="moon__phase-graphic" src="graphics/weathers-icons/moon-phases/full-moon.svg" alt="Moon phase">
                                     <div class="moon__section">
                                         <div class="moon-item">
                                             <div class="moon-item__label">Moon phase</div>

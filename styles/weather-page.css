@@ -4,7 +4,6 @@
     opacity: 0;
     transform: scale(0.9) translateY(50px);
     transition-duration: 500ms;
-    user-select: none;
 }
 
 .weather-page--active {

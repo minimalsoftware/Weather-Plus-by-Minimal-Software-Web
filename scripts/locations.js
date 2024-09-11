@@ -13,6 +13,7 @@ function displayNoLocationsInformation() {
     let noLocations = document.createElement("div");
     noLocations.classList.add("no-locations");
     noLocations.textContent = "Add first location to see the weather";
+    document.querySelector(".edit-locations-btn").style.display = "none";
     locationsContainer.append(noLocations);
 }
 
@@ -68,7 +69,7 @@ function displayLocations(data) {
 
             const weatherCode = data[i]["current"]["weather_code"];
 
-            location.querySelector(".location__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
+            location.querySelector(".location__weather-condition span").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
 
             locationsContainer.append(location);
         }
@@ -87,13 +88,29 @@ function displayLocations(data) {
 
         const weatherCode = data["current"]["weather_code"];
 
-        location.querySelector(".location__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
+        location.querySelector(".location__weather-condition span").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
 
         let deleteButton = location.querySelector(".location__delete-btn");
 
         deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${0});`);
 
         locationsContainer.append(location);
+    }
+
+    locationsMarquee();
+}
+
+function locationsMarquee() {
+    const marqueeContainer = document.querySelectorAll('.location');
+    const marqueeSpan = document.querySelectorAll('.marquee span');
+    const marquee = document.querySelectorAll('.marquee');
+    for (let i = 0; i < marqueeContainer.length; i++) {
+            console.log(marqueeSpan[i].scrollWidth - marqueeContainer[i].clientWidth);
+        if (marqueeSpan[i].scrollWidth + 12 > marqueeContainer[i].clientWidth) {
+            marquee[i].classList.add('animate');
+        } else {
+            marquee[i].classList.remove('animate');
+        }
     }
 }
 
@@ -153,6 +170,8 @@ function addAndFetchLocation(location) {
     }
 
     mainContent.scrollTo(0, 0);
+
+    document.querySelector(".edit-locations-btn").style.display = "";
 
     settings.locations.unshift(location);
     settings.activeLocation = location;

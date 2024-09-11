@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 settings.sidebarWidth = newWidth;
                 saveSettings();
+
+                locationsMarquee();
             }
         }
     }

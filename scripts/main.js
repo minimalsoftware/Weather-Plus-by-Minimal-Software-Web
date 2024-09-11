@@ -29,3 +29,4 @@ function round(value, precision = 0) {
     const exponent = Math.pow(10, precision);
     return Math.round(value * exponent) / exponent;
 }
+

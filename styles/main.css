@@ -11,7 +11,7 @@
 }
 
 :root,
-html[data-theme='light']{
+html[data-theme='light'] {
     --mainColor: #223552;
     --secondColor: #EEF2F8;
     --thirdColor: #D5DCEF;
@@ -116,7 +116,7 @@ html[data-theme='dark'] {
 }
 
 body {
-    background-color: #FDFDFD;
+    background-color: var(--mainBackgroundColor);
 }
 
 .page {
@@ -222,3 +222,40 @@ body {
         inset: 0 35px 35px 0;
     }
 }
+
+.no-user-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.marquee.animate {
+    display: inline-block;
+    width: calc(100% + 12px) !important;
+}
+
+.location__weather-condition.marquee .span {
+    /*animation: marquee 8s linear infinite;*/
+}
+
+.marquee.animate span {
+    animation: marquee 7s linear infinite;
+}
+
+.marquee span {
+    display: inline-block;
+    /*min-width: 100%; !* this is to prevent shorter text animate to right *!*/
+    white-space: nowrap;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* TODO: Prefers reduced motion*/

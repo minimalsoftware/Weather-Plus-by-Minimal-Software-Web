@@ -50,6 +50,7 @@
     grid-column-gap: 5px;
     justify-items: center;
     margin-bottom: 20px;
+    border-bottom: 1px solid var(--borderColor);
 }
 
 .modal__header .title {
@@ -73,6 +74,7 @@
     font-size: 15px;
     line-height: 20px;
     margin-left: auto;
+    height: auto;
 }
 
 .welcome--active {
