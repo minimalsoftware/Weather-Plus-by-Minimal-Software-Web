@@ -33,8 +33,13 @@ function fetchLocationsData() {
     }
 }
 
+let fetchedLocationsData;
+
 function displayLocations(data) {
+    fetchedLocationsData = data;
+
     locationsContainer.innerHTML = "";
+
     if (settings.locations.length > 1) {
         for (let i = 0; i < data.length; i++) {
             let location = document.createElement("div");
@@ -50,7 +55,7 @@ function displayLocations(data) {
                 hour: "2-digit",
                 minute: "2-digit"
             }));
-            location.querySelector(".location__temperature").insertAdjacentText("afterbegin", Math.round(data[i]["current"]["temperature_2m"]) + "°C");
+            location.querySelector(".location__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data[i]["current"]["temperature_2m"]))}°F` : `${Math.round(data[i]["current"]["temperature_2m"])}°C`);
 
             location.addEventListener("click", () => {
                 if (editMode) return;

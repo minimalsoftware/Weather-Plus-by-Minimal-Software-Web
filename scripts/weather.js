@@ -60,7 +60,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         if (i === currentTime.getHours()) time = "Now";
 
         forecastItem.querySelector(".hourly-forecast-item__time").insertAdjacentText("afterbegin", time);
-        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", Math.round(data.hourly.temperature_2m[i]) + "°");
+        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin",  settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
         const weatherConditionsCodesWithPrecipitation = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
         if (data.hourly.precipitation_probability[i] !== 0 && weatherConditionsCodesWithPrecipitation.includes(data.hourly.weather_code[i])) {
             forecastItem.querySelector(".hourly-forecast-item__precipitation").insertAdjacentText("afterbegin", `${Math.round(data.hourly.precipitation_probability[i])}%`);
@@ -90,9 +90,9 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${Math.round(data.hourly.precipitation[i])} mm`;
         hourlyForecastItemDetails.querySelector(".relative-humidity").textContent = `${Math.round(data.hourly.relative_humidity_2m[i])}%`;
         hourlyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data.hourly.dew_point_2m[i])}°`;
-        hourlyForecastItemDetails.querySelector(".apparent-temperature").textContent = `${Math.round(data.hourly.apparent_temperature[i])}°`;
+        hourlyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.apparent_temperature[i]))}°` : `${Math.round(data.hourly.apparent_temperature[i])}°`;
         hourlyForecastItemDetails.querySelector(".precipitation-probability").textContent = `${Math.round(data.hourly.precipitation_probability[i])}%`;
-        hourlyForecastItemDetails.querySelector(".pressure").textContent = `${Math.round(data.hourly.surface_pressure[i])} hPa`;
+        hourlyForecastItemDetails.querySelector(".pressure").textContent = settings.pressureUnit === pressureUnits.MBAR ? `${Math.round(data.hourly.surface_pressure[i])} mbar` : `${Math.round(data.hourly.surface_pressure[i])} hPa`;
         hourlyForecastItemDetails.querySelector(".cloud-cover").textContent = `${Math.round(data.hourly.cloud_cover[i])}%`;
 
         hourlyForecastItemDetails.querySelector(".visibility").textContent = `${Math.round(data.hourly.visibility[i])} m`;
@@ -119,7 +119,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 
 function displayCurrentData(data) {
     document.querySelector(".current-weather__location").textContent = `${settings.activeLocation.name}`;
-    document.querySelector(".current-weather__temperature").textContent = `${Math.round(data["current"]["temperature_2m"])}°C`;
+    document.querySelector(".current-weather__temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["current"]["temperature_2m"]))}°F` : `${Math.round(data["current"]["temperature_2m"])}°C`;
     document.querySelector(".current-weather__weather-condition").textContent = `${getWeatherConditionDescription(data["current"]["weather_code"])}, feels like ${Math.round(data["current"]["apparent_temperature"])}°`;
     document.querySelector(".current-weather__max-min-temperature").textContent = `H: ${Math.round(data["daily"]["temperature_2m_max"][0])}° L: ${Math.round(data["daily"]["temperature_2m_min"][0])}°`;
 }
@@ -151,7 +151,7 @@ function displayDailyWeather(data) {
         })}`);
         forecastItem.querySelector(".daily-forecast-item__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(data["daily"]["weather_code"][i]));
         forecastItem.querySelector(".daily-forecast-item__icon img").src = `graphics/weathers-icons/${iconTheme}/${getWeatherConditionIcon(data["daily"]["weather_code"][i])}.svg`;
-        forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin", `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
+        forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin",  settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `H: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}° L: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
 
         dailyForecastItems.append(forecastItem);
     }
@@ -172,8 +172,13 @@ function displayAirQuality(data) {
 }
 
 function displayWindData(data) {
-    document.querySelector(".wind-speed__value").textContent = `${Math.round(data.current.wind_speed_10m)}`;
-    document.querySelector(".wind-gust__value").textContent = `${Math.round(data.current.wind_gusts_10m)}`;
+    document.querySelector(".wind-speed__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_speed_10m))}` : `${Math.round(data.current.wind_speed_10m)}`;
+    document.querySelector(".wind-gust__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_gusts_10m))}` : `${Math.round(data.current.wind_gusts_10m)}`;
+
+    if (settings.windUnit === windUnits.MPH) {
+        document.querySelector(".wind-speed__title .unit").textContent = "mph";
+        document.querySelector(".wind-gust__title .unit").textContent = "mph";
+    }
 
     document.querySelector(".wind__description").textContent = `${getWindDescription(data.current.wind_speed_10m)} - ${getWindDirection(data.current.wind_direction_10m)}`;
 
@@ -231,15 +236,18 @@ function displayMoonData(isAfterSunset) {
     const moonrise = Astronomy.SearchRiseSet('Moon', observer, +1, date, 300);
     const moonset = Astronomy.SearchRiseSet('Moon', observer, -1, date, 300);
 
-    isAfterSunset = true;
-
     if (isAfterSunset) {
         changeAstronomyType(astronomyTypes.MOON);
         const segmentedButton = document.querySelector("#segmented-button--astronomy");
         segmentedButton.querySelectorAll(".segmented-button__item")[1].classList.add("segmented-button__item--selected");
 
         refreshSegmentedButton(segmentedButton);
-        // setActiveButton(segmentedButton, buttonToActivate, 1);
+    } else {
+        changeAstronomyType(astronomyTypes.SUN);
+        const segmentedButton = document.querySelector("#segmented-button--astronomy");
+        segmentedButton.querySelectorAll(".segmented-button__item")[0].classList.add("segmented-button__item--selected");
+
+        refreshSegmentedButton(segmentedButton);
     }
 
     // console.log(moonrise);
@@ -270,9 +278,6 @@ function displayMoonData(isAfterSunset) {
         hour: "2-digit",
         minute: "2-digit"
     });
-
-    // console.log(illuminationInfo.phase_angle);
-    // console.log(phase);
 }
 
 function displayUVIndex(data, hour) {
@@ -421,7 +426,6 @@ function loadOrder(container) {
 }
 
 function setActiveButton(segmentedButton, index) {
-    console.log("Setting active button");
     setTimeout(() => {
         const buttons = segmentedButton.querySelectorAll(".segmented-button__item");
         buttons.forEach(btn => btn.classList.remove("segmented-button__item--selected"));
@@ -554,4 +558,12 @@ function changeAstronomyType(astronomyType) {
         sun.style.display = "none";
         moon.style.display = "block";
     }
+}
+
+function convertToFahrenheit(celsius) {
+    return celsius * 9 / 5 + 32;
+}
+
+function convertToMilesPerHour(kph) {
+    return kph * 0.621371;
 }

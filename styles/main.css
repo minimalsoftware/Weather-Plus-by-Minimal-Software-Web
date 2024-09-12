@@ -50,6 +50,8 @@ html[data-theme='light'] {
 
     --airQualityHazardous-main: #FFCDD2;
     --airQualityHazardous-border: #EF5350;
+
+    --segmentedButtonAnimation: 300ms;
 }
 
 html[data-theme='dark'] {
@@ -146,7 +148,6 @@ body {
     position: sticky;
     top: 0;
     background-color: transparent;
-    z-index: 9;
     width: 100%;
     /*margin-bottom: 20px;*/
 }
@@ -256,6 +257,28 @@ body {
     100% {
         transform: translateX(-100%);
     }
+}
+
+.tippy-box[data-inertia][data-state='visible'] {
+    transition: transform 0.15s cubic-bezier(0.71, 1.2, 0.77, 1.24);
+}
+
+.tippy-box[data-theme~='custom'] {
+    background-color: var(--blurryBackground);
+    backdrop-filter: blur(10px);
+    color: var(--mainTextColor);
+    border: 1px solid var(--borderColor);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.tippy-tooltip.custom-theme {
+    border: 1px solid var(--borderColor);
+    border-radius: 8px;
+}
+
+.tippy-box[data-theme~='custom'] .tippy-svg-arrow {
+    fill: var(--mainColor);
 }
 
 /* TODO: Prefers reduced motion*/

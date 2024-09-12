@@ -205,7 +205,7 @@
     height: 26px;
     background-color: var(--mainColor);
     border-radius: 8px;
-    transition: transform 300ms ease;
+    transition: transform var(--segmentedButtonAnimation) ease;
     z-index: 0;
 }
 
