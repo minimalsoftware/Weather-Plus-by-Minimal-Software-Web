@@ -15,11 +15,8 @@ let mapLayers = [
     new MapLayer("Stadia Maps", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}", '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>', "jpg", 15),
 ];
 
-function openMap() {
-    if (map) {
-        clearMap();
-        console.log("Map cleared");
-    }
+function openMap(fromFirstConfiguration = false) {
+    if (map) clearMap();
 
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") closeMap();
@@ -32,9 +29,9 @@ function openMap() {
     if (!map) {
         map = L.map('osm', {
             attributionControl: false,
-            zoom: 10,
+            zoom: settings.activeLocation ? 10 : 2,
             zoomControl: false
-        }).setView([settings.activeLocation.lat, settings.activeLocation.lon]);
+        }).setView([settings.activeLocation?.lat ?? 0, settings.activeLocation?.lon ?? 0]);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             minZoom: 0,
@@ -92,14 +89,14 @@ function openMap() {
                 });
         });
     } else {
-        map.setView([settings.activeLocation.lat, settings.activeLocation.lon]);
+        map.setView([settings.activeLocation?.lat ?? 0,settings.activeLocation?.lon ?? 0]);
     }
 
 }
 
 function closeMap() {
     document.querySelector(".map").classList.remove("map--active");
-    hideOverlay();
+    if (settings.firstConfigurationShown) hideOverlay();
 }
 
 function clearMap() {
@@ -122,6 +119,8 @@ function fetchSelectedLocation() {
     let location = new Location(selectedLocationName, selectedLocationLat, selectedLocationLon);
 
     addAndFetchLocation(location);
+
+    if (!settings.firstConfigurationShown) hideWelcomePage();
 
     saveSettings();
     closeMap();

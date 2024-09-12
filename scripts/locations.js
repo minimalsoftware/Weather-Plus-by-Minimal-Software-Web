@@ -12,7 +12,7 @@ function displayNoLocationsInformation() {
     locationsContainer.innerHTML = "";
     let noLocations = document.createElement("div");
     noLocations.classList.add("no-locations");
-    noLocations.textContent = "Add first location to see the weather";
+    noLocations.textContent = "Add initial location to see the weather";
     document.querySelector(".edit-locations-btn").style.display = "none";
     locationsContainer.append(noLocations);
 }
@@ -146,14 +146,15 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-const locationSearch = document.querySelector(".location-search");
-const locationSearchBar = document.querySelector(".location-search-bar");
-const autocompleteResults = document.querySelector(".autocomplete-results");
+let locationSearch = !settings.firstConfigurationShown ? document.querySelectorAll(".location-search")[0] : document.querySelectorAll(".location-search")[1];
+let locationSearchBar = !settings.firstConfigurationShown ? document.querySelectorAll(".location-search-bar")[0] : document.querySelectorAll(".location-search-bar")[1];
+let autocompleteResults = !settings.firstConfigurationShown ? document.querySelectorAll(".autocomplete-results")[0] : document.querySelectorAll(".autocomplete-results")[1];
 let currentIndex = -1;
 
 function displaySearchResults(data) {
     currentIndex = -1;
     autocompleteResults.innerHTML = "";
+
     for (let i = 0; i < data.length; i++) {
         let result = document.createElement("div");
         result.append(document.querySelector("#autocomplete-result-template").content.cloneNode(true));
@@ -186,9 +187,11 @@ function addAndFetchLocation(location) {
     fetchLocationsData();
     fetchWeather();
     clearLocationSearchBar();
+
+    if (!settings.firstConfigurationShown) hideWelcomePage();
 }
 
-const searchBarIcon = locationSearchBar.querySelector(".search-bar__cancel-icon");
+let searchBarIcon = locationSearchBar.querySelector(".search-bar__cancel-icon");
 
 let currentFetchController = null;
 
@@ -234,7 +237,7 @@ document.addEventListener("click", (event) => {
     }
 });
 
-locationSearch.addEventListener("keydown", (event) => {
+function selectWithArrowKeys(event) {
     const results = autocompleteResults.querySelectorAll(".autocomplete-result");
     if (results.length === 0) return;
 
@@ -254,6 +257,10 @@ locationSearch.addEventListener("keydown", (event) => {
         event.preventDefault();
         results[currentIndex].click();
     }
+}
+
+locationSearch.addEventListener("keydown", (event) => {
+    selectWithArrowKeys(event);
 });
 
 function updateSelection(results) {

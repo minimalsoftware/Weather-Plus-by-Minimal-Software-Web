@@ -25,15 +25,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <script src="scripts/main.js" defer></script>
-    <script src="scripts/locations.js" defer></script>
+    <script src="scripts/settings.js" defer></script>
     <script src="scripts/theme.js" defer></script>
     <script src="scripts/storage.js" defer></script>
+    <script src="scripts/locations.js" defer></script>
     <script src="scripts/sidebar.js" defer></script>
     <script src="scripts/bottomNotification.js" defer></script>
     <script src="scripts/map.js" defer></script>
     <script src="scripts/weather.js" defer></script>
     <script src="scripts/weather-insights.js" defer></script>
-    <script src="scripts/settings.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
     <script src="assets/compass.js" defer></script>
@@ -124,49 +124,73 @@
             </div>
         </div>
     </div>
-    <div class="welcome modal">
-        <div class="welcome__header">
-            <h1>Welcome to</h1>
-            <h1 class="main-color">Weather+</h1>
-            <h5>by Minimal Software</h5>
-            <p>Weather app, wrapped in a minimalist design, with constantly updated weather data.</p>
-        </div>
-        <div class="welcome__content">
-            <div class="welcome-points">
-                <div class="welcome-point">
-                    <div class="welcome-point__icon">
-                        <img src="graphics/svg/weather-mix-black.svg" alt="Welcome point nr. 1">
+    <div class="welcome modal modal--with-subpages" id="modal--welcome">
+        <div class="modal-subpage modal-subpage--active">
+            <div class="welcome__header">
+                <h1>Welcome to</h1>
+                <h1 class="main-color">Weather+</h1>
+                <h5>by Minimal Software</h5>
+                <p>Weather app, wrapped in a minimalist design, with constantly updated weather data.</p>
+            </div>
+            <div class="welcome__content">
+                <div class="welcome-points">
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/weather-mix-black.svg" alt="Welcome point nr. 1">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Weather for today and the next 9 days</div>
+                            <div class="welcome-point__description">See weather conditions and all the most necessary weather data.</div>
+                        </div>
                     </div>
-                    <div class="welcome-point__section">
-                        <div class="welcome-point__title">Weather for today and the next 9 days</div>
-                        <div class="welcome-point__description">See weather conditions and all the most necessary weather data.</div>
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/routine-black.svg" alt="Welcome point nr. 2">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Sunrise and sunset</div>
+                            <div class="welcome-point__description">Sunrise and sunset times, graphic designation.</div>
+                        </div>
                     </div>
-                </div>
-                <div class="welcome-point">
-                    <div class="welcome-point__icon">
-                        <img src="graphics/svg/routine-black.svg" alt="Welcome point nr. 1">
-                    </div>
-                    <div class="welcome-point__section">
-                        <div class="welcome-point__title">Sunrise and sunset</div>
-                        <div class="welcome-point__description">Sunrise and sunset times, graphic designation.</div>
-                    </div>
-                </div>
-                <div class="welcome-point">
-                    <div class="welcome-point__icon">
-                        <img src="graphics/svg/air-black.svg" alt="Welcome point nr. 1">
-                    </div>
-                    <div class="welcome-point__section">
-                        <div class="welcome-point__title">Air quality</div>
-                        <div class="welcome-point__description">AQI air quality index based on measurements of air pollution indicators.</div>
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/air-black.svg" alt="Welcome point nr. 3">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Air quality</div>
+                            <div class="welcome-point__description">AQI air quality index based on measurements of air pollution indicators.</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="welcome__footer">
+                <button class="welcome__button" onclick="switchModalSubpage('modal--welcome', 'modal-subpage--select-initial-location')">Select initial location</button>
+            </div>
         </div>
-        <div class="welcome__footer">
-            <button class="welcome__button" onclick="hideWelcomePage()">Select first location</button>
-        </div>
-        <div class="modal-subpage">
-
+        <div class="modal-subpage" id="modal-subpage--select-initial-location">
+            <div class="welcome__header">
+                <h1>Select the initial location</h1>
+                <p>Search for a location: Enter text in the search bar or select directly on the map.</p>
+            </div>
+            <div class="welcome__content initial-location-content">
+                <div class="autocomplete">
+                    <div class="location-search-bar-container">
+                        <div class="location-search-bar">
+                            <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
+                            <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                            <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                        </div>
+                    </div>
+                    <div class="autocomplete-results"></div>
+                </div>
+                <button class="sidebar-buttons__item" onclick="openMap()">
+                    <img class="icon--main-color" src="graphics/svg/map-main-color.svg" alt="Map">
+                    <span>Find on a map</span>
+                </button>
+            </div>
+            <div class="welcome__footer">
+                <button class="welcome__button--second" onclick="hideWelcomePage()">Skip setting initial location</button>
+            </div>
         </div>
     </div>
     <div class="sidebar">
@@ -189,7 +213,6 @@
                         <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
                         <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
                     </div>
-                    <!--                    <div class="loader"></div>-->
                 </div>
                 <div class="autocomplete-results"></div>
             </div>

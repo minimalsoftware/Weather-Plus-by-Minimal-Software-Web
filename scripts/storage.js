@@ -1,9 +1,4 @@
-let defaultLocations = [...(JSON.parse(localStorage.getItem("locations")) ?? [
-    new Location("London", 51.509865, -0.118092),
-    new Location("New York", 40.730610, -73.935242),
-    new Location("Tokyo", 35.652832, 139.839478),
-    new Location("Sydney", -33.865143, 151.209900),
-])];
+let defaultLocations = [...(JSON.parse(localStorage.getItem("locations")) ?? [])];
 
 const temperatureUnits = Object.freeze({
     CELSIUS: "C",
@@ -26,7 +21,7 @@ let settings = {
     activeLocation: defaultLocations[0],
     firstConfigurationShown: false,
     sidebarWidth: 300,
-    theme: themes.LIGHT,
+    theme: themes.AUTO,
     temperatureUnit: temperatureUnits.CELSIUS,
     windUnit: windUnits.KPH,
     pressureUnit: pressureUnits.HPA,
