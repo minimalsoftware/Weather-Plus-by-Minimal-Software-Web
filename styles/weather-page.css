@@ -4,6 +4,7 @@
     opacity: 0;
     transform: scale(0.9) translateY(50px);
     transition-duration: 500ms;
+    container-type: inline-size;
 }
 
 .weather-page--active {
@@ -66,6 +67,12 @@
     @-moz-document url-prefix() {
         scrollbar-width: thin;
         padding-bottom: 0;
+    }
+}
+
+.hourly-forecast-items--hidden-scroll {
+    @-moz-document url-prefix() {
+        overflow: hidden;
     }
 }
 
@@ -195,6 +202,7 @@
     --selected-width: 25%;
     --selected-left: 0;
     overflow-x: auto;
+    scrollbar-width: thin;
 }
 
 .segmented-button::before {
@@ -256,6 +264,12 @@
     margin-top: 0;
     /*width: 35%;*/
     min-width: 375px;
+}
+
+@container (max-width: 375px) {
+    .daily-forecast {
+        min-width: 100%;
+    }
 }
 
 .daily-forecast__content {
@@ -699,6 +713,7 @@
     margin-top: 25px;
     font-size: 13px;
     color: var(--secondTextColor);
+    text-align: center;
 }
 
 .weather-data-provider a {

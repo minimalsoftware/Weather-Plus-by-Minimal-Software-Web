@@ -134,7 +134,29 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     overflow-y: auto;
+}
+
+.no-locations {
+    /*min-height: 100vh;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-locations img {
+    height: 75px;
+    margin-bottom: 50px;
+}
+
+.no-locations p {
+    font-size: 20px;
+    color: var(--mainColor);
+    text-align: center;
+    max-width: 250px;
+    line-height: 30px;
 }
 
 .main-content::-webkit-scrollbar-track {
@@ -228,7 +250,6 @@ body {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 .marquee.animate {

@@ -8,15 +8,6 @@ class Location {
 
 const locationsContainer = document.querySelector(".locations-container");
 
-function displayNoLocationsInformation() {
-    locationsContainer.innerHTML = "";
-    let noLocations = document.createElement("div");
-    noLocations.classList.add("no-locations");
-    noLocations.textContent = "Add initial location to see the weather";
-    document.querySelector(".edit-locations-btn").style.display = "none";
-    locationsContainer.append(noLocations);
-}
-
 function fetchLocationsData() {
     const lats = settings.locations.map(location => location.lat).join(",");
     const lons = settings.locations.map(location => location.lon).join(",");
@@ -28,8 +19,6 @@ function fetchLocationsData() {
                 displayLocations(data);
             })
             .catch(error => console.error("Error:", error));
-    } else {
-        displayNoLocationsInformation();
     }
 }
 
@@ -305,12 +294,14 @@ function reattachDeleteButtons() {
 
 function deleteLocation(deleteButton, index) {
     let location = deleteButton.closest(".location");
+    let locationName = location.querySelector(".location__name").textContent;
     location.remove();
     settings.locations.splice(index, 1);
 
+    showNotification(`Successfully removed location: ${locationName}`);
+
     console.log(settings.locations.length);
     if (settings.locations.length !== 0) {
-        let locationName = location.querySelector(".location__name").textContent;
         if (locationName === settings.activeLocation.name) {
             let firstLocation = document.querySelectorAll(".location")[0];
             firstLocation.classList.add("location--active");
@@ -319,7 +310,6 @@ function deleteLocation(deleteButton, index) {
     }
 
     if (settings.locations.length === 0) {
-        displayNoLocationsInformation();
         toggleEditLocationMode();
 
         settings.activeLocation = undefined;

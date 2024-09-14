@@ -2,7 +2,10 @@ let fetchedData;
 const weatherPage = document.querySelector(".weather-page");
 
 function fetchWeather() {
-    if (settings.locations.length === 0 || !settings.activeLocation) return;
+    if (settings.locations.length === 0 || !settings.activeLocation) {
+        document.querySelector(".no-locations").classList.add("no-locations--active");
+        return;
+    }
 
     weatherPage.classList.remove("weather-page--active");
 
@@ -15,8 +18,9 @@ function fetchWeather() {
         .catch(error => console.error("Error:", error));
 }
 
+const hourlyForecastItems = document.querySelector(".hourly-forecast-items");
+
 function displayHourlyForecast(currentTime, data, length = 24) {
-    const hourlyForecastItems = document.querySelector(".hourly-forecast-items");
     const hourlyForecastItemTemplate = document.querySelector("#hourly-forecast-item-template");
     let date = new Date();
     date.setDate(date.getDate() + 1);
@@ -113,6 +117,11 @@ function displayHourlyForecast(currentTime, data, length = 24) {
             interactive: true,
             interactiveDebounce: 75,
             arrow: tippy.roundArrow,
+            onShow(instance) {
+                document.querySelector('.hourly-forecast-items').addEventListener('scroll', () => {
+                    instance.hide();
+                }, { once: true });
+            }
         });
     }
 }
@@ -299,6 +308,8 @@ function displayPrecipitation(data, hour) {
 }
 
 function displayWeatherData(data) {
+    document.querySelector(".no-locations").classList.remove("no-locations--active");
+
     fetchedData = data;
 
     let currentTime = new Date();
@@ -485,7 +496,13 @@ document.addEventListener("DOMContentLoaded", () => {
         animation: 150,
         ghostClass: 'sortable-ghost',
         handle: '.weather-component',
-        onEnd: () => saveOrder(weatherPageContainer)
+        onStart: () => {
+            hourlyForecastItems.classList.add("hourly-forecast-items--hidden-scroll")
+        },
+        onEnd: () => {
+            saveOrder(weatherPageContainer);
+            hourlyForecastItems.classList.remove("hourly-forecast-items--hidden-scroll")
+        }
     });
 
     const weatherPageSection = document.querySelector('.weather-page__section');

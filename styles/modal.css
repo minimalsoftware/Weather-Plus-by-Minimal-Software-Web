@@ -41,7 +41,7 @@
 }
 
 .modal--with-subpages {
-    display: flex;
+    display: none;
     flex-direction: row;
     padding: 0;
 }
@@ -64,7 +64,7 @@
     grid-template-columns: 1fr auto 1fr;
     grid-column-gap: 5px;
     justify-items: center;
-    border-bottom: 1px solid var(--borderColor);
+    border-bottom: 1px solid var(--componentBorder);
     border-radius: 10px 10px 0 0;
     padding: 15px 25px;
 }
@@ -116,6 +116,7 @@
 }
 
 .welcome--active {
+    display: flex;
     visibility: visible;
     opacity: 1;
     transform: translate(-50%, -50%);

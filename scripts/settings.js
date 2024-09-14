@@ -1,6 +1,13 @@
 function openSettings() {
-    document.querySelector(".settings").classList.add("modal--active");
+    const settingsModal = document.querySelector(".settings");
+    settingsModal.classList.add("modal--active");
     showOverlay();
+
+    document.querySelector(".overlay").addEventListener("click", function (e) {
+        if (!settingsModal.contains(e.target) && settingsModal.classList.contains("map--active")) {
+            closeSettings();
+        }
+    });
 }
 
 function closeSettings() {

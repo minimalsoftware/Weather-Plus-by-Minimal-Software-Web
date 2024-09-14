@@ -18,8 +18,9 @@ let mapLayers = [
 function openMap(fromFirstConfiguration = false) {
     if (map) clearMap();
 
-    document.addEventListener("keydown", function (e) {
+    document.addEventListener("keydown", function handler (e) {
         if (e.key === "Escape") closeMap();
+        document.removeEventListener("keydown", handler);
     });
 
     showOverlay();
@@ -92,6 +93,12 @@ function openMap(fromFirstConfiguration = false) {
         map.setView([settings.activeLocation?.lat ?? 0,settings.activeLocation?.lon ?? 0]);
     }
 
+    document.querySelector(".overlay").addEventListener("click", function (e) {
+        const mapElement = document.querySelector(".map");
+        if (!mapElement.contains(e.target) && mapElement.classList.contains("map--active")) {
+            closeMap();
+        }
+    });
 }
 
 function closeMap() {

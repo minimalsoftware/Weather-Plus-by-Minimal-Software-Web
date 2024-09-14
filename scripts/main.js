@@ -17,7 +17,11 @@ function hideWelcomePage() {
 }
 
 function showWelcomePage() {
-    document.querySelector(".welcome").classList.add("welcome--active");
+    let welcomeElement = document.querySelector(".welcome");
+    welcomeElement.style.display = "flex";
+    setTimeout(() => {
+        welcomeElement.classList.add("welcome--active");
+    }, 1);
     showOverlay();
 }
 

@@ -1,0 +1,86 @@
+@media only screen and (max-width: 750px) {
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+        width: 300px;
+        max-width: 300px;
+    }
+
+    .sidebar__toggle-button {
+        position: initial;
+    }
+
+    .main-content {
+        width: 100vw !important;
+    }
+
+    .top-bar {
+        position: initial;
+        justify-content: flex-end;
+        z-index: 10;
+        padding: 15px 15px 0 15px;
+    }
+
+    .weather-page {
+        width: 100%;
+        padding: 0 15px 15px 15px;
+    }
+
+    .current-weather {
+        margin-bottom: 25px;
+    }
+
+    .daily-forecast-item {
+        grid-template-columns: 1fr 30px;
+    }
+
+    .daily-forecast-item__right-section {
+        justify-content: flex-start;
+    }
+
+    .daily-forecast-item__max-min-temperature {
+        margin: 5px 0 0 0;
+        color: var(--secondTextColor);
+        font-size: 13px;
+    }
+
+    .modal {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .map {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    #osm {
+        border-radius: 0;
+    }
+
+
+    .map__selected-location {
+        bottom: 90px;
+        right: initial;
+        left: 15px;
+    }
+
+    .weather-page__section {
+        column-gap: 15px;
+        row-gap: 15px;
+        margin: 15px 0;
+    }
+
+    .weather-page__column-section {
+        row-gap: 15px;
+    }
+
+    .weather-data-provider {
+        margin-top: 15px;
+    }
+}

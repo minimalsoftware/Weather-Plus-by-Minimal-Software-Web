@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+    <link rel="stylesheet" href="rwd/mobile.css">
+
     <script src="scripts/main.js" defer></script>
     <script src="scripts/settings.js" defer></script>
     <script src="scripts/theme.js" defer></script>
@@ -93,6 +95,10 @@
                         <button class="segmented-button__item" onclick="toggleTheme(themes.AUTO)">Auto</button>
                     </div>
                 </div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item__title">Lock weather page layout</div>
+
             </div>
             <div class="settings__label">Units</div>
             <div class="settings-item">
@@ -244,10 +250,6 @@
                 </button>
             </div>
             <div class="locations-container"></div>
-            <!--            <button class="settings-button">-->
-            <!--                <img src="graphics/svg/settings&#45;&#45;main-color.svg" alt="Settings">-->
-            <!--                <span>Settings</span>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="main-content">
@@ -256,6 +258,10 @@
             <button class="sidebar__toggle-button" onclick="toggleSidebar()">
                 <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
             </button>
+        </div>
+        <div class="no-locations">
+            <img src="graphics/svg/location-off-main-color.svg" alt="No locations">
+            <p>Add initial location to see the weather</p>
         </div>
         <div class="weather-page no-user-select">
             <div class="current-weather">
@@ -357,12 +363,6 @@
                                 </template>
                                 <div class="daily-forecast-items"></div>
                             </div>
-                            <!--                            <div class="daily-forecast-details">-->
-                            <!--                                <div class="daily-forecast-detail">-->
-                            <!--                                    <div class="daily-forecast-detail__title">Sunrise</div>-->
-                            <!--                                    <div class="daily-forecast-detail__value"></div>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                         </div>
                     </div>
 
@@ -571,7 +571,10 @@
 
                 </div>
             </div>
-            <div class="weather-data-provider">Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://docs.google.com/document/d/1L5-aVByHTkiVng2kg9L8VezhBPFyA3HL0stZSRusevI/edit#heading=h.ongkfaaa7i73">Privacy policy</a></div>
+            <div class="weather-data-provider">
+                <p>Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://docs.google.com/document/d/1L5-aVByHTkiVng2kg9L8VezhBPFyA3HL0stZSRusevI/edit#heading=h.ongkfaaa7i73">Privacy policy</a>&nbsp;•&nbsp;Developer
+                Beta Version 0.0.1</p>
+            </div>
         </div>
     </div>
 </div>
