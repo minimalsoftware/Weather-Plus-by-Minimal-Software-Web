@@ -1,9 +1,10 @@
 let map, selectedLocationLon, selectedLocationLat, selectedLocationName;
 
 class MapLayer {
-    constructor(name, url, attribution, ext = "png", maxZoom = 18) {
+    constructor(name, url, attribution, darkThemeUrl = "", ext = "png", maxZoom = 18) {
         this.name = name;
         this.url = url;
+        this.darkThemeUrl = darkThemeUrl;
         this.attribution = attribution;
         this.ext = ext;
         this.maxZoom = maxZoom;
@@ -11,14 +12,16 @@ class MapLayer {
 }
 
 let mapLayers = [
-    new MapLayer("OpenStreetMap", "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"),
-    new MapLayer("Stadia Maps", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}", '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>', "jpg", 15),
+    new MapLayer("OpenStreetMap", "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors", "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}", "png", 18),
+    new MapLayer("Stadia Maps", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}", '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>', "", "jpg", 15),
 ];
+
+let activeMapLayer = mapLayers[0];
 
 function openMap(fromFirstConfiguration = false) {
     if (map) clearMap();
 
-    document.addEventListener("keydown", function handler (e) {
+    document.addEventListener("keydown", function handler(e) {
         if (e.key === "Escape") closeMap();
         document.removeEventListener("keydown", handler);
     });
@@ -34,11 +37,16 @@ function openMap(fromFirstConfiguration = false) {
             zoomControl: false
         }).setView([settings.activeLocation?.lat ?? 0, settings.activeLocation?.lon ?? 0]);
 
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        let theme = settings.theme;
+        if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
+
+        let layerUrl = theme === "dark" ? mapLayers[0].darkThemeUrl : mapLayers[0].url;
+
+        L.tileLayer(layerUrl, {
             minZoom: 0,
             maxZoom: 18,
             attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
-            ext: "jpg"
+            ext: mapLayers[0].ext,
         }).addTo(map);
 
         L.control.attribution({
@@ -76,7 +84,6 @@ function openMap(fromFirstConfiguration = false) {
                 })
             }).addTo(map);
 
-
             fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
                 .then(response => response.json())
                 .then(data => {
@@ -90,7 +97,7 @@ function openMap(fromFirstConfiguration = false) {
                 });
         });
     } else {
-        map.setView([settings.activeLocation?.lat ?? 0,settings.activeLocation?.lon ?? 0]);
+        map.setView([settings.activeLocation?.lat ?? 0, settings.activeLocation?.lon ?? 0]);
     }
 
     document.querySelector(".overlay").addEventListener("click", function (e) {
@@ -115,6 +122,8 @@ function clearMap() {
         }
     });
 
+    updateMapLayer();
+
     document.querySelector(".map__selected-location").classList.remove("map__selected-location--active");
     document.querySelector(".map__selected-location .name").textContent = "";
     document.querySelector(".map__selected-location .lat").textContent = "";
@@ -133,22 +142,32 @@ function fetchSelectedLocation() {
     closeMap();
 }
 
+function updateMapLayer() {
+    let theme = settings.theme, url = activeMapLayer.url;
+    if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
+
+    if (theme === themes.DARK && activeMapLayer.darkThemeUrl) url = activeMapLayer.darkThemeUrl;
+
+    L.tileLayer(url, {
+        minZoom: 0,
+        maxZoom: activeMapLayer.maxZoom,
+        attribution: activeMapLayer.attribution,
+        ext: activeMapLayer.ext,
+    }).addTo(map);
+}
+
 function switchMapLayer(mapLayer) {
+    activeMapLayer = mapLayer;
+
     map.eachLayer(function (layer) {
         if (layer instanceof L.TileLayer) {
             map.removeLayer(layer);
         }
     });
 
-    L.tileLayer(mapLayer.url, {
-        minZoom: 0,
-        maxZoom: mapLayer.maxZoom,
-        attribution: mapLayer.attribution,
-        ext: mapLayer.ext,
-    }).addTo(map);
+    updateMapLayer();
 
     map.attributionControl.setPrefix(false);
     map.attributionControl._attributions = {};
-
-    map.attributionControl.addAttribution(mapLayer.attribution);
+    map.attributionControl.addAttribution(activeMapLayer.attribution);
 }

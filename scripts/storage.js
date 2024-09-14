@@ -26,6 +26,7 @@ let settings = {
     windUnit: windUnits.KPH,
     pressureUnit: pressureUnits.HPA,
     weatherPageLayoutLocked: false,
+    lastWeatherFetchDateTime: undefined,
 }
 
 settings = JSON.parse(localStorage.getItem("settings")) ?? settings;

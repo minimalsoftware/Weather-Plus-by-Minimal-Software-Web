@@ -209,7 +209,7 @@
         <div class="modal__header">
             <div class="title">Precipitation</div>
             <button class="close-button" onclick="closeModal('modal--precipitation')">
-                <img class="icon--main color" src="graphics/svg/close-main-color.svg" alt="Close">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
             </button>
         </div>
         <div class="modal__content">
@@ -223,8 +223,19 @@
                 <div class="total-precipitation__title">Total precipitation for the day</div>
             </div>
             <div class="precipitation__chart">
-                <canvas id="precipitation-chart" >Your browser does not support the canvas element.</canvas>
+                <canvas id="precipitation-chart">Your browser does not support the canvas element.</canvas>
             </div>
+        </div>
+    </div>
+    <div class="modal no-user-select" id="modal--air-quality">
+        <div class="modal__header">
+            <div class="title">Air Quality</div>
+            <button class="close-button" onclick="closeModal('modal--air-quality')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="modal__content">
+
         </div>
     </div>
     <div class="sidebar">
@@ -287,12 +298,12 @@
                 <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
             </button>
             <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')">
-                <img src="graphics/svg/refresh-main-color.svg" alt="Refresh">
+                <img class="icon--main-color" src="graphics/svg/refresh-main-color.svg" alt="Refresh">
                 <span>Refresh</span>
             </button>
         </div>
         <div class="no-locations">
-            <img src="graphics/svg/location-off-main-color.svg" alt="No locations">
+            <img class="icon--main-color" src="graphics/svg/location-off-main-color.svg" alt="No locations">
             <p>Add an initial location to see the weather</p>
         </div>
         <div class="weather-page no-user-select">
@@ -399,7 +410,7 @@
                     </div>
 
                     <div class="weather-page__column-section" data-id="4">
-                        <div class="weather-component aqi">
+                        <div class="weather-component aqi" onclick="openModal('modal--air-quality')">
                             <div class="weather-component__header">
                                 <div class="weather-component__title">Air Quality</div>
                             </div>

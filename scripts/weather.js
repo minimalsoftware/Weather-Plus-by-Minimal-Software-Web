@@ -323,11 +323,17 @@ function displayPrecipitationChart(data, day) {
         precipitationData.push(Math.round(data.hourly.precipitation[i]));
     }
 
+    let style = getComputedStyle(document.body);
+    let mainColor = style.getPropertyValue("--mainColor");
+    let secondBorderColor = style.getPropertyValue("--secondBorderColor");
+    let secondTextColor = style.getPropertyValue("--secondTextColor");
+
     const ctx = document.getElementById('precipitation-chart').getContext('2d');
 
     const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-    gradient.addColorStop(0, '#223552');
-    gradient.addColorStop(1, '#CDD9EB');
+    console.log(mainColor);
+    gradient.addColorStop(0, mainColor);
+    gradient.addColorStop(1, secondBorderColor);
 
     Chart.defaults.font.family = "LexendDeca";
 
@@ -345,12 +351,12 @@ function displayPrecipitationChart(data, day) {
             scales: {
                 x: {
                     ticks: {
-                        color: "#616161"
+                        color: secondTextColor
                     }
                 },
                 y: {
                     ticks: {
-                        color: "#616161",
+                        color: secondTextColor,
                         callback: value => `${value} mm`
                     }
                 }
@@ -588,7 +594,6 @@ let sortableWeatherPageContainer;
 let sortableWeatherPageSection;
 
 function initializeSortable() {
-    console.log("Initializing sortable");
     if (sortableWeatherPageContainer && settings.weatherPageLayoutLocked) {
         sortableWeatherPageContainer.destroy();
     }

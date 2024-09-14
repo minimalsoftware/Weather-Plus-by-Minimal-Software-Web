@@ -9,11 +9,11 @@ class Location {
 const locationsContainer = document.querySelector(".locations-container");
 
 function fetchLocationsData() {
-    const lats = settings.locations.map(location => location.lat).join(",");
-    const lons = settings.locations.map(location => location.lon).join(",");
+    const latitudes = settings.locations.map(location => location.lat).join(",");
+    const longitudes = settings.locations.map(location => location.lon).join(",");
 
     if (settings.locations.length >= 1) {
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`)
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitudes}&longitude=${longitudes}&current=temperature_2m,weather_code&timezone=auto`)
             .then(response => response.json())
             .then(data => {
                 displayLocations(data);
@@ -58,7 +58,6 @@ function displayLocations(data) {
             });
 
             let deleteButton = location.querySelector(".location__delete-btn");
-
             deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${i});`);
 
             const weatherCode = data[i]["current"]["weather_code"];
@@ -85,7 +84,6 @@ function displayLocations(data) {
         location.querySelector(".location__weather-condition span").insertAdjacentText("afterbegin", getWeatherConditionDescription(weatherCode));
 
         let deleteButton = location.querySelector(".location__delete-btn");
-
         deleteButton.setAttribute("onclick", `event.stopPropagation(); deleteLocation(this, ${0});`);
 
         locationsContainer.append(location);
@@ -98,8 +96,8 @@ function locationsMarquee() {
     const marqueeContainer = document.querySelectorAll('.location');
     const marqueeSpan = document.querySelectorAll('.marquee span');
     const marquee = document.querySelectorAll('.marquee');
+
     for (let i = 0; i < marqueeContainer.length; i++) {
-            console.log(marqueeSpan[i].scrollWidth - marqueeContainer[i].clientWidth);
         if (marqueeSpan[i].scrollWidth + 12 > marqueeContainer[i].clientWidth) {
             marquee[i].classList.add('animate');
         } else {
@@ -110,8 +108,9 @@ function locationsMarquee() {
 
 function attachLocationClickListeners() {
     document.querySelectorAll(".location").forEach((locationElement, index) => {
-        locationElement.addEventListener("click", (event) => {
+        locationElement.addEventListener("click", () => {
             settings.activeLocation = settings.locations[index];
+
             saveSettings();
             fetchWeather();
             fetchLocationsData();
@@ -129,6 +128,7 @@ window.addEventListener("DOMContentLoaded", () => {
         onEnd: function (/**Event*/evt) {
             const movedItem = settings.locations.splice(evt.oldIndex, 1)[0];
             settings.locations.splice(evt.newIndex, 0, movedItem);
+
             attachLocationClickListeners();
             saveSettings();
         },
@@ -146,6 +146,7 @@ function displaySearchResults(data) {
 
     for (let i = 0; i < data.length; i++) {
         let result = document.createElement("div");
+
         result.append(document.querySelector("#autocomplete-result-template").content.cloneNode(true));
         result.classList.add("autocomplete-result");
         result.querySelector(".autocomplete-result__name").insertAdjacentText("afterbegin", data[i].properties.name);
@@ -153,8 +154,10 @@ function displaySearchResults(data) {
         result.addEventListener("click", () => {
             addAndFetchLocation(new Location(data[i].properties.name, data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]));
         });
+
         autocompleteResults.appendChild(result);
     }
+
     autocompleteResults.classList.toggle("autocomplete-results--active", data.length > 0);
 }
 
@@ -166,7 +169,7 @@ function addAndFetchLocation(location) {
 
     mainContent.scrollTo(0, 0);
 
-    document.querySelector(".edit-locations-btn").style.display = "";
+    editLocationsButton.style.display = "";
 
     settings.locations.unshift(location);
     settings.activeLocation = location;
@@ -193,18 +196,13 @@ function searchLocations(query) {
         }
 
         currentFetchController = new AbortController();
-        const signal = currentFetchController.signal;
 
         fetch(`https://photon.komoot.io/api/?q=${query}&layer=city&layer=locality&osm_tag=place:city&osm_tag=place:town&osm_tag=place:village&lang=default`)
             .then(response => response.json())
             .then(data => {
                 displaySearchResults(data.features);
             })
-            .catch(error => {
-                if (error.name === "AbortError") {
-
-                }
-            });
+            .catch(() => {});
     } else {
         autocompleteResults.innerHTML = "";
         autocompleteResults.classList.remove("autocomplete-results--active");
@@ -221,13 +219,12 @@ function clearLocationSearchBar() {
 
 document.addEventListener("click", (event) => {
     const isClickInside = autocompleteResults.contains(event.target) || locationSearchBar.contains(event.target);
-    if (!isClickInside) {
-        autocompleteResults.classList.remove("autocomplete-results--active");
-    }
+    if (!isClickInside) autocompleteResults.classList.remove("autocomplete-results--active");
 });
 
 function selectWithArrowKeys(event) {
     const results = autocompleteResults.querySelectorAll(".autocomplete-result");
+
     if (results.length === 0) return;
 
     if (event.key === "ArrowDown") {
@@ -263,7 +260,7 @@ function updateSelection(results) {
     });
 }
 
-const editLocationButton = document.querySelector(".edit-locations-btn");
+const editLocationsButton = document.querySelector(".edit-locations-btn");
 let editMode = false;
 
 function toggleEditLocationMode() {
@@ -271,14 +268,14 @@ function toggleEditLocationMode() {
         document.querySelectorAll(".location").forEach(locationElement => {
             locationElement.classList.add("location--edit-mode");
         });
-        editLocationButton.querySelector("span").textContent = "Done";
+        editLocationsButton.querySelector("span").textContent = "Done";
 
         editMode = true;
     } else {
         document.querySelectorAll(".location").forEach(locationElement => {
             locationElement.classList.remove("location--edit-mode");
         });
-        editLocationButton.querySelector("span").textContent = "Edit locations";
+        editLocationsButton.querySelector("span").textContent = "Edit locations";
 
         editMode = false;
     }
@@ -300,7 +297,6 @@ function deleteLocation(deleteButton, index) {
 
     showNotification(`Successfully removed location: ${locationName}`);
 
-    console.log(settings.locations.length);
     if (settings.locations.length !== 0) {
         if (locationName === settings.activeLocation.name) {
             let firstLocation = document.querySelectorAll(".location")[0];
