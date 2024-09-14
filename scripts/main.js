@@ -5,7 +5,7 @@ function hideWelcomePage() {
     saveSettings();
     hideOverlay();
 
-    locationSearch =  document.querySelectorAll(".location-search")[1];
+    locationSearch = document.querySelectorAll(".location-search")[1];
     locationSearchBar = document.querySelectorAll(".location-search-bar")[1];
     autocompleteResults = document.querySelectorAll(".autocomplete-results")[1];
 
@@ -55,4 +55,22 @@ function switchModalSubpage(modalId, targetSubpageId) {
     });
 
     targetSubpage.classList.add("modal-subpage--active");
+}
+
+function openModal(modalId) {
+    const modal = document.querySelector(`#${modalId}`);
+    modal.classList.add("modal--active");
+
+    showOverlay();
+
+    document.querySelector(".overlay").addEventListener("click", () => {
+        closeModal(modalId);
+    });
+}
+
+function closeModal(modalId) {
+    const modal = document.querySelector(`#${modalId}`);
+    modal.classList.remove("modal--active");
+
+    hideOverlay();
 }

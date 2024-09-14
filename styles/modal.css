@@ -216,3 +216,56 @@
     align-items: flex-start;
     justify-content: flex-start;
 }
+
+.day-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: auto;
+    margin-bottom: 25px;
+    @-moz-document url-prefix() {
+        scrollbar-width: thin;
+    }
+}
+
+.day-picker-item {
+    margin-right: 15px;
+}
+
+.day-picker-item:last-child {
+    margin-right: 0;
+}
+
+.day-picker-item--active .day-picker-item__day {
+    background-color: var(--mainColor);
+    color: var(--mainComponentColor);
+}
+
+.day-picker-item__day {
+    border-radius: 50%;
+    background-color: var(--grayComponent);
+    font-weight: 500;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.day-picker-item__weekday {
+    font-size: 13px;
+    color: var(--secondTextColor);
+    margin-top: 5px;
+    text-align: center;
+}
+
+.total-precipitation {
+    margin-bottom: 25px;
+}
+
+.total-precipitation__value {
+    font-weight: 500;
+    font-size: 25px;
+    margin-bottom: 5px;
+}

@@ -9,7 +9,7 @@ function fetchWeather() {
 
     weatherPage.classList.remove("weather-page--active");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
         .then(respone => respone.json())
         .then(data => {
             console.log(data);
@@ -64,7 +64,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         if (i === currentTime.getHours()) time = "Now";
 
         forecastItem.querySelector(".hourly-forecast-item__time").insertAdjacentText("afterbegin", time);
-        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin",  settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
+        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
         const weatherConditionsCodesWithPrecipitation = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
         if (data.hourly.precipitation_probability[i] !== 0 && weatherConditionsCodesWithPrecipitation.includes(data.hourly.weather_code[i])) {
             forecastItem.querySelector(".hourly-forecast-item__precipitation").insertAdjacentText("afterbegin", `${Math.round(data.hourly.precipitation_probability[i])}%`);
@@ -92,10 +92,10 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__condition").textContent = getWeatherConditionDescription(data.hourly.weather_code[i]);
 
         hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${Math.round(data.hourly.precipitation[i])} mm`;
+        hourlyForecastItemDetails.querySelector(".precipitation-probability").textContent = `${Math.round(data.hourly.precipitation_probability[i])}%`;
         hourlyForecastItemDetails.querySelector(".relative-humidity").textContent = `${Math.round(data.hourly.relative_humidity_2m[i])}%`;
         hourlyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data.hourly.dew_point_2m[i])}°`;
         hourlyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.apparent_temperature[i]))}°` : `${Math.round(data.hourly.apparent_temperature[i])}°`;
-        hourlyForecastItemDetails.querySelector(".precipitation-probability").textContent = `${Math.round(data.hourly.precipitation_probability[i])}%`;
         hourlyForecastItemDetails.querySelector(".pressure").textContent = settings.pressureUnit === pressureUnits.MBAR ? `${Math.round(data.hourly.surface_pressure[i])} mbar` : `${Math.round(data.hourly.surface_pressure[i])} hPa`;
         hourlyForecastItemDetails.querySelector(".cloud-cover").textContent = `${Math.round(data.hourly.cloud_cover[i])}%`;
 
@@ -120,7 +120,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
             onShow(instance) {
                 document.querySelector('.hourly-forecast-items').addEventListener('scroll', () => {
                     instance.hide();
-                }, { once: true });
+                }, {once: true});
             }
         });
     }
@@ -160,7 +160,7 @@ function displayDailyWeather(data) {
         })}`);
         forecastItem.querySelector(".daily-forecast-item__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(data["daily"]["weather_code"][i]));
         forecastItem.querySelector(".daily-forecast-item__icon img").src = `graphics/weathers-icons/${iconTheme}/${getWeatherConditionIcon(data["daily"]["weather_code"][i])}.svg`;
-        forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin",  settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `H: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}° L: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
+        forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `H: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}° L: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
 
         dailyForecastItems.append(forecastItem);
     }
@@ -304,7 +304,105 @@ function displayPrecipitation(data, hour) {
     for (let i = hour; i < 24 + hour; i++) {
         precipitation += data.hourly.precipitation[i];
     }
+    document.querySelector(".total-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
     document.querySelector(".forecast-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
+
+    loadPrecipitationDayPicker("day-picker--precipitation");
+
+    displayPrecipitationChart(data, 0);
+}
+
+let precipitationChart;
+
+function displayPrecipitationChart(data, day) {
+    if (precipitationChart) precipitationChart.destroy();
+
+    let precipitationData = [];
+
+    for (let i = day * 24; i < 24 + 24 * day; i++) {
+        precipitationData.push(Math.round(data.hourly.precipitation[i]));
+    }
+
+    const ctx = document.getElementById('precipitation-chart').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(0, '#223552');
+    gradient.addColorStop(1, '#CDD9EB');
+
+    Chart.defaults.font.family = "LexendDeca";
+
+    precipitationChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+            datasets: [{
+                data: precipitationData,
+                backgroundColor: gradient,
+                borderRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: "#616161"
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: "#616161",
+                        callback: value => `${value} mm`
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: '#000000',
+                    titleFont: {
+                        size: 14,
+                    },
+                    bodyFont: {
+                        size: 14,
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.raw} mm`;
+                        }
+                    }
+                },
+            },
+        }
+    });
+}
+
+function loadPrecipitationDayPicker(datePickerId) {
+    const dayPicker = document.querySelector(`#${datePickerId}`);
+    const dayPickerItemTemplate = document.querySelector("#day-picker-item-template");
+
+    const today = new Date();
+
+    for (let i = 0; i < 14; i++) {
+        today.setDate(today.getDate() + 1);
+
+        const dayPickerItem = document.createElement("div");
+        dayPickerItem.classList.add("day-picker-item");
+        if (i === 0) dayPickerItem.classList.add("day-picker-item--active");
+        dayPickerItem.append(dayPickerItemTemplate.content.cloneNode(true));
+        dayPickerItem.addEventListener("click", () => {
+            dayPicker.querySelectorAll(".day-picker-item").forEach(item => item.classList.remove("day-picker-item--active"));
+            dayPickerItem.classList.add("day-picker-item--active");
+            displayPrecipitationChart(fetchedData, i);
+        });
+
+        dayPickerItem.querySelector(".day-picker-item__day").insertAdjacentText("beforeend", `${today.getDate()}`);
+        dayPickerItem.querySelector(".day-picker-item__weekday").insertAdjacentText("beforeend", `${today.toLocaleDateString("en-US", {weekday: "short"})}`);
+
+        dayPicker.appendChild(dayPickerItem);
+    }
 }
 
 function displayWeatherData(data) {

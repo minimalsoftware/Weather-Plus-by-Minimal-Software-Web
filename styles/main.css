@@ -107,14 +107,14 @@ html[data-theme='dark'] {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #708bad;
+    background-color: #708BAD;
     border-radius: 2px;
     height: 12px;
     cursor: pointer;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #5c728d;
+    background-color: #5C728D;
 }
 
 body {
@@ -166,11 +166,11 @@ body {
 .top-bar {
     padding: 25px 30px 0 25px;
     display: flex;
-    justify-content: flex-start;
-    position: sticky;
+    justify-content: space-between;
+    /*position: sticky;*/
     top: 0;
     background-color: transparent;
-    width: 100%;
+    width: 85%;
     /*margin-bottom: 20px;*/
 }
 

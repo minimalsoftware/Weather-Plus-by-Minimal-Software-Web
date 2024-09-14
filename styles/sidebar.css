@@ -53,7 +53,7 @@
     margin-right: 10px;
 }
 
-.sidebar__toggle-button {
+.top-bar__button {
     /*position: fixed;*/
     /*top: 25px;*/
     border: none;
@@ -61,12 +61,24 @@
     /*margin-bottom: 10px;*/
     transition-duration: 500ms;
     height: 48px;
-    width: 48px;
+    min-width: 48px;
     border-radius: 15px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.sidebar__toggle-button:hover {
+.top-bar__button:has(span) {
+    padding: 0 10px;
+}
+
+.top-bar__button span {
+    margin-left: 10px;
+    color: var(--mainColor);
+}
+
+.top-bar__button:hover {
     background-color: var(--mainComponentColor);
 }
 

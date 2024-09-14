@@ -69,7 +69,7 @@ function toggleSidebar() {
     sidebar.style.width = sidebar.classList.contains("sidebar--closed") ? "0" : `${settings.sidebarWidth}px`;
     mainContent.style.width = sidebar.classList.contains("sidebar--closed") ? "100vw" : `calc(100vw - ${settings.sidebarWidth}px)`;
     mainContent.style.transitionDuration = "300ms";
-    document.querySelector(".sidebar__toggle-button").classList.toggle("sidebar__toggle-button--reversed");
+    document.querySelector(".top-bar__button").classList.toggle("sidebar__toggle-button--reversed");
     setTimeout(() => {
         sidebar.style.transitionDuration = "";
         mainContent.style.transitionDuration = "";
@@ -81,7 +81,7 @@ function closeSidebar() {
     sidebar.classList.add("sidebar--closed");
     sidebar.style.width = "0";
     mainContent.style.width = "100vw";
-    document.querySelector(".sidebar__toggle-button").classList.add("sidebar__toggle-button--reversed");
+    document.querySelector(".top-bar__button").classList.add("sidebar__toggle-button--reversed");
 }
 
 function restoreSidebarWidth() {
