@@ -223,9 +223,7 @@
     justify-content: space-between;
     overflow: auto;
     margin-bottom: 25px;
-    @-moz-document url-prefix() {
-        scrollbar-width: thin;
-    }
+    scrollbar-width: none;
 }
 
 .day-picker-item {

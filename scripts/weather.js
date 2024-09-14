@@ -403,6 +403,28 @@ function loadPrecipitationDayPicker(datePickerId) {
 
         dayPicker.appendChild(dayPickerItem);
     }
+
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+    dayPicker.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.pageX - dayPicker.offsetLeft;
+        scrollLeft = dayPicker.scrollLeft;
+    });
+    dayPicker.addEventListener("mouseleave", () => {
+        isDragging = false;
+    });
+    dayPicker.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+    dayPicker.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - dayPicker.offsetLeft;
+        const walk = (x - startX) * 3;
+        dayPicker.scrollLeft = scrollLeft - walk;
+    });
 }
 
 function displayWeatherData(data) {
@@ -559,6 +581,44 @@ function refreshSegmentedButton(segmentedButton) {
     segmentedButton.style.setProperty("--selected-left", `${selectedButton.offsetLeft - 5}px`);
 }
 
+const weatherPageContainer = document.querySelector('.weather-page__container');
+const weatherPageSection = document.querySelector('.weather-page__section');
+
+let sortableWeatherPageContainer;
+let sortableWeatherPageSection;
+
+function initializeSortable() {
+    console.log("Initializing sortable");
+    if (sortableWeatherPageContainer && settings.weatherPageLayoutLocked) {
+        sortableWeatherPageContainer.destroy();
+    }
+    if (sortableWeatherPageSection  && settings.weatherPageLayoutLocked) {
+        sortableWeatherPageSection.destroy();
+    }
+
+    if (!settings.weatherPageLayoutLocked) {
+        sortableWeatherPageContainer = new Sortable(weatherPageContainer, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            handle: '.weather-component',
+            onStart: () => {
+                hourlyForecastItems.classList.add("hourly-forecast-items--hidden-scroll")
+            },
+            onEnd: () => {
+                saveOrder(weatherPageContainer);
+                hourlyForecastItems.classList.remove("hourly-forecast-items--hidden-scroll")
+            }
+        });
+
+        sortableWeatherPageSection = new Sortable(weatherPageSection, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            handle: '.weather-component',
+            onEnd: () => saveOrder(weatherPageSection)
+        });
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     fetchWeather();
 
@@ -589,27 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const weatherPageContainer = document.querySelector('.weather-page__container');
-    new Sortable(weatherPageContainer, {
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        handle: '.weather-component',
-        onStart: () => {
-            hourlyForecastItems.classList.add("hourly-forecast-items--hidden-scroll")
-        },
-        onEnd: () => {
-            saveOrder(weatherPageContainer);
-            hourlyForecastItems.classList.remove("hourly-forecast-items--hidden-scroll")
-        }
-    });
-
-    const weatherPageSection = document.querySelector('.weather-page__section');
-    new Sortable(weatherPageSection, {
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        handle: '.weather-component',
-        onEnd: () => saveOrder(weatherPageSection)
-    });
+    initializeSortable();
 
     loadOrder(weatherPageContainer);
     loadOrder(weatherPageSection);
@@ -681,4 +721,10 @@ function convertToFahrenheit(celsius) {
 
 function convertToMilesPerHour(kph) {
     return kph * 0.621371;
+}
+
+function toggleWeatherPageLayoutLocked() {
+    settings.weatherPageLayoutLocked = !settings.weatherPageLayoutLocked;
+    saveSettings();
+    initializeSortable();
 }

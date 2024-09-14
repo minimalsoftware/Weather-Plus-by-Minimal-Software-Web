@@ -100,10 +100,10 @@
             <div class="settings-item">
                 <div class="settings-item__title">Lock weather page layout</div>
                 <div class="settings-item__content">
-                    <div class="switch" id="switch--lock-layout">
-                        <input type="checkbox" id="switch--lock-layout-checkbox" onchange="lockLayout()">
-                        <label for="switch--lock-layout-checkbox"></label>
-                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-weather-page-layout-lock" onchange="toggleWeatherPageLayoutLocked()">
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
             <div class="settings__label">Units</div>

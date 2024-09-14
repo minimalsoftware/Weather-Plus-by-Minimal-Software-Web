@@ -25,6 +25,7 @@ let settings = {
     temperatureUnit: temperatureUnits.CELSIUS,
     windUnit: windUnits.KPH,
     pressureUnit: pressureUnits.HPA,
+    weatherPageLayoutLocked: false,
 }
 
 settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
@@ -39,4 +40,5 @@ window.addEventListener("DOMContentLoaded", () => {
     setActiveButton(document.querySelector("#segmented-button--temperature"), settings.temperatureUnit === temperatureUnits.CELSIUS ? 0 : 1);
     setActiveButton(document.querySelector("#segmented-button--wind"), settings.windUnit === windUnits.KPH ? 0 : 1);
     setActiveButton(document.querySelector("#segmented-button--pressure"), settings.pressureUnit === pressureUnits.HPA ? 0 : 1);
+    document.querySelector("#switch-weather-page-layout-lock").checked = settings.weatherPageLayoutLocked;
 });
