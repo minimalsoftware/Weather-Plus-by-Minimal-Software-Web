@@ -56,21 +56,3 @@ function switchModalSubpage(modalId, targetSubpageId) {
 
     targetSubpage.classList.add("modal-subpage--active");
 }
-
-function openModal(modalId) {
-    const modal = document.querySelector(`#${modalId}`);
-    modal.classList.add("modal--active");
-
-    showOverlay();
-
-    document.querySelector(".overlay").addEventListener("click", () => {
-        closeModal(modalId);
-    });
-}
-
-function closeModal(modalId) {
-    const modal = document.querySelector(`#${modalId}`);
-    modal.classList.remove("modal--active");
-
-    hideOverlay();
-}

@@ -36,6 +36,7 @@
     <script src="scripts/map.js" defer></script>
     <script src="scripts/weather.js" defer></script>
     <script src="scripts/weather-insights.js" defer></script>
+    <script src="scripts/modal.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
     <script src="assets/compass.js" defer></script>
@@ -78,10 +79,10 @@
         </div>
         <div class="osm" id="osm"></div>
     </div>
-    <div class="settings no-user-select modal">
+    <div class="settings no-user-select modal" id="modal--settings">
         <div class="modal__header">
             <div class="title">Settings</div>
-            <button class="close-button" onclick="closeSettings()">
+            <button class="close-button" onclick="closeModal('modal--settings')">
                 <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
             </button>
         </div>
@@ -205,6 +206,10 @@
             </div>
         </div>
     </div>
+    <template class="day-picker-item" id="day-picker-item-template">
+        <div class="day-picker-item__day"></div>
+        <div class="day-picker-item__weekday"></div>
+    </template>
     <div class="modal no-user-select" id="modal--precipitation">
         <div class="modal__header">
             <div class="title">Precipitation</div>
@@ -214,10 +219,12 @@
         </div>
         <div class="modal__content">
             <div class="day-picker" id="day-picker--precipitation"></div>
-            <template class="day-picker-item" id="day-picker-item-template">
-                <div class="day-picker-item__day"></div>
-                <div class="day-picker-item__weekday"></div>
-            </template>
+            <div class="chart-type-switch">
+                <div class="segmented-button" id="segmented-button-precipitation-chart-type">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="">15-Minutely</button>
+                    <button class="segmented-button__item" onclick="">Hourly</button>
+                </div>
+            </div>
             <div class="total-precipitation">
                 <div class="total-precipitation__value"></div>
                 <div class="total-precipitation__title">Total precipitation for the day</div>
@@ -235,7 +242,44 @@
             </button>
         </div>
         <div class="modal__content">
-
+            <div class="day-picker" id="day-picker--air-quality"></div>
+            <div class="aqi">
+                <div class="aqi__value" id="modal-aqi-value"></div>
+                <div class="aqi__description" id="modal-aqi-description"></div>
+            </div>
+            <div class="aqi-indicator">
+                <div class="aqi-indicator__bar"></div>
+                <div class="aqi-indicator__thumb"></div>
+            </div>
+            <div class="aqi-pollutants">
+                <div class="aqi-pollutant pm10">
+                    <div class="aqi-pollutant__name">pm10</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant pm2_5">
+                    <div class="aqi-pollutant__name">pm2.5</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant carbon-monoxide">
+                    <div class="aqi-pollutant__name">CO</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant nitrogen-dioxide">
+                    <div class="aqi-pollutant__name">NO₂</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant sulphur-dioxide">
+                    <div class="aqi-pollutant__name">SO₂</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant ozone">
+                    <div class="aqi-pollutant__name">O₃</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+            </div>
+            <div class="aqi__chart">
+                <canvas id="aqi-chart">Your browser does not support the canvas element.</canvas>
+            </div>
         </div>
     </div>
     <div class="sidebar">
@@ -279,7 +323,7 @@
                     <img class="icon--main-color" src="graphics/svg/map-main-color.svg" alt="Map">
                     <span>Find on a map</span>
                 </button>
-                <button class="sidebar-buttons__item" onclick="openSettings()">
+                <button class="sidebar-buttons__item" onclick="openModal('modal--settings')">
                     <img class="icon--main-color" src="graphics/svg/settings-main-color.svg" alt="Settings">
                     <span>Settings</span>
                 </button>
@@ -616,7 +660,7 @@
             </div>
             <div class="weather-data-provider">
                 <p>Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://docs.google.com/document/d/1L5-aVByHTkiVng2kg9L8VezhBPFyA3HL0stZSRusevI/edit#heading=h.ongkfaaa7i73">Privacy policy</a>&nbsp;•&nbsp;Developer
-                    Beta Version 0.0.1</p>
+                    Beta Version 0.0.1&nbsp;•&nbsp;<a href="">Report an issue</a></p>
             </div>
         </div>
     </div>

@@ -34,12 +34,8 @@ function displayHourlyForecast(currentTime, data, length = 24) {
     let isBeforeSunset = new Date(data.daily.sunset[0]) > currentTime;
 
     const weatherInsights = getHourlyWeatherInsights(data, isAfterSunset, isBeforeSunset, new Date(data.daily.sunset[0]).getHours() + 1);
-    if (weatherInsights) {
-        document.querySelector(".hourly-forecast .weather-component__title").textContent = weatherInsights;
-    } else {
-        // document.querySelector(".hourly-forecast .weather-component__title").textContent = "No significant weather conditions expected.";
-        document.querySelector(".hourly-forecast .weather-component__title").textContent = "Hourly forecast";
-    }
+
+    document.querySelector(".hourly-forecast .weather-component__title").textContent = weatherInsights || "Hourly forecast"; // No significant weather conditions expected.
 
     let theme = settings.theme;
     if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
@@ -91,7 +87,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         });
         hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__condition").textContent = getWeatherConditionDescription(data.hourly.weather_code[i]);
 
-        hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${Math.round(data.hourly.precipitation[i])} mm`;
+        hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${data.hourly.precipitation[i]} mm`;
         hourlyForecastItemDetails.querySelector(".precipitation-probability").textContent = `${Math.round(data.hourly.precipitation_probability[i])}%`;
         hourlyForecastItemDetails.querySelector(".relative-humidity").textContent = `${Math.round(data.hourly.relative_humidity_2m[i])}%`;
         hourlyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data.hourly.dew_point_2m[i])}°`;
@@ -166,18 +162,142 @@ function displayDailyWeather(data) {
     }
 }
 
-function displayAirQuality(data) {
-    document.querySelector(".aqi__value").textContent = data.current.european_aqi;
-    document.querySelector(".aqi__description").textContent = `European Air Quality Index: ${getAQIDescription(data.current.european_aqi)}`;
+const aqiModal = document.querySelector("#modal--air-quality");
 
-    document.querySelector("#pm10 .aqi-pollutant__value").textContent = data.hourly.pm10[0];
-    document.querySelector("#pm2_5 .aqi-pollutant__value").textContent = data.hourly.pm2_5[0];
-    document.querySelector("#carbon-monoxide .aqi-pollutant__value").textContent = data.hourly.carbon_monoxide[0];
-    document.querySelector("#nitrogen-dioxide .aqi-pollutant__value").textContent = data.hourly.nitrogen_dioxide[0];
-    document.querySelector("#sulphur-dioxide .aqi-pollutant__value").textContent = data.hourly.sulphur_dioxide[0];
-    document.querySelector("#ozone .aqi-pollutant__value").textContent = data.hourly.ozone[0];
+let aqiChart;
 
-    document.querySelector(".aqi-indicator__thumb").style.left = `${(data.current.european_aqi / 300) * 100}%`;
+function displayAirQualityChart(airQualityData, dayIndex) {
+    if (aqiChart) aqiChart.destroy();
+
+    let aqiIndexData = [];
+
+    for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+        aqiIndexData.push(airQualityData.hourly.european_aqi[i]);
+    }
+
+    let style = getComputedStyle(document.body);
+    let secondTextColor = style.getPropertyValue("--secondTextColor");
+
+    const ctx = document.getElementById('aqi-chart').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(1, style.getPropertyValue("--airQualityVeryGood-border"));
+    gradient.addColorStop(0.80, style.getPropertyValue("--airQualityModerate-border"));
+    gradient.addColorStop(0.60, style.getPropertyValue("--airQualityBad-border"));
+    gradient.addColorStop(0.40, style.getPropertyValue("--airQualityUnhealthy-border"));
+    gradient.addColorStop(0.20, style.getPropertyValue("--airQualityVeryUnhealthy-border"));
+    gradient.addColorStop(0, style.getPropertyValue("--airQualityHazardous-border"));
+
+    Chart.defaults.font.family = "LexendDeca";
+
+    aqiChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+            datasets: [{
+                data: aqiIndexData,
+                backgroundColor: gradient,
+                borderRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: secondTextColor
+                    }
+                },
+                y: {
+                    min: 0,
+                    max: 300,
+                    ticks: {
+                        color: secondTextColor,
+                        stepSize: 50,
+                        callback: value => `${value} AQI`
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: '#000000',
+                    titleFont: {
+                        size: 14,
+                    },
+                    bodyFont: {
+                        size: 14,
+                    },
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.raw} AQI`;
+                        }
+                    }
+                },
+            },
+        }
+    });
+}
+
+function displayModalAirQualityData(airQualityData, dayIndex) {
+    let daily = false;
+    let avgAQI = 0, avgPM10 = 0, avgPM2_5 = 0, avgCO = 0, avgNO2 = 0, avgSO2 = 0, avgO3 = 0;
+
+    if (dayIndex > 0) {
+        for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+            avgAQI += airQualityData.hourly.european_aqi[i];
+            avgPM10 += airQualityData.hourly.pm10[i];
+            avgPM2_5 += airQualityData.hourly.pm2_5[i];
+            avgCO += airQualityData.hourly.carbon_monoxide[i];
+            avgNO2 += airQualityData.hourly.nitrogen_dioxide[i];
+            avgSO2 += airQualityData.hourly.sulphur_dioxide[i];
+            avgO3 += airQualityData.hourly.ozone[i];
+        }
+        avgAQI = Math.round(avgAQI / 24);
+        avgPM10 = Math.round(avgPM10 / 24);
+        avgPM2_5 = Math.round(avgPM2_5 / 24);
+        avgCO = Math.round(avgCO / 24);
+        avgNO2 = Math.round(avgNO2 / 24);
+        avgSO2 = Math.round(avgSO2 / 24);
+        avgO3 = Math.round(avgO3 / 24);
+
+        daily = true;
+    }
+
+    aqiModal.querySelector(".aqi__value").textContent = daily ? avgAQI : airQualityData.current.european_aqi;
+    aqiModal.querySelector(".aqi__description").textContent = `European Air Quality Index: ${getAQIDescription(daily ? avgAQI : airQualityData.current.european_aqi)}`;
+    aqiModal.querySelector(".aqi-indicator__thumb").style.left = daily ? `${(avgAQI / 300) * 100}%` : `${(airQualityData.current.european_aqi / 300) * 100}%`;
+
+    aqiModal.querySelector(".pm10 .aqi-pollutant__value").textContent = daily ? avgPM10 : airQualityData.hourly.pm10[dayIndex];
+    aqiModal.querySelector(".pm2_5 .aqi-pollutant__value").textContent = daily ? avgPM2_5 : airQualityData.hourly.pm2_5[dayIndex];
+    aqiModal.querySelector(".carbon-monoxide .aqi-pollutant__value").textContent = daily ? avgCO : airQualityData.hourly.carbon_monoxide[dayIndex];
+    aqiModal.querySelector(".nitrogen-dioxide .aqi-pollutant__value").textContent = daily ? avgNO2 : airQualityData.hourly.nitrogen_dioxide[dayIndex];
+    aqiModal.querySelector(".sulphur-dioxide .aqi-pollutant__value").textContent = daily ? avgSO2 : airQualityData.hourly.sulphur_dioxide[dayIndex];
+    aqiModal.querySelector(".ozone .aqi-pollutant__value").textContent = daily ? avgO3 : airQualityData.hourly.ozone[dayIndex];
+
+    displayAirQualityChart(airQualityData, dayIndex);
+}
+
+function displayAirQuality(airQualityData) {
+    weatherPage.querySelector(".aqi__value").textContent = airQualityData.current.european_aqi;
+    weatherPage.querySelector(".aqi__description").textContent = `European Air Quality Index: ${getAQIDescription(airQualityData.current.european_aqi)}`;
+
+    weatherPage.querySelector("#pm10 .aqi-pollutant__value").textContent = airQualityData.hourly.pm10[0];
+    weatherPage.querySelector("#pm2_5 .aqi-pollutant__value").textContent = airQualityData.hourly.pm2_5[0];
+    weatherPage.querySelector("#carbon-monoxide .aqi-pollutant__value").textContent = airQualityData.hourly.carbon_monoxide[0];
+    weatherPage.querySelector("#nitrogen-dioxide .aqi-pollutant__value").textContent = airQualityData.hourly.nitrogen_dioxide[0];
+    weatherPage.querySelector("#sulphur-dioxide .aqi-pollutant__value").textContent = airQualityData.hourly.sulphur_dioxide[0];
+    weatherPage.querySelector("#ozone .aqi-pollutant__value").textContent = airQualityData.hourly.ozone[0];
+
+    weatherPage.querySelector(".aqi-indicator__thumb").style.left = `${(airQualityData.current.european_aqi / 300) * 100}%`;
+
+    displayModalAirQualityData(airQualityData, 0);
+
+    loadDayPicker("day-picker--air-quality", function (dayIndex) {
+        displayModalAirQualityData(airQualityData, dayIndex);
+    }, 5);
 }
 
 function displayWindData(data) {
@@ -307,7 +427,9 @@ function displayPrecipitation(data, hour) {
     document.querySelector(".total-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
     document.querySelector(".forecast-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
 
-    loadPrecipitationDayPicker("day-picker--precipitation");
+    loadDayPicker("day-picker--precipitation", function (dayIndex) {
+        displayPrecipitationChart(fetchedData, dayIndex);
+    }, 14);
 
     displayPrecipitationChart(data, 0);
 }
@@ -331,7 +453,6 @@ function displayPrecipitationChart(data, day) {
     const ctx = document.getElementById('precipitation-chart').getContext('2d');
 
     const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-    console.log(mainColor);
     gradient.addColorStop(0, mainColor);
     gradient.addColorStop(1, secondBorderColor);
 
@@ -375,7 +496,7 @@ function displayPrecipitationChart(data, day) {
                         size: 14,
                     },
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return `${context.raw} mm`;
                         }
                     }
@@ -385,13 +506,17 @@ function displayPrecipitationChart(data, day) {
     });
 }
 
-function loadPrecipitationDayPicker(datePickerId) {
+function loadDayPicker(datePickerId, onClickAction, days = 14) {
     const dayPicker = document.querySelector(`#${datePickerId}`);
+
+    dayPicker.innerHTML = "";
+
     const dayPickerItemTemplate = document.querySelector("#day-picker-item-template");
 
     const today = new Date();
+    today.setDate(today.getDate() - 1);
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < days; i++) {
         today.setDate(today.getDate() + 1);
 
         const dayPickerItem = document.createElement("div");
@@ -401,7 +526,7 @@ function loadPrecipitationDayPicker(datePickerId) {
         dayPickerItem.addEventListener("click", () => {
             dayPicker.querySelectorAll(".day-picker-item").forEach(item => item.classList.remove("day-picker-item--active"));
             dayPickerItem.classList.add("day-picker-item--active");
-            displayPrecipitationChart(fetchedData, i);
+            onClickAction(i);
         });
 
         dayPickerItem.querySelector(".day-picker-item__day").insertAdjacentText("beforeend", `${today.getDate()}`);
@@ -452,7 +577,7 @@ function displayWeatherData(data) {
     displayDailyWeather(data);
 
     // Display air quality data
-    fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi`)
+    fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi&forecast_days=7`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -597,7 +722,7 @@ function initializeSortable() {
     if (sortableWeatherPageContainer && settings.weatherPageLayoutLocked) {
         sortableWeatherPageContainer.destroy();
     }
-    if (sortableWeatherPageSection  && settings.weatherPageLayoutLocked) {
+    if (sortableWeatherPageSection && settings.weatherPageLayoutLocked) {
         sortableWeatherPageSection.destroy();
     }
 

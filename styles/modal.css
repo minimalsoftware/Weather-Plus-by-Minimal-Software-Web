@@ -53,7 +53,7 @@
 }
 
 .modal__content {
-    padding: 15px 25px;
+    padding: 25px;
 }
 
 .modal__header {
@@ -266,4 +266,13 @@
     font-weight: 500;
     font-size: 25px;
     margin-bottom: 5px;
+}
+
+.chart-type-switch {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.aqi__chart {
+    margin-top: 25px;
 }
