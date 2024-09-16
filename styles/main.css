@@ -171,6 +171,7 @@ body {
     top: 0;
     background-color: transparent;
     width: 85%;
+    max-width: 1500px;
     /*margin-bottom: 20px;*/
 }
 

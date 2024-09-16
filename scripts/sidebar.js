@@ -75,6 +75,7 @@ function toggleSidebar() {
         mainContent.style.transitionDuration = "";
     }, 300);
     saveSettings();
+    locationsMarquee();
 }
 
 function closeSidebar() {

@@ -5,9 +5,10 @@ const temperatureUnits = Object.freeze({
     FAHRENHEIT: "F",
 });
 
+// TODO: Add values
 const windUnits = Object.freeze({
-    KPH: "km/h",
-    MPH: "mph",
+    KPH: { value: "km/h" },
+    MPH: { value: "mph" },
 });
 
 const pressureUnits = Object.freeze({

@@ -9,7 +9,7 @@ function fetchWeather() {
 
     weatherPage.classList.remove("weather-page--active");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
         .then(respone => respone.json())
         .then(data => {
             console.log(data);
@@ -300,27 +300,142 @@ function displayAirQuality(airQualityData) {
     }, 5);
 }
 
-function displayWindData(data) {
-    document.querySelector(".wind-speed__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_speed_10m))}` : `${Math.round(data.current.wind_speed_10m)}`;
-    document.querySelector(".wind-gust__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_gusts_10m))}` : `${Math.round(data.current.wind_gusts_10m)}`;
+const windModal = document.querySelector("#modal--wind");
 
-    if (settings.windUnit === windUnits.MPH) {
-        document.querySelector(".wind-speed__title .unit").textContent = "mph";
-        document.querySelector(".wind-gust__title .unit").textContent = "mph";
+let windChart;
+
+function displayWindChart(data, dayIndex) {
+    if (windChart) windChart.destroy();
+
+    let windData = [];
+
+    for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+        windData.push(data.hourly.wind_speed_10m[i]);
     }
 
-    document.querySelector(".wind__description").textContent = `${getWindDescription(data.current.wind_speed_10m)} - ${getWindDirection(data.current.wind_direction_10m)}`;
+    let style = getComputedStyle(document.body);
+    let secondTextColor = style.getPropertyValue("--secondTextColor");
+
+    const ctx = document.getElementById('wind-chart').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(1, style.getPropertyValue("--borderColor"));
+    gradient.addColorStop(0, style.getPropertyValue("--secondTextColor"));
+
+    Chart.defaults.font.family = "LexendDeca";
+
+    windChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+            datasets: [{
+                data: windData,
+                backgroundColor: gradient,
+                borderRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: secondTextColor
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: secondTextColor,
+                        callback: value => `${value} ${settings.windUnit.value}`
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: '#000000',
+                    titleFont: {
+                        size: 14,
+                    },
+                    bodyFont: {
+                        size: 14,
+                    },
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.raw} ${settings.windUnit.value}`;
+                        }
+                    }
+                },
+            },
+        }
+    });
+}
+
+function updateWindModalData(data, dayIndex) {
+    let daily = false;
+    let avgWindSpeed = 0, avgWindGust = 0, avgDirection = 0;
+
+    if (dayIndex > 0) {
+        for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+            avgWindSpeed += data.hourly.wind_speed_10m[i];
+            avgWindGust += data.hourly.wind_gusts_10m[i];
+            avgDirection += data.hourly.wind_direction_10m[i];
+        }
+        avgWindSpeed = Math.round(avgWindSpeed / 24);
+        avgWindGust = Math.round(avgWindGust / 24);
+        avgDirection = Math.round(avgDirection / 24);
+
+        daily = true;
+    }
+
+    windModal.querySelector(".wind-speed__value").textContent = daily ? avgWindSpeed : Math.round(data.current.wind_speed_10m);
+    windModal.querySelector(".wind-gust__value").textContent = daily ? avgWindGust : Math.round(data.current.wind_gusts_10m);
+    windModal.querySelector(".wind__description").textContent = `${getWindDescription(daily ? avgWindSpeed : data.current.wind_speed_10m)} - ${getWindDirection(daily ? avgDirection : data.current.wind_direction_10m)}`;
+    windModal.querySelector(".wind__direction .arrow").style.transform = `rotate(${daily ? avgDirection : data.current.wind_direction_10m}deg)`;
+
+    displayWindChart(data, dayIndex);
+}
+
+function displayWindData(data) {
+    weatherPage.querySelector(".wind-speed__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_speed_10m))}` : `${Math.round(data.current.wind_speed_10m)}`;
+    weatherPage.querySelector(".wind-gust__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_gusts_10m))}` : `${Math.round(data.current.wind_gusts_10m)}`;
+
+    windModal.querySelector(".wind-speed__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_speed_10m))}` : `${Math.round(data.current.wind_speed_10m)}`;
+    windModal.querySelector(".wind-gust__value").textContent = settings.windUnit === windUnits.MPH ? `${Math.round(convertToMilesPerHour(data.current.wind_gusts_10m))}` : `${Math.round(data.current.wind_gusts_10m)}`;
+    windModal.querySelector(".wind__description").textContent = `${getWindDescription(data.current.wind_speed_10m)} - ${getWindDirection(data.current.wind_direction_10m)}`;
+
+    if (settings.windUnit === windUnits.MPH) {
+        weatherPage.querySelector(".wind-speed__title .unit").textContent = "mph";
+        weatherPage.querySelector(".wind-gust__title .unit").textContent = "mph";
+
+        windModal.querySelector(".wind-speed__title .unit").textContent = "mph";
+        windModal.querySelector(".wind-gust__title .unit").textContent = "mph";
+    }
+
+    weatherPage.querySelector(".wind__description").textContent = `${getWindDescription(data.current.wind_speed_10m)} - ${getWindDirection(data.current.wind_direction_10m)}`;
 
     let theme = settings.theme;
     if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
 
     if (theme === themes.DARK) {
-        document.querySelector(".wind__direction").innerHTML = COMPASS_LIGHT;
+        weatherPage.querySelector(".wind__direction").innerHTML = COMPASS_LIGHT;
+        windModal.querySelector(".wind__direction").innerHTML = COMPASS_LIGHT;
     } else {
-        document.querySelector(".wind__direction").innerHTML = COMPASS_DARK;
+        weatherPage.querySelector(".wind__direction").innerHTML = COMPASS_DARK;
+        windModal.querySelector(".wind__direction").innerHTML = COMPASS_DARK;
     }
 
-    document.querySelector(".wind__direction .arrow").style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
+    weatherPage.querySelector(".wind__direction .arrow").style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
+    windModal.querySelector(".wind__direction .arrow").style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
+    console.log(weatherPage.querySelector(".wind__direction .arrow"));
+    console.log(windModal.querySelector(".wind__direction .arrow"));
+
+    displayWindChart(data, 0);
+
+    loadDayPicker("day-picker--wind", function (dayIndex) {
+        updateWindModalData(data, dayIndex);
+    }, 14);
 }
 
 let sunProgress;
@@ -508,8 +623,9 @@ function displayPrecipitationChart(data, day) {
 
 function loadDayPicker(datePickerId, onClickAction, days = 14) {
     const dayPicker = document.querySelector(`#${datePickerId}`);
+    const dayPickerScroll = dayPicker.querySelector(".day-picker__scroll");
 
-    dayPicker.innerHTML = "";
+    dayPickerScroll.innerHTML = "";
 
     const dayPickerItemTemplate = document.querySelector("#day-picker-item-template");
 
@@ -532,29 +648,29 @@ function loadDayPicker(datePickerId, onClickAction, days = 14) {
         dayPickerItem.querySelector(".day-picker-item__day").insertAdjacentText("beforeend", `${today.getDate()}`);
         dayPickerItem.querySelector(".day-picker-item__weekday").insertAdjacentText("beforeend", `${today.toLocaleDateString("en-US", {weekday: "short"})}`);
 
-        dayPicker.appendChild(dayPickerItem);
+        dayPickerScroll.appendChild(dayPickerItem);
     }
 
     let isDragging = false;
     let startX;
     let scrollLeft;
-    dayPicker.addEventListener("mousedown", (e) => {
+    dayPickerScroll.addEventListener("mousedown", (e) => {
         isDragging = true;
-        startX = e.pageX - dayPicker.offsetLeft;
-        scrollLeft = dayPicker.scrollLeft;
+        startX = e.pageX - dayPickerScroll.offsetLeft;
+        scrollLeft = dayPickerScroll.scrollLeft;
     });
-    dayPicker.addEventListener("mouseleave", () => {
+    dayPickerScroll.addEventListener("mouseleave", () => {
         isDragging = false;
     });
-    dayPicker.addEventListener("mouseup", () => {
+    dayPickerScroll.addEventListener("mouseup", () => {
         isDragging = false;
     });
-    dayPicker.addEventListener("mousemove", (e) => {
+    dayPickerScroll.addEventListener("mousemove", (e) => {
         if (!isDragging) return;
         e.preventDefault();
-        const x = e.pageX - dayPicker.offsetLeft;
+        const x = e.pageX - dayPickerScroll.offsetLeft;
         const walk = (x - startX) * 3;
-        dayPicker.scrollLeft = scrollLeft - walk;
+        dayPickerScroll.scrollLeft = scrollLeft - walk;
     });
 }
 
@@ -564,6 +680,7 @@ function displayWeatherData(data) {
     fetchedData = data;
 
     let currentTime = new Date();
+    document.querySelector(".weather-data-fetch-time span").textContent = `${currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`;
 
     let isAfterSunset = new Date(data.daily.sunset[0]) < currentTime;
 

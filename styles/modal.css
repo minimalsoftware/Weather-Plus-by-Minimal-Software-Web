@@ -13,6 +13,7 @@
 .overlay--active {
     background-color: var(--overlay);
     visibility: visible;
+    backdrop-filter: blur(3px);
 }
 
 .modal {
@@ -221,9 +222,41 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    overflow: auto;
-    margin-bottom: 25px;
+    overflow: hidden;
     scrollbar-width: none;
+    background-color: var(--secondColor);
+    position: relative;
+}
+
+.day-picker:before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to right, var(--secondColor), transparent);
+}
+
+.day-picker:after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    background: linear-gradient(to left, var(--secondColor), transparent);
+}
+
+.day-picker__scroll {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: auto;
+    scrollbar-width: none;
+    padding: 25px;
+    width: 100%;
+    cursor: grab;
 }
 
 .day-picker-item {
@@ -241,7 +274,7 @@
 
 .day-picker-item__day {
     border-radius: 50%;
-    background-color: var(--grayComponent);
+    background-color: var(--mainComponentColor);
     font-weight: 500;
     height: 32px;
     width: 32px;
@@ -274,5 +307,9 @@
 }
 
 .aqi__chart {
+    margin-top: 25px;
+}
+
+.wind__chart {
     margin-top: 25px;
 }
