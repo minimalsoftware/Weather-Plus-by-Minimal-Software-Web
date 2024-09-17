@@ -524,14 +524,131 @@ function displayMoonData(isAfterSunset) {
     });
 }
 
+const uvIndexModal = document.querySelector("#modal--uv-index");
+
+let uvIndexChart;
+
+function displayUVIndexChart(data, dayIndex) {
+    if (uvIndexChart) uvIndexChart.destroy();
+
+    let uvIndexData = [];
+
+    for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+        uvIndexData.push(Math.round(data.hourly.uv_index[i]));
+    }
+
+    let style = getComputedStyle(document.body);
+    let secondTextColor = style.getPropertyValue("--secondTextColor");
+
+    let uvIndexColors = [
+        style.getPropertyValue("--uvIndexLow"),
+        style.getPropertyValue("--uvIndexModerate"),
+        style.getPropertyValue("--uvIndexHigh"),
+        style.getPropertyValue("--uvIndexVeryHigh"),
+        style.getPropertyValue("--uvIndexExtreme"),
+        style.getPropertyValue("--uvIndexHazardous")
+    ];
+
+    const ctx = document.getElementById('uv-index-chart').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+
+    gradient.addColorStop(1, uvIndexColors[0]);
+    gradient.addColorStop(0.8, uvIndexColors[1]);
+    gradient.addColorStop(0.6, uvIndexColors[2]);
+    gradient.addColorStop(0.4, uvIndexColors[3]);
+    gradient.addColorStop(0.2, uvIndexColors[4]);
+    gradient.addColorStop(0, uvIndexColors[5]);
+
+    Chart.defaults.font.family = "LexendDeca";
+
+    uvIndexChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+            datasets: [{
+                data: uvIndexData,
+                backgroundColor: gradient,
+                borderRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: secondTextColor
+                    }
+                },
+                y: {
+                    min: 0,
+                    max: 12,
+                    ticks: {
+                        color: secondTextColor,
+                        stepSize: 1,
+                        callback: value => `${value}`
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: '#000000',
+                    titleFont: {
+                        size: 14,
+                    },
+                    bodyFont: {
+                        size: 14,
+                    },
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.raw}`;
+                        }
+                    }
+                },
+            },
+        },
+    });
+}
+
+function displayUVIndexModalData(data, dayIndex, currentUVIndex) {
+    let daily = false;
+    let avgUVIndex = 0;
+
+    if (dayIndex > 0) {
+        for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+            avgUVIndex += data.hourly.uv_index[i];
+        }
+        avgUVIndex = Math.round(avgUVIndex / 24);
+
+        daily = true;
+    }
+
+    uvIndexModal.querySelector(".uv-index__value").textContent = daily ? avgUVIndex : `${Math.round(currentUVIndex)}`;
+    uvIndexModal.querySelector(".uv-index__description").textContent = daily ? `Average UV Index: ${getUVIndexDescription(daily ? avgUVIndex : currentUVIndex)}` : getUVIndexDescription(daily ? avgUVIndex : currentUVIndex);
+    uvIndexModal.querySelector(".uv-index__advice").textContent = getUVIndexAdvice(daily ? avgUVIndex : currentUVIndex);
+
+    uvIndexModal.querySelector(".uv-index-indicator__thumb").style.left = daily ? `${(avgUVIndex / 12) * 100}%` : `${(Math.round(currentUVIndex) / 12) * 100}%`;
+
+    displayUVIndexChart(data, dayIndex);
+}
+
 function displayUVIndex(data, hour) {
     let uvIndex = data.hourly.uv_index[hour];
-    console.log(uvIndex);
-    document.querySelector(".uv-index__value").textContent = Math.round(uvIndex);
-    document.querySelector(".uv-index__description").textContent = getUVIndexDescription(uvIndex);
-    document.querySelector(".uv-index__advice").textContent = getUVIndexAdvice(uvIndex);
 
-    document.querySelector(".uv-index-indicator__thumb").style.left = `${(uvIndex / 12) * 100}%`;
+    weatherPage.querySelector(".uv-index__value").textContent = Math.round(uvIndex);
+    weatherPage.querySelector(".uv-index__description").textContent = getUVIndexDescription(uvIndex);
+    weatherPage.querySelector(".uv-index__advice").textContent = getUVIndexAdvice(uvIndex);
+
+    weatherPage.querySelector(".uv-index-indicator__thumb").style.left = `${(uvIndex / 12) * 100}%`;
+
+    displayUVIndexModalData(data, 0, uvIndex);
+
+    loadDayPicker("day-picker--uv-index", function (dayIndex) {
+        displayUVIndexModalData(data, dayIndex, uvIndex);
+    }, 14);
 }
 
 function displayPrecipitation(data, hour) {
@@ -680,7 +797,10 @@ function displayWeatherData(data) {
     fetchedData = data;
 
     let currentTime = new Date();
-    document.querySelector(".weather-data-fetch-time span").textContent = `${currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`;
+    document.querySelector(".weather-data-fetch-time span").textContent = `${currentTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+    })}`;
 
     let isAfterSunset = new Date(data.daily.sunset[0]) < currentTime;
 
@@ -879,21 +999,28 @@ document.addEventListener("DOMContentLoaded", () => {
             segmentedButton.style.setProperty("--selected-left", `${selectedButton.offsetLeft - 5}px`);
         }
 
-        buttons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                buttons.forEach(btn => btn.classList.remove("segmented-button__item--selected"));
+        setTimeout(() => {
+            buttons.forEach((button, index) => {
+                button.addEventListener("click", () => {
+                    buttons.forEach(btn => btn.classList.remove("segmented-button__item--selected"));
 
-                button.classList.add("segmented-button__item--selected");
+                    button.classList.add("segmented-button__item--selected");
+                    button.closest(".segmented-button").style.overflowX = "hidden";
 
-                const buttonRect = button.getBoundingClientRect();
-                const containerRect = segmentedButton.getBoundingClientRect();
-                const offsetLeft = buttonRect.left - containerRect.left;
+                    const buttonRect = button.getBoundingClientRect();
+                    const containerRect = segmentedButton.getBoundingClientRect();
+                    const offsetLeft = buttonRect.left - containerRect.left;
 
-                segmentedButton.style.setProperty("--selected-index", index);
-                segmentedButton.style.setProperty("--selected-width", `${buttonRect.width}px`);
-                segmentedButton.style.setProperty("--selected-left", `${offsetLeft - 5}px`);
+                    segmentedButton.style.setProperty("--selected-index", index);
+                    segmentedButton.style.setProperty("--selected-width", `${buttonRect.width}px`);
+                    segmentedButton.style.setProperty("--selected-left", `${offsetLeft - 5}px`);
+
+                    setTimeout(() => {
+                        button.closest(".segmented-button").style.overflowX = "auto";
+                    }, 300);
+                });
             });
-        });
+        }, 1);
     });
 
     initializeSortable();

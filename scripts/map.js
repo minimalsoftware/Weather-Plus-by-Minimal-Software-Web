@@ -84,7 +84,7 @@ function openMap(fromFirstConfiguration = false) {
                 })
             }).addTo(map);
 
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=auto`)
                 .then(response => response.json())
                 .then(data => {
                     let locationName = data.address.town ?? data.address.city ?? data.address.village ?? data.address.county ?? data.address.state;

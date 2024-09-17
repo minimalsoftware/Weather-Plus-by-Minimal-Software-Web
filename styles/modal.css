@@ -306,10 +306,6 @@
     justify-content: flex-end;
 }
 
-.aqi__chart {
-    margin-top: 25px;
-}
-
-.wind__chart {
+.modal__chart {
     margin-top: 25px;
 }

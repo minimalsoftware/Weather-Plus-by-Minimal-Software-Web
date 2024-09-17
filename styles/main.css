@@ -51,6 +51,13 @@ html[data-theme='light'] {
     --airQualityHazardous-main: #FFCDD2;
     --airQualityHazardous-border: #EF5350;
 
+    --uvIndexLow: #00FF00;
+    --uvIndexModerate: #FFFF00;
+    --uvIndexHigh: #FFA500;
+    --uvIndexVeryHigh: #FF0000;
+    --uvIndexExtreme: #800080;
+    --uvIndexHazardous: #7E0023;
+
     --segmentedButtonAnimation: 300ms;
 }
 

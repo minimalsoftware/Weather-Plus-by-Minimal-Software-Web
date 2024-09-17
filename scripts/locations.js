@@ -98,7 +98,7 @@ function locationsMarquee() {
     const marquee = document.querySelectorAll('.marquee');
 
     for (let i = 0; i < marqueeContainer.length; i++) {
-        if (marqueeSpan[i].scrollWidth + 12 > marqueeContainer[i].clientWidth) {
+        if (marqueeSpan[i].scrollWidth + 12 > marqueeContainer[i].clientWidth && settings.sidebarState) {
             marquee[i].classList.add('animate');
         } else {
             marquee[i].classList.remove('animate');

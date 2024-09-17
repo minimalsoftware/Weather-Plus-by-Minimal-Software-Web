@@ -225,7 +225,7 @@
     height: 26px;
     background-color: var(--mainColor);
     border-radius: 8px;
-    transition: transform var(--segmentedButtonAnimation) ease;
+    transition: transform var(--segmentedButtonAnimation) ease, width var(--segmentedButtonAnimation) ease;
     z-index: 0;
 }
 
@@ -662,12 +662,13 @@
     width: 100%;
     position: relative;
     margin-top: 15px;
+    padding-bottom: 5px;
 }
 
 .uv-index-indicator__bar {
     height: 6px;
     border-radius: 10px;
-    background: linear-gradient(to right, #00FF00, #FFFF00, #FFA500, #FF0000, #800080, #7E0023);
+    background: linear-gradient(to right, var(--uvIndexLow), var(--uvIndexModerate), var(--uvIndexHigh), var(--uvIndexVeryHigh), var(--uvIndexExtreme), var(--uvIndexHazardous));
     /*background: linear-gradient(to right, var(--airQualityVeryGood-border), var(--airQualityModerate-border), var(--airQualityBad-border), var(--airQualityUnhealthy-border), var(--airQualityVeryUnhealthy-border), var(--airQualityHazardous-border));*/
 }
 
@@ -680,6 +681,7 @@
     position: absolute;
     top: -4px;
     left: -7px;
+    transition-duration: 300ms;
 }
 
 .uv-index__advice {

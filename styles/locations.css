@@ -53,6 +53,7 @@
 .search-bar__cancel-icon {
     display: none;
     width: 18px;
+    cursor: pointer;
 }
 
 .search-bar__icon--active {

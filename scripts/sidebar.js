@@ -65,17 +65,20 @@ function toggleSidebar() {
     settings.sidebarState = sidebar.classList.contains("sidebar--closed");
     sidebar.style.transitionDuration = "300ms";
     sidebar.classList.toggle("sidebar--closed");
+
     // Remove inline CSS
     sidebar.style.width = sidebar.classList.contains("sidebar--closed") ? "0" : `${settings.sidebarWidth}px`;
     mainContent.style.width = sidebar.classList.contains("sidebar--closed") ? "100vw" : `calc(100vw - ${settings.sidebarWidth}px)`;
     mainContent.style.transitionDuration = "300ms";
     document.querySelector(".top-bar__button").classList.toggle("sidebar__toggle-button--reversed");
+
     setTimeout(() => {
         sidebar.style.transitionDuration = "";
         mainContent.style.transitionDuration = "";
+        updatePath();
     }, 300);
+
     saveSettings();
-    locationsMarquee();
 }
 
 function closeSidebar() {
@@ -94,6 +97,7 @@ function restoreSidebarWidth() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    updatePath();
     if (!settings.sidebarState) {
         closeSidebar();
         saveSettings();
