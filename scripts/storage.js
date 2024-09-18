@@ -1,19 +1,18 @@
 let defaultLocations = [...(JSON.parse(localStorage.getItem("locations")) ?? [])];
 
 const temperatureUnits = Object.freeze({
-    CELSIUS: "C",
-    FAHRENHEIT: "F",
+    CELSIUS: {value: "C"},
+    FAHRENHEIT: {value: "F"},
 });
 
-// TODO: Add values
 const windUnits = Object.freeze({
-    KPH: { value: "km/h" },
-    MPH: { value: "mph" },
+    KPH: {value: "km/h"},
+    MPH: {value: "mph"},
 });
 
 const pressureUnits = Object.freeze({
-    HPA: "hPa",
-    MBAR: "mBar",
+    HPA: {value: "hPa"},
+    MBAR: {value: "mBar"},
 });
 
 let settings = {

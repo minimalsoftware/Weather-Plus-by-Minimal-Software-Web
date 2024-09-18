@@ -9,7 +9,7 @@ function fetchWeather() {
 
     weatherPage.classList.remove("weather-page--active");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,apparent_temperature_max,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
         .then(respone => respone.json())
         .then(data => {
             console.log(data);
@@ -81,10 +81,14 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 
         hourlyForecastItemDetails.append(hourlyForecastItemDetailsTemplate.content.cloneNode(true));
 
-        hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__datetime").textContent = new Date(data.hourly.time[i]).toLocaleDateString("en-US", {
+        hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__datetime").textContent = new Date(data.hourly.time[i]).toLocaleDateString("en-GB", {
+            year: "numeric",
+            day: "2-digit",
+            month: "2-digit",
             hour: "2-digit",
             minute: "2-digit"
-        });
+        }).replace(/\//g, ".");
+
         hourlyForecastItemDetails.querySelector(".hourly-forecast-item-details__condition").textContent = getWeatherConditionDescription(data.hourly.weather_code[i]);
 
         hourlyForecastItemDetails.querySelector(".precipitation").textContent = `${data.hourly.precipitation[i]} mm`;
@@ -159,6 +163,51 @@ function displayDailyWeather(data) {
         forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `H: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}° L: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
 
         dailyForecastItems.append(forecastItem);
+
+        const dailyForecastItemDetailsTemplate = document.querySelector("#daily-forecast-item-details-template");
+
+        let dailyForecastItemDetails = document.createElement("div");
+        dailyForecastItemDetails.classList.add("daily-forecast-item-details");
+
+        dailyForecastItemDetails.append(dailyForecastItemDetailsTemplate.content.cloneNode(true));
+
+        dailyForecastItemDetails.querySelector(".daily-forecast-item-details__day").textContent = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+        dailyForecastItemDetails.querySelector(".daily-forecast-item-details__condition").textContent = getWeatherConditionDescription(data["daily"]["weather_code"][i]);
+        dailyForecastItemDetails.querySelector(".sunrise").textContent = new Date(data["daily"]["sunrise"][i]).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+        dailyForecastItemDetails.querySelector(".sunset").textContent = new Date(data["daily"]["sunset"][i]).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+        dailyForecastItemDetails.querySelector(".precipitation").textContent = `${data["daily"]["precipitation_sum"][i]} mm`;
+        dailyForecastItemDetails.querySelector(".max-precipitation-probability").textContent = `${Math.round(data["daily"]["precipitation_probability_max"][i])}%`;
+        dailyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data["hourly"]["dew_point_2m"][i])}°`;
+        dailyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["apparent_temperature_max"][i]))}°` : `${Math.round(data["daily"]["apparent_temperature_max"][i])}°`;
+        dailyForecastItemDetails.querySelector(".pressure").textContent = `${Math.round(data["hourly"]["surface_pressure"][i])} ${settings.pressureUnit.value}`;
+        dailyForecastItemDetails.querySelector(".cloud-cover").textContent = `${Math.round(data["hourly"]["cloud_cover"][i])}%`;
+        dailyForecastItemDetails.querySelector(".visibility").textContent = `${Math.round(data["hourly"]["visibility"][i])} m`;
+        dailyForecastItemDetails.querySelector(".wind-speed").textContent = `${Math.round(data["hourly"]["wind_speed_10m"][i])} ${settings.windUnit.value}`;
+        dailyForecastItemDetails.querySelector(".uv-index").textContent = `${Math.round(data["daily"]["uv_index_max"][i])}`;
+        dailyForecastItemDetails.querySelector(".min-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_min"][i])}°`;
+        dailyForecastItemDetails.querySelector(".max-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_max"][i])}°`;
+
+        tippy(forecastItem, {
+            content: dailyForecastItemDetails,
+            allowHTML: true,
+            theme: 'custom',
+            trigger: 'click',
+            inertia: {
+                duration: 250,
+                easing: 'ease-out'
+            },
+            animation: 'scale',
+            placement: 'left',
+            interactive: true,
+            interactiveDebounce: 75,
+            appendTo: document.querySelector(".daily-forecast"),
+            arrow: tippy.roundArrow,
+            onShow(instance) {
+                document.querySelector('.daily-forecast-items').addEventListener('scroll', () => {
+                    instance.hide();
+                }, {once: true});
+            }
+        });
     }
 }
 
@@ -428,8 +477,6 @@ function displayWindData(data) {
 
     weatherPage.querySelector(".wind__direction .arrow").style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
     windModal.querySelector(".wind__direction .arrow").style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
-    console.log(weatherPage.querySelector(".wind__direction .arrow"));
-    console.log(windModal.querySelector(".wind__direction .arrow"));
 
     displayWindChart(data, 0);
 
@@ -1020,7 +1067,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }, 300);
                 });
             });
-        }, 1);
+        }, 100);
     });
 
     initializeSortable();
