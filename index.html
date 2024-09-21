@@ -37,6 +37,7 @@
     <script src="scripts/weather.js" defer></script>
     <script src="scripts/weather-insights.js" defer></script>
     <script src="scripts/modal.js" defer></script>
+    <script src="scripts/urlParams.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
     <script src="assets/compass.js" defer></script>
@@ -223,8 +224,8 @@
         <div class="modal__content">
             <div class="chart-type-switch">
                 <div class="segmented-button" id="segmented-button-precipitation-chart-type">
-                    <button class="segmented-button__item segmented-button__item--selected" onclick="">15-Minutely</button>
-                    <button class="segmented-button__item" onclick="">Hourly</button>
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="displayPrecipitationChart(fetchedData, selectedPrecipitationDay)">Hourly</button>
+                    <button class="segmented-button__item" onclick="displayPrecipitationChart(fetchedData, selectedPrecipitationDay, true)">15-Minutely</button>
                 </div>
             </div>
             <div class="total-precipitation">
@@ -326,7 +327,7 @@
         <div class="modal__header">
             <div class="title">UV Index</div>
             <button class="close-button" onclick="closeModal('modal--uv-index')">
-                <img class="icon--main color" src="graphics/svg/close-main-color.svg" alt="Close">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
             </button>
         </div>
         <div class="day-picker" id="day-picker--uv-index">
@@ -345,6 +346,84 @@
             <div class="modal__chart uv-index__chart">
                 <canvas id="uv-index-chart">Your browser does not support the canvas element.</canvas>
             </div>
+        </div>
+    </div>
+    <div class="modal" id="modal--astronomy">
+        <div class="modal__header">
+            <div class="title">Moon phases calendar</div>
+            <button class="close-button" onclick="closeModal('modal--astronomy')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <!--        <div class="day-picker" id="day-picker&#45;&#45;astronomy">-->
+        <!--            <div class="day-picker__scroll"></div>-->
+        <!--        </div>-->
+        <div class="modal__content modal__content--astronomy">
+            <!--            <div class="chart-type-switch">-->
+            <!--                <div class="segmented-button">-->
+            <!--                    <button class="segmented-button__item segmented-button__item&#45;&#45;selected" onclick="changeAstronomyModalType(astronomyTypes.SUN)">Sunrise and sunset</button>-->
+            <!--                    <button class="segmented-button__item" onclick="changeAstronomyModalType(astronomyTypes.MOON)">Moon phase</button>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <!--            <div class="modal__content&#45;&#45;moon">-->
+            <!--                <div class="sun">-->
+            <!--                    <div class="sunrise-sunset__content">-->
+            <!--                        <div class="sunrise-sunset__section">-->
+            <!--                            <div class="sunrise-sunset-item">-->
+            <!--                                <div class="sunrise-sunset-item__title">Sunrise</div>-->
+            <!--                                <div class="sunrise-sunset-item__value sunrise-value"></div>-->
+            <!--                            </div>-->
+            <!--                            <div class="sunrise-sunset-item">-->
+            <!--                                <div class="sunrise-sunset-item__title">Sunset</div>-->
+            <!--                                <div class="sunrise-sunset-item__value sunset-value"></div>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                        <div class="sunrise__line">-->
+            <!--                            <svg height="54">-->
+            <!--                                <path id="curve"-->
+            <!--                                      d="M10 46 Q 154 -28 298 46"-->
+            <!--                                      stroke-linecap="round"-->
+            <!--                                      style="fill: none; stroke: #EEF2F8; stroke-width: 4"/>-->
+            <!--                                <circle id="dot" class="spot3" cx="0" cy="0" r="8" fill="#FAC700" stroke="#FAC700"></circle>-->
+            <!--                            </svg>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="moon">-->
+            <template id="template--moon-phase-calendar-item">
+                <div class="day"></div>
+                <img class="moon-phase" alt="Moon phase" src="">
+            </template>
+            <div class="moon-phases-calendar">
+                <div class="moon-phases-calendar__header">
+                    <button class="moon-phases-calendar__change-month" onclick="changeMoonPhaseCalendarMonth(-1)">
+                        <img class="icon--gray" src="graphics/svg/chevron-left-gray.svg" alt="Previous month">
+                    </button>
+                    <div class="moon-phases-calendar__month"></div>
+                    <button class="moon-phases-calendar__change-month" onclick="changeMoonPhaseCalendarMonth(1)">
+                        <img class="icon--gray" src="graphics/svg/chevron-right-gray.svg" alt="Next month">
+                    </button>
+                </div>
+                <div class="moon-phases-calendar__weekdays">
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                    <div>Sun</div>
+                </div>
+                <div class="moon-phases-calendar__content"></div>
+                <div class="moon-phases-calendar__info-container">
+                    <div class="moon-phases-calendar__info moon-phases-calendar__info--next-new-moon">Next new moon:&nbsp;<span></span></div>
+                    <div class="moon-phases-calendar__info moon-phases-calendar__info--next-full-moon">Next full moon:&nbsp;<span></span></div>
+                </div>
+                <div class="moon-phases-calendar__footer">
+                    <button class="moon-phases-calendar__current-month-button" onclick="changeMoonPhaseCalendarMonth(0, true)">Show current month</button>
+                </div>
+            </div>
+            <!--                </div>-->
+            <!--            </div>-->
         </div>
     </div>
     <div class="sidebar">
@@ -403,13 +482,18 @@
     <div class="main-content">
         <div class="notification"></div>
         <div class="top-bar">
-            <button class="top-bar__button" onclick="toggleSidebar()">
+            <button class="top-bar__button" title="Toggle sidebar" onclick="toggleSidebar()">
                 <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
             </button>
-            <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')">
-                <img class="icon--main-color" src="graphics/svg/refresh-main-color.svg" alt="Refresh">
-                <span>Refresh</span>
-            </button>
+            <div class="top-bar__section">
+                <button class="top-bar__button" title="Share link to this location" onclick="copyLinkToClipboard();">
+                    <img class="icon--main-color" src="graphics/svg/link-main-color.svg" alt="Share link">
+                </button>
+                <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')">
+                    <img class="icon--main-color" src="graphics/svg/refresh-main-color.svg" alt="Refresh">
+                    <span>Refresh</span>
+                </button>
+            </div>
         </div>
         <div class="no-locations">
             <img class="icon--main-color" src="graphics/svg/location-off-main-color.svg" alt="No locations">
@@ -420,7 +504,12 @@
                 <div class="current-weather__location"></div>
                 <div class="current-weather__temperature"></div>
                 <div class="current-weather__weather-condition"></div>
-                <div class="current-weather__max-min-temperature"></div>
+                <div class="current-weather__max-min-temperature">
+                    <img class="icon--gray" src="graphics/svg/north-gray.svg" alt="Max">
+                    <span class="max-temperature"></span>
+                    <img class="icon--gray" src="graphics/svg/south-gray.svg" alt="Min">
+                    <span class="min-temperature"></span>
+                </div>
             </div>
             <div class="weather-data-fetch-time">Weather data last updated at: <span></span>.</div>
             <div class="weather-page__container">
@@ -522,7 +611,6 @@
                                             <div class="title">Max Precipitation Probability:</div>
                                             <div class="value max-precipitation-probability"></div>
                                         </div>
-
                                         <div class="daily-forecast-item-details__item">
                                             <div class="title">Dewpoint:</div>
                                             <div class="value dewpoint"></div>
@@ -572,7 +660,12 @@
                                         </div>
                                     </div>
                                     <div class="daily-forecast-item__right-section">
-                                        <div class="daily-forecast-item__max-min-temperature"></div>
+                                        <div class="daily-forecast-item__max-min-temperature">
+                                            <img class="icon--gray" src="graphics/svg/north-black.svg" alt="Max">
+                                            <span class="max-temperature"></span>
+                                            <img class="icon--gray" src="graphics/svg/south-black.svg" alt="Min">
+                                            <span class="min-temperature"></span>
+                                        </div>
                                     </div>
                                 </template>
                                 <div class="daily-forecast-items"></div>
@@ -653,12 +746,12 @@
                     </div>
 
                     <div class="weather-page__column-section" data-id="6">
-                        <div class="weather-component astronomy">
+                        <div class="weather-component astronomy" onclick="openModal('modal--astronomy')">
                             <div class="weather-component__header">
                                 <div class="weather-component__title">Astronomy</div>
-                                <div class="segmented-button" id="segmented-button--astronomy">
-                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.SUN)">Sun</button>
-                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.MOON)">Moon</button>
+                                <div class="segmented-button" id="segmented-button--astronomy" onclick="event.stopPropagation()">
+                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.SUN, event)">Sun</button>
+                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.MOON, event)">Moon</button>
                                 </div>
                             </div>
                             <div class="sun">

@@ -1,7 +1,13 @@
 let fetchedData;
 const weatherPage = document.querySelector(".weather-page");
 
-function fetchWeather() {
+const astronomyTypes = Object.freeze({
+    SUN: 0,
+    MOON: 1
+});
+
+function fetchWeather(location = settings.activeLocation) {
+    console.log(location);
     if (settings.locations.length === 0 || !settings.activeLocation) {
         document.querySelector(".no-locations").classList.add("no-locations--active");
         return;
@@ -9,7 +15,7 @@ function fetchWeather() {
 
     weatherPage.classList.remove("weather-page--active");
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,apparent_temperature_max,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,apparent_temperature_max,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
         .then(respone => respone.json())
         .then(data => {
             console.log(data);
@@ -60,7 +66,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         if (i === currentTime.getHours()) time = "Now";
 
         forecastItem.querySelector(".hourly-forecast-item__time").insertAdjacentText("afterbegin", time);
-        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
+        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
         const weatherConditionsCodesWithPrecipitation = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
         if (data.hourly.precipitation_probability[i] !== 0 && weatherConditionsCodesWithPrecipitation.includes(data.hourly.weather_code[i])) {
             forecastItem.querySelector(".hourly-forecast-item__precipitation").insertAdjacentText("afterbegin", `${Math.round(data.hourly.precipitation_probability[i])}%`);
@@ -95,7 +101,7 @@ function displayHourlyForecast(currentTime, data, length = 24) {
         hourlyForecastItemDetails.querySelector(".precipitation-probability").textContent = `${Math.round(data.hourly.precipitation_probability[i])}%`;
         hourlyForecastItemDetails.querySelector(".relative-humidity").textContent = `${Math.round(data.hourly.relative_humidity_2m[i])}%`;
         hourlyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data.hourly.dew_point_2m[i])}°`;
-        hourlyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data.hourly.apparent_temperature[i]))}°` : `${Math.round(data.hourly.apparent_temperature[i])}°`;
+        hourlyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data.hourly.apparent_temperature[i]))}°` : `${Math.round(data.hourly.apparent_temperature[i])}°`;
         hourlyForecastItemDetails.querySelector(".pressure").textContent = settings.pressureUnit === pressureUnits.MBAR ? `${Math.round(data.hourly.surface_pressure[i])} mbar` : `${Math.round(data.hourly.surface_pressure[i])} hPa`;
         hourlyForecastItemDetails.querySelector(".cloud-cover").textContent = `${Math.round(data.hourly.cloud_cover[i])}%`;
 
@@ -128,12 +134,13 @@ function displayHourlyForecast(currentTime, data, length = 24) {
 
 function displayCurrentData(data) {
     document.querySelector(".current-weather__location").textContent = `${settings.activeLocation.name}`;
-    document.querySelector(".current-weather__temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["current"]["temperature_2m"]))}°F` : `${Math.round(data["current"]["temperature_2m"])}°C`;
+    document.querySelector(".current-weather__temperature").textContent = settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data["current"]["temperature_2m"]))}°F` : `${Math.round(data["current"]["temperature_2m"])}°C`;
     document.querySelector(".current-weather__weather-condition").textContent = `${getWeatherConditionDescription(data["current"]["weather_code"])}, feels like ${Math.round(data["current"]["apparent_temperature"])}°`;
-    document.querySelector(".current-weather__max-min-temperature").textContent = `H: ${Math.round(data["daily"]["temperature_2m_max"][0])}° L: ${Math.round(data["daily"]["temperature_2m_min"][0])}°`;
+    document.querySelector(".current-weather__max-min-temperature .max-temperature").textContent = settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][0]))}°` : `${Math.round(data["daily"]["temperature_2m_max"][0])}°`;
+    document.querySelector(".current-weather__max-min-temperature .min-temperature").textContent = settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][0]))}°` : `${Math.round(data["daily"]["temperature_2m_min"][0])}°`;
 }
 
-function displayDailyWeather(data) {
+function displayDailyForecast(data) {
     const dailyForecastItems = document.querySelector(".daily-forecast-items");
     const dailyForecastItemTemplate = document.querySelector("#daily-forecast-item-template");
 
@@ -160,7 +167,9 @@ function displayDailyWeather(data) {
         })}`);
         forecastItem.querySelector(".daily-forecast-item__weather-condition").insertAdjacentText("afterbegin", getWeatherConditionDescription(data["daily"]["weather_code"][i]));
         forecastItem.querySelector(".daily-forecast-item__icon img").src = `graphics/weathers-icons/${iconTheme}/${getWeatherConditionIcon(data["daily"]["weather_code"][i])}.svg`;
-        forecastItem.querySelector(".daily-forecast-item__max-min-temperature").insertAdjacentText("afterbegin", settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `H: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}° L: ${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `H: ${Math.round(data["daily"]["temperature_2m_max"][i])}° L: ${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
+
+        forecastItem.querySelector(".daily-forecast-item__max-min-temperature .max-temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_max"][i])}°`);
+        forecastItem.querySelector(".daily-forecast-item__max-min-temperature .min-temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_min"][i])}°`);
 
         dailyForecastItems.append(forecastItem);
 
@@ -171,21 +180,31 @@ function displayDailyWeather(data) {
 
         dailyForecastItemDetails.append(dailyForecastItemDetailsTemplate.content.cloneNode(true));
 
-        dailyForecastItemDetails.querySelector(".daily-forecast-item-details__day").textContent = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+        dailyForecastItemDetails.querySelector(".daily-forecast-item-details__day").textContent = date.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric"
+        });
         dailyForecastItemDetails.querySelector(".daily-forecast-item-details__condition").textContent = getWeatherConditionDescription(data["daily"]["weather_code"][i]);
-        dailyForecastItemDetails.querySelector(".sunrise").textContent = new Date(data["daily"]["sunrise"][i]).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-        dailyForecastItemDetails.querySelector(".sunset").textContent = new Date(data["daily"]["sunset"][i]).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+        dailyForecastItemDetails.querySelector(".sunrise").textContent = new Date(data["daily"]["sunrise"][i]).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        dailyForecastItemDetails.querySelector(".sunset").textContent = new Date(data["daily"]["sunset"][i]).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
         dailyForecastItemDetails.querySelector(".precipitation").textContent = `${data["daily"]["precipitation_sum"][i]} mm`;
         dailyForecastItemDetails.querySelector(".max-precipitation-probability").textContent = `${Math.round(data["daily"]["precipitation_probability_max"][i])}%`;
         dailyForecastItemDetails.querySelector(".dewpoint").textContent = `${Math.round(data["hourly"]["dew_point_2m"][i])}°`;
-        dailyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["apparent_temperature_max"][i]))}°` : `${Math.round(data["daily"]["apparent_temperature_max"][i])}°`;
+        dailyForecastItemDetails.querySelector(".apparent-temperature").textContent = settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data["daily"]["apparent_temperature_max"][i]))}°` : `${Math.round(data["daily"]["apparent_temperature_max"][i])}°`;
         dailyForecastItemDetails.querySelector(".pressure").textContent = `${Math.round(data["hourly"]["surface_pressure"][i])} ${settings.pressureUnit.value}`;
         dailyForecastItemDetails.querySelector(".cloud-cover").textContent = `${Math.round(data["hourly"]["cloud_cover"][i])}%`;
         dailyForecastItemDetails.querySelector(".visibility").textContent = `${Math.round(data["hourly"]["visibility"][i])} m`;
         dailyForecastItemDetails.querySelector(".wind-speed").textContent = `${Math.round(data["hourly"]["wind_speed_10m"][i])} ${settings.windUnit.value}`;
         dailyForecastItemDetails.querySelector(".uv-index").textContent = `${Math.round(data["daily"]["uv_index_max"][i])}`;
-        dailyForecastItemDetails.querySelector(".min-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_min"][i])}°`;
-        dailyForecastItemDetails.querySelector(".max-temperature").textContent = settings.temperatureUnit === temperatureUnits.FAHRENHEIT ? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_max"][i])}°`;
+        dailyForecastItemDetails.querySelector(".min-temperature").textContent = settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_min"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_min"][i])}°`;
+        dailyForecastItemDetails.querySelector(".max-temperature").textContent = settings.temperatureUnit.value=== temperatureUnits.FAHRENHEIT.value? `${Math.round(convertToFahrenheit(data["daily"]["temperature_2m_max"][i]))}°` : `${Math.round(data["daily"]["temperature_2m_max"][i])}°`;
 
         tippy(forecastItem, {
             content: dailyForecastItemDetails,
@@ -208,6 +227,9 @@ function displayDailyWeather(data) {
                 }, {once: true});
             }
         });
+    }
+    if (theme === themes.DARK) {
+        changeIconColor();
     }
 }
 
@@ -569,6 +591,8 @@ function displayMoonData(isAfterSunset) {
         hour: "2-digit",
         minute: "2-digit"
     });
+
+    displayMoonPhasesCalendar();
 }
 
 const uvIndexModal = document.querySelector("#modal--uv-index");
@@ -707,22 +731,34 @@ function displayPrecipitation(data, hour) {
     document.querySelector(".forecast-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
 
     loadDayPicker("day-picker--precipitation", function (dayIndex) {
-        displayPrecipitationChart(fetchedData, dayIndex);
+        displayPrecipitationChart(fetchedData, dayIndex, quarterlyForecast);
     }, 14);
 
     displayPrecipitationChart(data, 0);
 }
 
 let precipitationChart;
+let selectedPrecipitationDay = 0;
+let quarterlyForecast = false;
 
-function displayPrecipitationChart(data, day) {
+function displayPrecipitationChart(data, day, isQuarterlyForecast = false) {
+    quarterlyForecast = isQuarterlyForecast;
+    selectedPrecipitationDay = day;
+
     if (precipitationChart) precipitationChart.destroy();
 
     let precipitationData = [];
 
-    for (let i = day * 24; i < 24 + 24 * day; i++) {
-        precipitationData.push(Math.round(data.hourly.precipitation[i]));
+    if (quarterlyForecast) {
+        for (let i = day * 96; i < 96 + 96 * day; i++) {
+            precipitationData.push(Math.round(data.minutely_15.precipitation[i]));
+        }
+    } else {
+        for (let i = day * 24; i < 24 + 24 * day; i++) {
+            precipitationData.push(Math.round(data.hourly.precipitation[i]));
+        }
     }
+    console.log(precipitationData);
 
     let style = getComputedStyle(document.body);
     let mainColor = style.getPropertyValue("--mainColor");
@@ -737,10 +773,31 @@ function displayPrecipitationChart(data, day) {
 
     Chart.defaults.font.family = "LexendDeca";
 
+    let quarterlyLabels = [];
+    if (quarterlyForecast) {
+        let hour = 0;
+        let minutes = 0;
+        for (let i = 0; i < 96; i++) {
+            if (minutes === 60) {
+                minutes = 0;
+            }
+            if (i % 4 === 0 && i !== 0) {
+                hour++;
+            }
+            quarterlyLabels.push(`${String(hour).padStart(2, "0")}:${String(minutes).padEnd(2, "0")}`);
+            minutes += 15;
+        }
+    }
+
+    let hourlyLabels = [];
+    for (let i = 0; i < 24; i++) {
+        hourlyLabels.push(`${String(i).padStart(2, "0")}:00`);
+    }
+
     precipitationChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+            labels: quarterlyForecast ? quarterlyLabels : hourlyLabels,
             datasets: [{
                 data: precipitationData,
                 backgroundColor: gradient,
@@ -784,6 +841,141 @@ function displayPrecipitationChart(data, day) {
         }
     });
 }
+
+let moonPhaseCalendarSelectedDate = new Date();
+let moonPhaseModalSelectedType = astronomyTypes.SUN;
+const astronomyModal = document.querySelector("#modal--astronomy");
+
+// function changeAstronomyModalType(type) {
+//     if (type === astronomyTypes.MOON) {
+//         moonPhaseModalSelectedType = astronomyTypes.MOON;
+//         astronomyModal.querySelector(".moon").style.display = "block";
+//         astronomyModal.querySelector(".sun").style.display = "none";
+//         document.querySelector("#day-picker--astronomy").style.display = "none";
+//     } else {
+//         moonPhaseModalSelectedType = astronomyTypes.SUN;
+//         astronomyModal.querySelector(".sun").style.display = "block";
+//         astronomyModal.querySelector(".moon").style.display = "none";
+//         document.querySelector("#day-picker--astronomy").style.display = "flex";
+//     }
+// }
+
+function displayMoonPhasesCalendar() {
+    const daysInMonth = new Date(moonPhaseCalendarSelectedDate.getFullYear(), moonPhaseCalendarSelectedDate.getMonth() + 1, 0).getDate();
+    const firstDayOfMonth = new Date(moonPhaseCalendarSelectedDate.getFullYear(), moonPhaseCalendarSelectedDate.getMonth(), 1).getDay();
+    const weekdayOfFirstDay = firstDayOfMonth === 0 ? 7 : firstDayOfMonth;
+
+    const daysNeeded = daysInMonth + weekdayOfFirstDay - 1;
+    const weeksNeeded = Math.ceil(daysNeeded / 7);
+    const itemCount = weeksNeeded * 7;
+
+    let fullMoon = false;
+
+    let calendarItemTemplate = document.querySelector("#template--moon-phase-calendar-item");
+    let moonPhasesCalendarContent = document.querySelector(".moon-phases-calendar__content");
+    moonPhasesCalendarContent.innerHTML = "";
+
+    document.querySelector(".moon-phases-calendar__month").textContent = moonPhaseCalendarSelectedDate.toLocaleDateString("en-US", {month: "long"});
+
+    for (let i = 1; i <= itemCount; i++) {
+        let day = i - weekdayOfFirstDay + 1;
+
+        let targetDateMoonPhase = Astronomy.MoonPhase(new Date(moonPhaseCalendarSelectedDate.getFullYear(), moonPhaseCalendarSelectedDate.getMonth(), day));
+
+        if (i < weekdayOfFirstDay || i >= daysInMonth + weekdayOfFirstDay) {
+            const day = document.createElement("div");
+            day.classList.add("moon-phases-calendar__item", "moon-phases-calendar__item--empty");
+            day.append(calendarItemTemplate.content.cloneNode(true));
+
+            moonPhasesCalendarContent.appendChild(day);
+        } else {
+            const day = document.createElement("div");
+            day.classList.add("moon-phases-calendar__item");
+            day.append(calendarItemTemplate.content.cloneNode(true));
+            day.querySelector(".day").textContent = `${i - weekdayOfFirstDay + 1}`;
+            day.querySelector(".moon-phase").src = `graphics/weathers-icons/moon-phases/${getMoonPhaseName(targetDateMoonPhase, fullMoon).toLowerCase().replace(" ", "-")}.svg`;
+
+            if (getMoonPhaseName(targetDateMoonPhase) === "Full Moon") fullMoon = true;
+
+            moonPhasesCalendarContent.appendChild(day);
+        }
+
+    }
+
+    document.querySelector(".moon-phases-calendar__info--next-new-moon span").textContent = getNextNewMoonDate().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric"
+    });
+    document.querySelector(".moon-phases-calendar__info--next-full-moon span").textContent = getNextFullMoonDate().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric"
+    });
+}
+
+function changeMoonPhaseCalendarMonth(direction, currentMonth = false) {
+    let moonPhasesCalendarFooter = document.querySelector(".moon-phases-calendar__footer");
+    if (currentMonth) {
+        moonPhaseCalendarSelectedDate = new Date();
+        moonPhasesCalendarFooter.classList.remove("moon-phases-calendar__current-month-button--active");
+    } else {
+        moonPhaseCalendarSelectedDate.setMonth(moonPhaseCalendarSelectedDate.getMonth() + direction);
+        if (moonPhaseCalendarSelectedDate.getMonth() === new Date().getMonth() && moonPhaseCalendarSelectedDate.getFullYear() === new Date().getFullYear()) {
+            moonPhasesCalendarFooter.classList.remove("moon-phases-calendar__current-month-button--active");
+        } else {
+            moonPhasesCalendarFooter.classList.add("moon-phases-calendar__current-month-button--active");
+        }
+    }
+
+    displayMoonPhasesCalendar();
+}
+
+function getNextNewMoonDate() {
+    let targetDate = new Date();
+    let response = getMoonPhaseName(Astronomy.MoonPhase(targetDate));
+    while (response !== "New Moon") {
+        targetDate.setDate(targetDate.getDate() + 1);
+        response = getMoonPhaseName(Astronomy.MoonPhase(targetDate));
+    }
+    return targetDate;
+}
+
+function getNextFullMoonDate() {
+    let targetDate = new Date();
+    let response = getMoonPhaseName(Astronomy.MoonPhase(targetDate));
+    while (response !== "Full Moon") {
+        targetDate.setDate(targetDate.getDate() + 1);
+        response = getMoonPhaseName(Astronomy.MoonPhase(targetDate));
+    }
+    return targetDate;
+}
+
+// function displayAstronomyModalData(data, dayIndex) {
+//     // let daily = false;
+//     // let avgSunrise = 0, avgSunset = 0;
+//     //
+//     // if (dayIndex > 0) {
+//     //     for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
+//     //         avgSunrise += new Date(data.daily.sunrise[i]).getHours();
+//     //         avgSunset += new Date(data.daily.sunset[i]).getHours();
+//     //     }
+//     //     avgSunrise = Math.round(avgSunrise / 24);
+//     //     avgSunset = Math.round(avgSunset / 24);
+//     //
+//     //     daily = true;
+//     // }
+//
+//     astronomyModal.querySelector(".sunrise-value").textContent = new Date(data.daily.sunrise[dayIndex]).toLocaleTimeString("en-US", {
+//         hour: "2-digit",
+//         minute: "2-digit"
+//     });
+//     astronomyModal.querySelector(".sunset-value").textContent = new Date(data.daily.sunset[dayIndex]).toLocaleTimeString("en-US", {
+//         hour: "2-digit",
+//         minute: "2-digit"
+//     });
+//
+//     // displaySunPositionChart(data, dayIndex);
+//
+// }
 
 function loadDayPicker(datePickerId, onClickAction, days = 14) {
     const dayPicker = document.querySelector(`#${datePickerId}`);
@@ -858,7 +1050,7 @@ function displayWeatherData(data) {
     displayHourlyForecast(currentTime, data);
 
     // Display daily weather data
-    displayDailyWeather(data);
+    displayDailyForecast(data);
 
     // Display air quality data
     fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi&forecast_days=7`)
@@ -880,6 +1072,12 @@ function displayWeatherData(data) {
 
     // Display UV index
     displayUVIndex(data, currentTime.getHours());
+
+    // loadDayPicker("day-picker--astronomy", function (dayIndex) {
+    //     displayAstronomyModalData(data, dayIndex);
+    // });
+    //
+    // displayAstronomyModalData(data, 0);
 
     // Display precipitation
     displayPrecipitation(data, currentTime.getHours());
@@ -1092,7 +1290,7 @@ function updatePath() {
     updateSunPosition();
 }
 
-function getMoonPhaseName(angle) {
+function getMoonPhaseName(angle, fullMoon = false) {
     angle = angle % 360;
     if (angle < 0) angle += 360;
 
@@ -1110,6 +1308,7 @@ function getMoonPhaseName(angle) {
 
     for (let phase of phases) {
         if (angle >= phase.min && angle < phase.max) {
+            if (fullMoon) return "Waning Gibbous";
             return phase.name;
         }
     }
@@ -1117,14 +1316,12 @@ function getMoonPhaseName(angle) {
     return "Unknown";
 }
 
-const astronomyTypes = Object.freeze({
-    SUN: 0,
-    MOON: 1
-});
-
-function changeAstronomyType(astronomyType) {
-    const sun = document.querySelector(".sun");
-    const moon = document.querySelector(".moon");
+function changeAstronomyType(astronomyType, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const sun = weatherPage.querySelector(".sun");
+    const moon = weatherPage.querySelector(".moon");
 
     if (astronomyType === astronomyTypes.SUN) {
         sun.style.display = "block";

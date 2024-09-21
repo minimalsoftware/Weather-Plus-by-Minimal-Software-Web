@@ -182,6 +182,11 @@ body {
     /*margin-bottom: 20px;*/
 }
 
+.top-bar__section {
+    display: flex;
+    column-gap: 10px;
+}
+
 .notification {
     opacity: 0;
     visibility: hidden;

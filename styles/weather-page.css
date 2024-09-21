@@ -52,9 +52,21 @@
 }
 
 .current-weather__max-min-temperature {
+    display: flex;
+    align-items: center;
     font-size: 16px;
     color: var(--secondTextColor);
     margin-top: 10px;
+}
+
+.current-weather__max-min-temperature .max-temperature {
+    margin-right: 15px;
+}
+
+.current-weather__max-min-temperature img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
 }
 
 .weather-component {
@@ -362,8 +374,20 @@
 }
 
 .daily-forecast-item__max-min-temperature {
+    display: flex;
+    align-items: center;
     margin-left: 15px;
     color: var(--mainTextColor);
+}
+
+.daily-forecast-item__max-min-temperature .max-temperature {
+    margin-right: 15px;
+}
+
+.daily-forecast-item__max-min-temperature img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
 }
 
 .daily-forecast-item__details-button {
@@ -735,4 +759,109 @@
 
 .weather-data-provider a {
     color: var(--secondTextColor);
+}
+
+.moon-phases-calendar {
+    background-color: var(--grayComponent);
+    border-radius: 15px;
+    padding: 15px;
+    /*margin-top: 25px;*/
+}
+
+.moon-phases-calendar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.moon-phases-calendar__month {
+    font-size: 16px;
+}
+
+.moon-phases-calendar__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: 0 -15px 15px -15px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--secondTextColor);
+}
+
+.moon-phases-calendar__change-month {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+}
+
+.moon-phases-calendar__change-month:hover {
+    background-color: var(--thirdTextColor);
+    border-radius: 50%;
+}
+
+.moon-phases-calendar__content {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 15px;
+    margin: 0 -15px 10px -15px;
+}
+
+.moon-phases-calendar__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 13px;
+}
+
+.moon-phases-calendar__item img {
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.moon-phases-calendar__item--empty img {
+    display: none;
+}
+
+.moon-phases-calendar__footer {
+    display: none;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.moon-phases-calendar__current-month-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 14px;
+    color: var(--mainColor);
+    font-weight: 500;
+}
+
+.moon-phases-calendar__current-month-button--active {
+    display: flex;
+}
+
+.moon-phases-calendar__info-container {
+    margin-top: 25px;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    row-gap: 5px;
+}
+
+.moon-phases-calendar__info {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
 }

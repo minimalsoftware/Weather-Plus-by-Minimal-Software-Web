@@ -21,16 +21,16 @@ function toggleTheme(theme, initialLoad = false, ) {
         document.documentElement.setAttribute("data-theme", "light");
         document.querySelector(".main-content").style.backgroundColor = "";
 
-        changeIconColor(true);
         if (!initialLoad) displayWeatherData(fetchedData);
+        changeIconColor(true);
     } else {
         index = 1;
 
         document.documentElement.setAttribute("data-theme", "dark");
         document.querySelector(".main-content").style.backgroundColor = "#080C12";
 
-        changeIconColor();
         if (!initialLoad) displayWeatherData(fetchedData);
+        changeIconColor();
     }
 
     if (initialLoad) {
@@ -47,7 +47,6 @@ function toggleTheme(theme, initialLoad = false, ) {
                 index = 2;
                 break;
         }
-        console.log(index);
         setActiveButton(segmentedButtonTheme, index);
     }
 }

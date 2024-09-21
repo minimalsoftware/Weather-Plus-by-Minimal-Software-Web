@@ -38,8 +38,8 @@ function saveSettings() {
 window.addEventListener("DOMContentLoaded", () => {
     if (!settings.firstConfigurationShown) showWelcomePage();
     toggleTheme(settings.theme, true);
-    setActiveButton(document.querySelector("#segmented-button--temperature"), settings.temperatureUnit === temperatureUnits.CELSIUS ? 0 : 1);
-    setActiveButton(document.querySelector("#segmented-button--wind"), settings.windUnit === windUnits.KPH ? 0 : 1);
-    setActiveButton(document.querySelector("#segmented-button--pressure"), settings.pressureUnit === pressureUnits.HPA ? 0 : 1);
+    setActiveButton(document.querySelector("#segmented-button--temperature"), settings.temperatureUnit.value === temperatureUnits.CELSIUS.value ? 0 : 1);
+    setActiveButton(document.querySelector("#segmented-button--wind"), settings.windUnit.value === windUnits.KPH.value ? 0 : 1);
+    setActiveButton(document.querySelector("#segmented-button--pressure"), settings.pressureUnit.value === pressureUnits.HPA.value ? 0 : 1);
     document.querySelector("#switch-weather-page-layout-lock").checked = settings.weatherPageLayoutLocked;
 });

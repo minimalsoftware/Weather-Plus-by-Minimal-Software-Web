@@ -24,6 +24,7 @@
     background-color: var(--mainComponentColor);
     width: 500px;
     height: 650px;
+    min-height: 650px;
     border-radius: 10px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     font-size: 14px;
@@ -309,3 +310,18 @@
 .modal__chart {
     margin-top: 25px;
 }
+
+.modal__content--astronomy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+/*#modal--astronomy .moon {*/
+/*    display: none;*/
+/*}*/
+
+/*#modal--astronomy .sun {*/
+/*    margin-top: 25px;*/
+/*}*/
