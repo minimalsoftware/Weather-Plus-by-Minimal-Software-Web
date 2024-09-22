@@ -689,8 +689,6 @@ function initializeSortable() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadSegmentedButtons();
-
     initializeSortable();
 
     loadWeatherComponentsLayoutOrder(weatherPageContainer);
@@ -703,6 +701,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateSunPathWidth();
 });
+
+window.onload = () => {
+    loadSegmentedButtons();
+}
 
 const sunriseLine = document.querySelector(".sunrise__line");
 const path = document.getElementById("curve");

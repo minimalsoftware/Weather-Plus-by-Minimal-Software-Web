@@ -12,7 +12,7 @@ function loadSegmentedButtons() {
             segmentedButton.style.setProperty("--selected-left", `${selectedButton.offsetLeft - 5}px`);
         }
 
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             buttons.forEach((button, index) => {
                 button.addEventListener("click", () => {
                     buttons.forEach(btn => btn.classList.remove("segmented-button__item--selected"));
@@ -33,7 +33,7 @@ function loadSegmentedButtons() {
                     }, 300);
                 });
             });
-        }, 100);
+        });
     });
 }
 
