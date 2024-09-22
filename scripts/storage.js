@@ -31,6 +31,9 @@ let settings = {
 
 settings = JSON.parse(localStorage.getItem("settings")) ?? settings;
 
+/**
+ * Saves the settings object to the local storage in JSON format.
+ */
 function saveSettings() {
     localStorage.setItem("settings", JSON.stringify(settings));
 }

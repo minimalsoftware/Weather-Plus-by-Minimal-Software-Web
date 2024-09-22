@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 settings.sidebarWidth = newWidth;
                 saveSettings();
 
-                locationsMarquee();
+                locationsWeatherConditionMarquee();
             }
         }
     }
@@ -61,6 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+/**
+ * Toggles whether the sidebar is opened or closed.
+ */
 function toggleSidebar() {
     settings.sidebarState = sidebar.classList.contains("sidebar--closed");
     sidebar.style.transitionDuration = "300ms";
@@ -75,12 +78,15 @@ function toggleSidebar() {
     setTimeout(() => {
         sidebar.style.transitionDuration = "";
         mainContent.style.transitionDuration = "";
-        updatePath();
+        updateSunPathWidth();
     }, 300);
 
     saveSettings();
 }
 
+/**
+ * Closes the sidebar.
+ */
 function closeSidebar() {
     sidebar.classList.add("sidebar--closed");
     sidebar.style.width = "0";
@@ -88,6 +94,9 @@ function closeSidebar() {
     document.querySelector(".top-bar__button").classList.add("sidebar__toggle-button--reversed");
 }
 
+/**
+ * Restores the sidebar width to the default value.
+ */
 function restoreSidebarWidth() {
     sidebar.style.width = "";
     mainContent.style.width = "";
@@ -97,7 +106,7 @@ function restoreSidebarWidth() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    updatePath();
+    updateSunPathWidth();
     if (!settings.sidebarState) {
         closeSidebar();
         saveSettings();

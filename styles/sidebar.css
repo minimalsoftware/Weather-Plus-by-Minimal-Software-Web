@@ -9,7 +9,6 @@
     opacity: 1;
     white-space: nowrap;
     background-color: var(--mainComponentColor);
-    /*transition-duration: 300ms;*/
 }
 
 .sidebar--closed {
@@ -54,11 +53,8 @@
 }
 
 .top-bar__button {
-    /*position: fixed;*/
-    /*top: 25px;*/
     border: none;
     background-color: transparent;
-    /*margin-bottom: 10px;*/
     transition-duration: 500ms;
     height: 48px;
     min-width: 48px;

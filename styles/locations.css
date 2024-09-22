@@ -41,8 +41,8 @@
 }
 
 .location-search-bar:focus-within {
-    border: 3px solid var(--mainColor);
-    /*border-radius: 10px 10px 0 0;*/
+    border-color: var(--secondColor);
+    outline: 3px solid var(--mainColor);
 }
 
 .search-bar__icon {
@@ -75,16 +75,33 @@
 .autocomplete-results {
     background-color: var(--grayComponent);
     position: absolute;
-    top: calc(100% - 15px);
+    top: calc(100% - 12px);
     width: 100%;
     border-radius: 10px;
     border: 1px solid var(--borderColor);
     z-index: 1;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    /*padding: 10px 0;*/
     display: none;
     max-height: 340px;
     overflow-y: auto;
+    padding-right: 10px;
+}
+
+.autocomplete-results::-webkit-scrollbar {
+    width: 20px;
+    border-radius: 10px;
+}
+
+.autocomplete-results::-webkit-scrollbar-track {
+    background: var(--grayComponent);
+    border: 2px solid var(--grayComponent);
+    border-radius: 10px;
+}
+
+.autocomplete-results::-webkit-scrollbar-thumb {
+    background: var(--secondTextColor);
+    border-radius: 10px;
+    border: 7px solid var(--grayComponent);
 }
 
 .autocomplete-results--active {
@@ -124,8 +141,6 @@
 .autocomplete-result--active .autocomplete-result__container {
     background-color: var(--mainColor);
     color: #FFFFFF;
-    /*margin: 0 15px;*/
-    /*padding: 0 15px;*/
 }
 
 .autocomplete-result--active .autocomplete-result__name {

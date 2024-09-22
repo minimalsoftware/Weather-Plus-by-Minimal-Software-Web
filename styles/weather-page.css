@@ -160,10 +160,8 @@
 .hourly-forecast-separator {
     display: flex;
     justify-content: center;
-    /*transform: rotate(-90deg);*/
     writing-mode: vertical-lr;
     transform: scale(-1);
-    /*text-orientation: revert;*/
     color: var(--mainColor);
     font-size: 14px;
     margin-right: 30px;
@@ -267,7 +265,6 @@
 }
 
 .segmented-button__item--selected {
-    /*background-color: var(--mainColor);*/
     color: var(--mainBackgroundColor);
 }
 
@@ -282,15 +279,13 @@
 
 .daily-forecast {
     flex: 4;
-    /*width: 40%;*/
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: var(--mainComponentColor);
-    /*margin-top: 25px;*/
     margin-top: 0;
-    /*width: 35%;*/
     min-width: 375px;
+    cursor: initial;
 }
 
 @container (max-width: 375px) {
@@ -301,9 +296,6 @@
 
 .daily-forecast__content {
     height: 100%;
-    /*display: grid;*/
-    /*grid-template-columns: repeat(2, 1fr);*/
-    /*column-gap: 25px;*/
 }
 
 .daily-forecast__section {
@@ -322,10 +314,8 @@
     grid-template-columns: 1fr 30px auto;
     column-gap: 10px;
     justify-content: space-between;
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: space-between;*/
     margin-bottom: 15px;
+    cursor: pointer;
 }
 
 .daily-forecast-item:last-child {
@@ -410,7 +400,6 @@
     justify-content: space-between;
     margin-top: 0;
     height: auto;
-    /*height: calc(50% - 25px);*/
 }
 
 .aqi__content {
@@ -696,7 +685,6 @@
     height: 6px;
     border-radius: 10px;
     background: linear-gradient(to right, var(--uvIndexLow), var(--uvIndexModerate), var(--uvIndexHigh), var(--uvIndexVeryHigh), var(--uvIndexExtreme), var(--uvIndexHazardous));
-    /*background: linear-gradient(to right, var(--airQualityVeryGood-border), var(--airQualityModerate-border), var(--airQualityBad-border), var(--airQualityUnhealthy-border), var(--airQualityVeryUnhealthy-border), var(--airQualityHazardous-border));*/
 }
 
 .uv-index-indicator__thumb {

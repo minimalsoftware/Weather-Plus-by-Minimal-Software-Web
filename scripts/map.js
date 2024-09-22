@@ -18,6 +18,10 @@ let mapLayers = [
 
 let activeMapLayer = mapLayers[0];
 
+/**
+ * Opens the map where user can select desired location.
+ * @param fromFirstConfiguration
+ */
 function openMap(fromFirstConfiguration = false) {
     if (map) clearMap();
 
@@ -108,11 +112,17 @@ function openMap(fromFirstConfiguration = false) {
     });
 }
 
+/**
+ * Closes the map.
+ */
 function closeMap() {
     document.querySelector(".map").classList.remove("map--active");
     if (settings.firstConfigurationShown) hideOverlay();
 }
 
+/**
+ * Clears the select location from the map.
+ */
 function clearMap() {
     selectedLocationLat = selectedLocationLon = selectedLocationName = undefined;
 
@@ -130,6 +140,9 @@ function clearMap() {
     document.querySelector(".map__selected-location .lon").textContent = "";
 }
 
+/**
+ * Fetches the selected location from the map and adds to the location sidebar.
+ */
 function fetchSelectedLocation() {
     if (!selectedLocationName) return;
     let location = new Location(selectedLocationName, selectedLocationLat, selectedLocationLon);
@@ -142,6 +155,9 @@ function fetchSelectedLocation() {
     closeMap();
 }
 
+/**
+ * Updates the map layer based on the theme.
+ */
 function updateMapLayer() {
     let theme = settings.theme, url = activeMapLayer.url;
     if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
@@ -156,6 +172,10 @@ function updateMapLayer() {
     }).addTo(map);
 }
 
+/**
+ * Switches the map layer.
+ * @param {MapLayer} mapLayer The desired map layer.
+ */
 function switchMapLayer(mapLayer) {
     activeMapLayer = mapLayer;
 

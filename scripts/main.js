@@ -1,3 +1,6 @@
+/**
+ * The main script for the application.
+ */
 function hideWelcomePage() {
     document.querySelector(".welcome").classList.remove("welcome--active");
     settings.firstConfigurationShown = true;
@@ -16,6 +19,9 @@ function hideWelcomePage() {
     searchBarIcon = locationSearchBar.querySelector(".search-bar__cancel-icon");
 }
 
+/**
+ * Shows the welcome page.
+ */
 function showWelcomePage() {
     let welcomeElement = document.querySelector(".welcome");
     welcomeElement.style.display = "flex";
@@ -25,26 +31,36 @@ function showWelcomePage() {
     showOverlay();
 }
 
+/**
+ * Shows the overlay.
+ */
 function showOverlay() {
     document.querySelector(".overlay").classList.add("overlay--active");
 }
 
+/**
+ * Hides the overlay.
+ */
 function hideOverlay() {
     document.querySelector(".overlay").classList.remove("overlay--active");
 }
 
-// TODO: Implement format date functionality
-function formatDate(date) {
-
-
-    return date;
-}
-
+/**
+ * Rounds a number to a specific precision.
+ * @param value
+ * @param precision
+ * @returns {number}
+ */
 function round(value, precision = 0) {
     const exponent = Math.pow(10, precision);
     return Math.round(value * exponent) / exponent;
 }
 
+/**
+ * Changes subpage in a modal.
+ * @param modalId - The id of the modal.
+ * @param targetSubpageId - The id of the target subpage.
+ */
 function switchModalSubpage(modalId, targetSubpageId) {
     const modal = document.querySelector(`#${modalId}`);
     const subpages = modal.querySelectorAll(".modal__subpage");

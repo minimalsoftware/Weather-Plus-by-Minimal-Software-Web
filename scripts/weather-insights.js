@@ -1,3 +1,11 @@
+/**
+ * Returns weather insights for the current weather data.
+ * @param data The weather data.
+ * @param isAfterSunset Whether it is after sunset.
+ * @param isBeforeSunrise Whether it is before sunrise.
+ * @param sunsetHour The hour of sunset.
+ * @returns {string} The weather insights.
+ */
 function getHourlyWeatherInsights(data, isAfterSunset, isBeforeSunrise, sunsetHour) {
     let weatherInsights = "";
 
@@ -75,6 +83,11 @@ function getHourlyWeatherInsights(data, isAfterSunset, isBeforeSunrise, sunsetHo
     return weatherInsights;
 }
 
+/**
+ * Formats the hours array to time range with hyphen.
+ * @param hours The hours to format.
+ * @returns {string} The formatted time ranges.
+ */
 function formatTimeRanges(hours) {
     if (hours.length === 0) return '';
 

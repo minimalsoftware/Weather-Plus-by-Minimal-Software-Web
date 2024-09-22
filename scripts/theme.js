@@ -4,7 +4,12 @@ const themes = Object.freeze({
     AUTO: "auto",
 });
 
-function toggleTheme(theme, initialLoad = false, ) {
+/**
+ * Toggles the theme of the website.
+ * @param theme The theme to toggle.
+ * @param initialLoad Whether the function is called on an initial load.
+ */
+function toggleTheme(theme, initialLoad = false) {
     settings.theme = theme;
     saveSettings();
 
@@ -57,6 +62,10 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e =
     if (settings.theme === themes.AUTO) toggleTheme(themes.AUTO);
 });
 
+/**
+ * Changes the colour of the icons for a dark theme.
+ * @param revert Whether to revert the colour change.
+ */
 function changeIconColor(revert = false) {
     const mainColorIcons = document.querySelectorAll(".icon--main-color");
     for (let icon of mainColorIcons) {

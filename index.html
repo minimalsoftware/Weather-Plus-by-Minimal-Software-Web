@@ -38,6 +38,9 @@
     <script src="scripts/weather-insights.js" defer></script>
     <script src="scripts/modal.js" defer></script>
     <script src="scripts/urlParams.js" defer></script>
+    <script src="scripts/segmentedButtons.js" defer></script>
+    <script src="scripts/weatherCharts.js" defer></script>
+    <script src="scripts/weatherModals.js" defer></script>
 
     <script src="assets/weather-conditions.js" defer></script>
     <script src="assets/compass.js" defer></script>
@@ -191,7 +194,9 @@
                     <div class="location-search-bar-container">
                         <div class="location-search-bar">
                             <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
-                            <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                            <label>
+                                <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                            </label>
                             <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
                         </div>
                     </div>
@@ -355,41 +360,7 @@
                 <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
             </button>
         </div>
-        <!--        <div class="day-picker" id="day-picker&#45;&#45;astronomy">-->
-        <!--            <div class="day-picker__scroll"></div>-->
-        <!--        </div>-->
         <div class="modal__content modal__content--astronomy">
-            <!--            <div class="chart-type-switch">-->
-            <!--                <div class="segmented-button">-->
-            <!--                    <button class="segmented-button__item segmented-button__item&#45;&#45;selected" onclick="changeAstronomyModalType(astronomyTypes.SUN)">Sunrise and sunset</button>-->
-            <!--                    <button class="segmented-button__item" onclick="changeAstronomyModalType(astronomyTypes.MOON)">Moon phase</button>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="modal__content&#45;&#45;moon">-->
-            <!--                <div class="sun">-->
-            <!--                    <div class="sunrise-sunset__content">-->
-            <!--                        <div class="sunrise-sunset__section">-->
-            <!--                            <div class="sunrise-sunset-item">-->
-            <!--                                <div class="sunrise-sunset-item__title">Sunrise</div>-->
-            <!--                                <div class="sunrise-sunset-item__value sunrise-value"></div>-->
-            <!--                            </div>-->
-            <!--                            <div class="sunrise-sunset-item">-->
-            <!--                                <div class="sunrise-sunset-item__title">Sunset</div>-->
-            <!--                                <div class="sunrise-sunset-item__value sunset-value"></div>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                        <div class="sunrise__line">-->
-            <!--                            <svg height="54">-->
-            <!--                                <path id="curve"-->
-            <!--                                      d="M10 46 Q 154 -28 298 46"-->
-            <!--                                      stroke-linecap="round"-->
-            <!--                                      style="fill: none; stroke: #EEF2F8; stroke-width: 4"/>-->
-            <!--                                <circle id="dot" class="spot3" cx="0" cy="0" r="8" fill="#FAC700" stroke="#FAC700"></circle>-->
-            <!--                            </svg>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--                <div class="moon">-->
             <template id="template--moon-phase-calendar-item">
                 <div class="day"></div>
                 <img class="moon-phase" alt="Moon phase" src="">
@@ -422,8 +393,6 @@
                     <button class="moon-phases-calendar__current-month-button" onclick="changeMoonPhaseCalendarMonth(0, true)">Show current month</button>
                 </div>
             </div>
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
     </div>
     <div class="sidebar">

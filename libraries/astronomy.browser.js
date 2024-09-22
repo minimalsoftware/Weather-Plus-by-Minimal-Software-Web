@@ -285,7 +285,7 @@
             Body.Star1, Body.Star2, Body.Star3, Body.Star4,
             Body.Star5, Body.Star6, Body.Star7, Body.Star8
         ];
-        ;
+
         const StarTable = [
             { ra: 0, dec: 0, dist: 0 },
             { ra: 0, dec: 0, dist: 0 },
@@ -3357,7 +3357,7 @@
             }
             return new StateVector(r.x, r.y, r.z, v.x, v.y, v.z, time);
         }
-        ;
+
         const Rotation_JUP_EQJ = new RotationMatrix([
             [9.99432765338654e-01, -3.36771074697641e-02, 0.00000000000000e+00],
             [3.03959428906285e-02, 9.02057912352809e-01, 4.30543388542295e-01],

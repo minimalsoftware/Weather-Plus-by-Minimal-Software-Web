@@ -1,3 +1,7 @@
+/**
+ * Opens modal and shows overlay.
+ * @param modalId - The id of the modal.
+ */
 function openModal(modalId) {
     const modal = document.querySelector(`#${modalId}`);
     modal.classList.add("modal--active");
@@ -14,6 +18,10 @@ function openModal(modalId) {
     });
 }
 
+/**
+ * Closes modal and hides overlay.
+ * @param modalId - The id of the modal.
+ */
 function closeModal(modalId) {
     const modal = document.querySelector(`#${modalId}`);
     modal.classList.remove("modal--active");

@@ -8,6 +8,9 @@ class Location {
 
 const locationsContainer = document.querySelector(".locations-container");
 
+/**
+ * Fetches weather data for all locations from the Open-Meteo API.
+ */
 function fetchLocationsData() {
     const latitudes = settings.locations.map(location => location.lat).join(",");
     const longitudes = settings.locations.map(location => location.lon).join(",");
@@ -24,6 +27,10 @@ function fetchLocationsData() {
 
 let fetchedLocationsData;
 
+/**
+ * Displays the locations in the sidebar.
+ * @param {Object} data The fetched weather data for all locations.
+ */
 function displayLocations(data) {
     fetchedLocationsData = data;
 
@@ -106,10 +113,13 @@ function displayLocations(data) {
         locationsContainer.append(location);
     }
 
-    locationsMarquee();
+    locationsWeatherConditionMarquee();
 }
 
-function locationsMarquee() {
+/**
+ * Adds marquee animation to the weather condition text if it overflows the container.
+ */
+function locationsWeatherConditionMarquee() {
     const marqueeContainer = document.querySelectorAll('.location');
     const marqueeSpan = document.querySelectorAll('.marquee span');
     const marquee = document.querySelectorAll('.marquee');
@@ -123,6 +133,9 @@ function locationsMarquee() {
     }
 }
 
+/**
+ * Attaches click listeners to the locations in the sidebar when, for example, locations are reordered.
+ */
 function attachLocationClickListeners() {
     document.querySelectorAll(".location").forEach((locationElement, index) => {
         locationElement.addEventListener("click", () => {
@@ -157,6 +170,10 @@ let locationSearchBar = !settings.firstConfigurationShown ? document.querySelect
 let autocompleteResults = !settings.firstConfigurationShown ? document.querySelectorAll(".autocomplete-results")[0] : document.querySelectorAll(".autocomplete-results")[1];
 let currentIndex = -1;
 
+/**
+ * Displays the search results in the autocomplete dropdown from photon API.
+ * @param {Object} data The fetched search results from the photon API.
+ */
 function displaySearchResults(data) {
     currentIndex = -1;
     autocompleteResults.innerHTML = "";
@@ -178,6 +195,10 @@ function displaySearchResults(data) {
     autocompleteResults.classList.toggle("autocomplete-results--active", data.length > 0);
 }
 
+/**
+ * Adds a location to the list and fetches the weather data for it.
+ * @param {Location} location The location to add.
+ */
 function addAndFetchLocation(location) {
     if (settings.locations.some(loc => loc.name === location.name)) {
         showNotification(`Location ${location.name} is already on the list`);
@@ -204,6 +225,10 @@ let searchBarIcon = locationSearchBar.querySelector(".search-bar__cancel-icon");
 
 let currentFetchController = null;
 
+/**
+ * Searches for locations using the photon API.
+ * @param {string} query The search query.
+ */
 function searchLocations(query) {
     searchBarIcon.classList.toggle("search-bar__icon--active", query.length > 0);
 
@@ -219,13 +244,17 @@ function searchLocations(query) {
             .then(data => {
                 displaySearchResults(data.features);
             })
-            .catch(() => {});
+            .catch(() => {
+            });
     } else {
         autocompleteResults.innerHTML = "";
         autocompleteResults.classList.remove("autocomplete-results--active");
     }
 }
 
+/**
+ * Clears the search bar and hides the autocomplete dropdown.
+ */
 function clearLocationSearchBar() {
     locationSearch.value = "";
     locationSearch.blur();
@@ -239,6 +268,10 @@ document.addEventListener("click", (event) => {
     if (!isClickInside) autocompleteResults.classList.remove("autocomplete-results--active");
 });
 
+/**
+ * Selects a search result using the arrow keys and the Enter key.
+ * @param {KeyboardEvent} event The keyboard event.
+ */
 function selectWithArrowKeys(event) {
     const results = autocompleteResults.querySelectorAll(".autocomplete-result");
 
@@ -266,6 +299,10 @@ locationSearch.addEventListener("keydown", (event) => {
     selectWithArrowKeys(event);
 });
 
+/**
+ * Updates the selection of the search results.
+ * @param results
+ */
 function updateSelection(results) {
     results.forEach((result, index) => {
         if (index === currentIndex) {
@@ -280,6 +317,9 @@ function updateSelection(results) {
 const editLocationsButton = document.querySelector(".edit-locations-btn");
 let editMode = false;
 
+/**
+ * Toggles the edit mode for the locations in the sidebar.
+ */
 function toggleEditLocationMode() {
     if (!editMode) {
         document.querySelectorAll(".location").forEach(locationElement => {
@@ -298,6 +338,9 @@ function toggleEditLocationMode() {
     }
 }
 
+/**
+ * Reattaches the delete buttons to the locations in the sidebar.
+ */
 function reattachDeleteButtons() {
     const locationElements = document.querySelectorAll(".location");
     locationElements.forEach((locationElement, index) => {
@@ -306,6 +349,9 @@ function reattachDeleteButtons() {
     });
 }
 
+/**
+ * Reattach the click listeners to the locations in the sidebar.
+ */
 function reattachLocationFetch() {
     const locationElements = document.querySelectorAll(".location");
     locationElements.forEach((locationElement, index) => {
@@ -319,6 +365,11 @@ function reattachLocationFetch() {
     });
 }
 
+/**
+ * Deletes a location from the sidebar.
+ * @param deleteButton - The delete button element.
+ * @param index - The index of the location in the settings.
+ */
 function deleteLocation(deleteButton, index) {
     let location = deleteButton.closest(".location");
     let locationName = location.querySelector(".location__name").textContent;
