@@ -528,6 +528,11 @@ function switchHourlyForecastLength(length) {
     displayHourlyForecast(new Date(), fetchedData, length);
 }
 
+/**
+ * Adjusts the period shown in the daily forecast.
+ * @param startIndex - Start day
+ * @param endIndex - End day
+ */
 function switchDailyForecastPeriod(startIndex, endIndex) {
     displayDailyForecast(fetchedData, startIndex, endIndex);
 }

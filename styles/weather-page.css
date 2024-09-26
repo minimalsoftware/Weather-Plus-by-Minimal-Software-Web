@@ -806,6 +806,7 @@
     justify-content: center;
     flex-direction: column;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .moon-phases-calendar__item img {

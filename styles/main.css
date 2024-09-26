@@ -249,12 +249,22 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
+.tippy-box[data-theme~='main-color'] .tippy-content {
+    background-color: var(--mainColor);
+    color: var(--mainComponentColor);
+    border-radius: 10px;
+}
+
 .tippy-tooltip.custom-theme {
     border: 1px solid var(--borderColor);
     border-radius: 8px;
 }
 
 .tippy-box[data-theme~='custom'] .tippy-svg-arrow {
+    fill: var(--mainColor);
+}
+
+.tippy-box[data-theme~='main-color'] .tippy-svg-arrow {
     fill: var(--mainColor);
 }
 

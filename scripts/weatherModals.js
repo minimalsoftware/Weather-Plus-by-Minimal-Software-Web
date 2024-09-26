@@ -119,6 +119,19 @@ function displayMoonPhasesCalendar() {
 
             if (getMoonPhaseName(targetDateMoonPhase) === "Full Moon") fullMoon = true;
 
+            tippy(day, {
+                content: getMoonPhaseName(targetDateMoonPhase, fullMoon),
+                allowHTML: true,
+                theme: 'main-color',
+                inertia: {
+                    duration: 250,
+                    easing: 'ease-out'
+                },
+                animation: 'scale',
+                interactive: true,
+                arrow: tippy.roundArrow,
+            });
+
             moonPhasesCalendarContent.appendChild(day);
         }
 
