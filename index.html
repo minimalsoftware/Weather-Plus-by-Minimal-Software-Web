@@ -555,6 +555,10 @@
                     <div class="weather-component daily-forecast" data-id="3">
                         <div class="weather-component__header">
                             <div class="weather-component__title">Daily forecast</div>
+                            <div class="segmented-button">
+                                <button class="segmented-button__item segmented-button__item--selected" onclick="switchDailyForecastPeriod(0, 7)">7-Day Forecast</button>
+                                <button class="segmented-button__item" onclick="switchDailyForecastPeriod(7, 14)">Next 7 Days</button>
+                            </div>
                         </div>
                         <div class="daily-forecast__content">
                             <div class="daily-forecast__section">
@@ -736,7 +740,7 @@
                                         </div>
                                     </div>
                                     <div class="sunrise__line">
-                                        <svg height="54">
+                                        <svg height="54" width="298">
                                             <path id="curve"
                                                   d="M10 46 Q 154 -28 298 46"
                                                   stroke-linecap="round"

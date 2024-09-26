@@ -22,7 +22,7 @@ function loadSegmentedButtons() {
 
                     const buttonRect = button.getBoundingClientRect();
                     const containerRect = segmentedButton.getBoundingClientRect();
-                    const offsetLeft = buttonRect.left - containerRect.left;
+                    const offsetLeft = buttonRect.left - containerRect.left + segmentedButton.scrollLeft;
 
                     segmentedButton.style.setProperty("--selected-index", index);
                     segmentedButton.style.setProperty("--selected-width", `${buttonRect.width}px`);

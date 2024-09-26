@@ -162,8 +162,10 @@ function displayHourlyForecast(currentTime, data, length = 24) {
  * Displays the daily weather forecast for the next 7 days.
  *
  * @param {Object} data - The weather data object.
+ * @param startIndex
+ * @param endIndex
  */
-function displayDailyForecast(data) {
+function displayDailyForecast(data, startIndex = 0, endIndex = 7) {
     const dailyForecastItems = document.querySelector(".daily-forecast-items");
     const dailyForecastItemTemplate = document.querySelector("#daily-forecast-item-template");
 
@@ -176,7 +178,7 @@ function displayDailyForecast(data) {
 
     let iconTheme = theme === themes.DARK ? "dark-theme" : "light-theme";
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = startIndex; i < endIndex; i++) {
         let forecastItem = document.createElement("div");
 
         forecastItem.classList.add("daily-forecast-item");
@@ -524,6 +526,10 @@ function displayWeatherData(data, location = settings.activeLocation) {
  */
 function switchHourlyForecastLength(length) {
     displayHourlyForecast(new Date(), fetchedData, length);
+}
+
+function switchDailyForecastPeriod(startIndex, endIndex) {
+    displayDailyForecast(fetchedData, startIndex, endIndex);
 }
 
 /**

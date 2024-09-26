@@ -19,7 +19,6 @@
 
     .top-bar {
         position: initial;
-        justify-content: flex-end;
         z-index: 10;
         padding: 15px 15px 0 15px;
     }
@@ -39,6 +38,7 @@
 
     .daily-forecast-item__right-section {
         justify-content: flex-start;
+        margin-left: 0;
     }
 
     .daily-forecast-item__max-min-temperature {

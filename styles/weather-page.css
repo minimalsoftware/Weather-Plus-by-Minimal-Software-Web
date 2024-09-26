@@ -348,6 +348,7 @@
     align-items: center;
     justify-content: end;
     width: 120px;
+    margin-left: 15px;
 }
 
 .daily-forecast-item__icon {
@@ -366,8 +367,8 @@
 .daily-forecast-item__max-min-temperature {
     display: flex;
     align-items: center;
-    margin-left: 15px;
     color: var(--mainTextColor);
+    width: 100%;
 }
 
 .daily-forecast-item__max-min-temperature .max-temperature {
