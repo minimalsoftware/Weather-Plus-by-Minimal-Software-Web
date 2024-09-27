@@ -18,6 +18,10 @@ function fetchWeather(location = settings.activeLocation) {
         return;
     }
 
+    if (screenWidth <= 750) {
+        closeSidebar();
+    }
+
     weatherPage.classList.remove("weather-page--active");
 
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,apparent_temperature_max,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
@@ -145,7 +149,8 @@ function displayHourlyForecast(currentTime, data, length = 24) {
                 easing: 'ease-out'
             },
             animation: 'scale',
-            placement: 'left',
+            placement: screenWidth > 750 ? 'left' : 'auto',
+            maxWidth: screenWidth - 30,
             interactive: true,
             interactiveDebounce: 75,
             arrow: tippy.roundArrow,
@@ -241,7 +246,8 @@ function displayDailyForecast(data, startIndex = 0, endIndex = 7) {
                 easing: 'ease-out'
             },
             animation: 'scale',
-            placement: 'left',
+            placement: screenWidth > 750 ? 'left' : 'auto',
+            maxWidth: screenWidth - 30,
             interactive: true,
             interactiveDebounce: 75,
             appendTo: document.querySelector(".daily-forecast"),
@@ -459,7 +465,7 @@ function displayPrecipitation(data, hour) {
     document.querySelector(".forecast-precipitation__value").textContent = `${Math.round(precipitation)} mm`;
 
     loadDayPicker("day-picker--precipitation", function (dayIndex) {
-        displayPrecipitationChart(fetchedData, dayIndex, quarterlyForecast);
+        displayPrecipitationChart(fetchedData, dayIndex, isQuarterlyForecast);
         displayPrecipitationModalData(fetchedData, dayIndex);
     }, 14);
 
@@ -676,7 +682,7 @@ function initializeSortable() {
         sortableWeatherPageSection.destroy();
     }
 
-    if (!settings.weatherPageLayoutLocked) {
+    if (!settings.weatherPageLayoutLocked && screenWidth > 750) {
         sortableWeatherPageContainer = new Sortable(weatherPageContainer, {
             animation: 150,
             ghostClass: 'sortable-ghost',
@@ -727,9 +733,9 @@ function updateSunPathWidth() {
     const width = sunriseLine.offsetWidth;
     const height = sunriseLine.offsetHeight;
     sunriseLine.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    const d = `M10 46 Q ${width / 2} -28 ${width - 10} 46`;
+    const d = `M10 46 Q ${width / 2} -28 ${width - 12} 46`;
     path.setAttribute("d", d);
-
+    document.querySelector(".sun-path").style.width = `${width - 10}px`;
     updateSunPosition();
 }
 

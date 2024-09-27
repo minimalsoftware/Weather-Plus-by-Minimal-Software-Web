@@ -1,7 +1,3 @@
-.logo {
-    margin-bottom: 25px;
-}
-
 .logo__title {
     font-size: 18px;
     color: var(--mainTextColor);
@@ -28,6 +24,10 @@
     outline: 1px solid transparent;
     font-size: 15px;
     padding: 0 15px;
+}
+
+.location-search-bar label {
+    width: 100%;
 }
 
 .location-search {

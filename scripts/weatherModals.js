@@ -235,19 +235,15 @@ const precipitationModal = document.querySelector("#modal--precipitation");
  * @param dayIndex - The index of the day for which to display data. If 0, displays current data.
  */
 function displayPrecipitationModalData(data, dayIndex) {
-    let daily = false;
     let precipitationSum = 0;
+    let offset = dayIndex === 0 ? new Date().getHours() : 0;
 
-    if (dayIndex > 0) {
-        for (let i = dayIndex * 24; i < 24 + 24 * dayIndex; i++) {
-            precipitationSum += data.hourly.precipitation[i];
-        }
-        precipitationSum = Math.round(precipitationSum);
-
-        daily = true;
+    for (let i = dayIndex * 24 + offset; i < 24 + 24 * dayIndex; i++) {
+        precipitationSum += data.hourly.precipitation[i];
     }
+    precipitationSum = Math.round(precipitationSum);
 
-    precipitationModal.querySelector(".total-precipitation__value").textContent = daily ? `${precipitationSum} mm` : `${Math.round(data.hourly.precipitation[dayIndex])} mm`;
+    precipitationModal.querySelector(".total-precipitation__value").textContent = `${precipitationSum} mm`;
 
     displayPrecipitationChart(data, dayIndex);
 }

@@ -3,10 +3,24 @@
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 10;
+        z-index: 100;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-        width: 300px;
-        max-width: 300px;
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+    }
+
+    .sidebar--closed {
+        max-width: 0;
+        min-width: 0;
+    }
+
+    .sidebar__toggle-button {
+        display: flex;
+    }
+
+    .resizer {
+        display: none;
     }
 
     .top-bar__button {
@@ -19,13 +33,33 @@
 
     .top-bar {
         position: initial;
-        z-index: 10;
         padding: 15px 15px 0 15px;
+        width: 100%;
+    }
+
+    .segmented-button {
+        max-width: 100%;
     }
 
     .weather-page {
         width: 100%;
         padding: 0 15px 15px 15px;
+    }
+
+    .weather-page__row-section {
+        row-gap: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .weather-component__header {
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .weather-component__title {
+        margin-bottom: 10px;
     }
 
     .current-weather {
@@ -63,7 +97,6 @@
         border-radius: 0;
     }
 
-
     .map__selected-location {
         bottom: 90px;
         right: initial;
@@ -78,9 +111,28 @@
 
     .weather-page__column-section {
         row-gap: 15px;
+        grid-template-rows: repeat(2, auto);
     }
 
     .weather-data-provider {
         margin-top: 15px;
+    }
+
+    .notification {
+        left: 15px;
+        right: 15px;
+        transform: translateX(0);
+    }
+
+    .moon__phase-graphic {
+        height: 80px;
+    }
+
+    #settings-item--lock-weather-page-layout {
+        display: none;
+    }
+
+    #top-bar__button--share {
+        display: none;
     }
 }

@@ -1,3 +1,5 @@
+const screenWidth = window.innerWidth;
+
 /**
  * The main script for the application.
  */

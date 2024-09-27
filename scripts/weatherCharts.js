@@ -40,6 +40,8 @@ function displayAirQualityChart(airQualityData, dayIndex) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     ticks: {
@@ -118,6 +120,8 @@ function displayWindChart(data, dayIndex) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     ticks: {
@@ -207,6 +211,8 @@ function displayUVIndexChart(data, dayIndex) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     ticks: {
@@ -249,7 +255,7 @@ function displayUVIndexChart(data, dayIndex) {
 
 let precipitationChart;
 let selectedPrecipitationDay = 0;
-let quarterlyForecast = false;
+let isQuarterlyForecast = false;
 
 /**
  * Display precipitation chart in modal.
@@ -257,21 +263,21 @@ let quarterlyForecast = false;
  * @param day - The index of the day for which to display data.
  * @param isQuarterlyForecast - Whether to display a quarterly forecast.
  */
-function displayPrecipitationChart(data, day, isQuarterlyForecast = false) {
-    quarterlyForecast = isQuarterlyForecast;
+function displayPrecipitationChart(data, day) {
+    // quarterlyForecast = isQuarterlyForecast;
     selectedPrecipitationDay = day;
 
     if (precipitationChart) precipitationChart.destroy();
 
     let precipitationData = [];
 
-    if (quarterlyForecast) {
+    if (isQuarterlyForecast) {
         for (let i = day * 96; i < 96 + 96 * day; i++) {
-            precipitationData.push(Math.round(data.minutely_15.precipitation[i]));
+            precipitationData.push(data.minutely_15.precipitation[i]);
         }
     } else {
         for (let i = day * 24; i < 24 + 24 * day; i++) {
-            precipitationData.push(Math.round(data.hourly.precipitation[i]));
+            precipitationData.push(data.hourly.precipitation[i]);
         }
     }
 
@@ -289,7 +295,7 @@ function displayPrecipitationChart(data, day, isQuarterlyForecast = false) {
     Chart.defaults.font.family = "LexendDeca";
 
     let quarterlyLabels = [];
-    if (quarterlyForecast) {
+    if (isQuarterlyForecast) {
         let hour = 0;
         let minutes = 0;
         for (let i = 0; i < 96; i++) {
@@ -312,7 +318,7 @@ function displayPrecipitationChart(data, day, isQuarterlyForecast = false) {
     precipitationChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: quarterlyForecast ? quarterlyLabels : hourlyLabels,
+            labels: isQuarterlyForecast ? quarterlyLabels : hourlyLabels,
             datasets: [{
                 data: precipitationData,
                 backgroundColor: gradient,
@@ -320,6 +326,8 @@ function displayPrecipitationChart(data, day, isQuarterlyForecast = false) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     ticks: {

@@ -56,7 +56,6 @@ function displayLocations(data) {
             location.addEventListener("click", () => {
                 if (editMode) return;
                 settings.activeLocation = settings.locations[i] || settings.locations[0];
-                console.log(settings.locations[i]);
                 saveSettings();
                 fetchWeather();
                 if (settings.locations.length > 1) {
@@ -120,6 +119,8 @@ function displayLocations(data) {
  * Adds marquee animation to the weather condition text if it overflows the container.
  */
 function locationsWeatherConditionMarquee() {
+    if (screenWidth <= 750) return;
+
     const marqueeContainer = document.querySelectorAll('.location');
     const marqueeSpan = document.querySelectorAll('.marquee span');
     const marquee = document.querySelectorAll('.marquee');
@@ -153,6 +154,8 @@ window.addEventListener("DOMContentLoaded", () => {
     attachLocationClickListeners();
 
     new Sortable(locationsContainer, {
+        delay: 250,
+        delayOnTouchOnly: false,
         animation: 150,
         ghostClass: 'sortable-ghost',
         onEnd: function (/**Event*/evt) {

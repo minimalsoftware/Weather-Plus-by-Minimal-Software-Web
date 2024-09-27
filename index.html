@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div class="settings-item">
+            <div class="settings-item" id="settings-item--lock-weather-page-layout">
                 <div class="settings-item__title">Lock weather page layout</div>
                 <div class="settings-item__content">
                     <label class="switch">
@@ -229,8 +229,8 @@
         <div class="modal__content">
             <div class="chart-type-switch">
                 <div class="segmented-button" id="segmented-button-precipitation-chart-type">
-                    <button class="segmented-button__item segmented-button__item--selected" onclick="displayPrecipitationChart(fetchedData, selectedPrecipitationDay)">Hourly</button>
-                    <button class="segmented-button__item" onclick="displayPrecipitationChart(fetchedData, selectedPrecipitationDay, true)">15-Minutely</button>
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="isQuarterlyForecast = false; displayPrecipitationChart(fetchedData, selectedPrecipitationDay);">Hourly</button>
+                    <button class="segmented-button__item" onclick="isQuarterlyForecast = true; displayPrecipitationChart(fetchedData, selectedPrecipitationDay)">15-Minutely</button>
                 </div>
             </div>
             <div class="total-precipitation">
@@ -397,10 +397,15 @@
     </div>
     <div class="sidebar">
         <div class="sidebar__container">
-            <div class="logo">
-                <span class="logo__title">Weather+</span>
-                <br>
-                <span class="logo__company">by Minimal Software</span>
+            <div class="sidebar__header">
+                <div class="logo">
+                    <span class="logo__title">Weather+</span>
+                    <br>
+                    <span class="logo__company">by Minimal Software</span>
+                </div>
+                <button class="sidebar__toggle-button" onclick="toggleSidebar()">
+                    <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Close">
+                </button>
             </div>
             <template id="autocomplete-result-template">
                 <div class="autocomplete-result__container">
@@ -412,7 +417,9 @@
                 <div class="location-search-bar-container">
                     <div class="location-search-bar">
                         <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
-                        <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                        <label>
+                            <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                        </label>
                         <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
                     </div>
                 </div>
@@ -455,7 +462,7 @@
                 <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
             </button>
             <div class="top-bar__section">
-                <button class="top-bar__button" title="Share link to this location" onclick="copyLinkToClipboard();">
+                <button class="top-bar__button" id="top-bar__button--share" title="Share link to current location" onclick="copyLinkToClipboard();">
                     <img class="icon--main-color" src="graphics/svg/link-main-color.svg" alt="Share link">
                 </button>
                 <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')">
@@ -740,7 +747,7 @@
                                         </div>
                                     </div>
                                     <div class="sunrise__line">
-                                        <svg height="54" width="298">
+                                        <svg class="sun-path" height="54" width="298">
                                             <path id="curve"
                                                   d="M10 46 Q 154 -28 298 46"
                                                   stroke-linecap="round"

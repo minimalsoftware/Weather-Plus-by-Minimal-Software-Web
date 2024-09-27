@@ -306,6 +306,12 @@
 
 .modal__chart {
     margin-top: 25px;
+    min-height: 300px;
+}
+
+.modal__chart canvas {
+    width: 100%;
+    height: 100%;
 }
 
 .modal__content--astronomy {
