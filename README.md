@@ -3,8 +3,6 @@
 ![Weather+ by Minimal Software application screenshot](application-screenshot.png)
 _See more screenshots in the [screenshots](screenshots) directory._
 
-### Features:
-
 ### Data sources:
 - Weather data is provided by [OpenWeatherMap](https://openweathermap.org/).
 - Location autocomplete is provided by [Photon Komoot](https://photon.komoot.io/).
