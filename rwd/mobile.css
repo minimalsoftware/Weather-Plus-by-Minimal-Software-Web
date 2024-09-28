@@ -94,6 +94,10 @@
         top: 0;
     }
 
+    .welcome--active {
+        top: 0;
+    }
+
     .modal__header {
         display: flex;
     }
