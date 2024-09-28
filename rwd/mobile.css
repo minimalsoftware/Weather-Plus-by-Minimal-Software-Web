@@ -85,6 +85,17 @@
         width: 100%;
         height: 100%;
         border-radius: 0;
+        top: 100%;
+        left: 0;
+        transform: translate(0);
+    }
+
+    .modal--active {
+        top: 0;
+    }
+
+    .modal__header {
+        display: flex;
     }
 
     .map {
