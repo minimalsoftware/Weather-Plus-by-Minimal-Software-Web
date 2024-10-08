@@ -82,7 +82,7 @@ function openMap(fromFirstConfiguration = false) {
 
             L.marker([lat, lon], {
                 icon: L.divIcon({
-                    html: `<img src="../graphics/svg/location-on-main-color.svg" class="marker-animated" style="width: 50px; height: 82px;" alt="Marker">`,
+                    html: `<img src="graphics/svg/location-on-main-color.svg" class="marker-animated" style="width: 50px; height: 82px;" alt="Marker">`,
                     iconSize: [50, 82],
                     iconAnchor: [25, 60],
                 })
