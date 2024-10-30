@@ -12,8 +12,7 @@ class MapLayer {
 }
 
 let mapLayers = [
-    new MapLayer("OpenStreetMap", "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors", "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}", "png", 18),
-    new MapLayer("Stadia Maps", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}", '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>', "", "jpg", 15),
+    new MapLayer("OpenStreetMap", "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors", "", "png", 18),
 ];
 
 let activeMapLayer = mapLayers[0];
@@ -41,10 +40,7 @@ function openMap(fromFirstConfiguration = false) {
             zoomControl: false
         }).setView([settings.activeLocation?.lat ?? 0, settings.activeLocation?.lon ?? 0]);
 
-        let theme = settings.theme;
-        if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
-
-        let layerUrl = theme === "dark" ? mapLayers[0].darkThemeUrl : mapLayers[0].url;
+        let layerUrl = mapLayers[0].url;
 
         L.tileLayer(layerUrl, {
             minZoom: 0,
