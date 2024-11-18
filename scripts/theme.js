@@ -57,8 +57,6 @@ function toggleTheme(theme, initialLoad = false) {
 }
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
-    console.log("Theme changed" + settings.theme);
-
     if (settings.theme === themes.AUTO) toggleTheme(themes.AUTO);
 });
 

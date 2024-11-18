@@ -27,7 +27,6 @@ function fetchWeather(location = settings.activeLocation) {
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,apparent_temperature_max,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=14&minutely_15=precipitation`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             displayWeatherData(data, location);
         })
         .catch(error => console.error("Error:", error));
@@ -398,15 +397,6 @@ function displayMoonData(isAfterSunset) {
         refreshSegmentedButton(segmentedButton);
     }
 
-    // console.log(moonrise);
-    // console.log(moonset);
-
-    // console.log(`Visual Magnitude: ${illuminationInfo.mag}`);
-    // console.log(`Phase Angle: ${illuminationInfo.phase_angle}`);
-    // console.log(`Phase Name: ${getMoonPhaseName(illuminationInfo.phase_angle)}`);
-    // console.log(`Illuminated Fraction: ${illuminationInfo.phase_fraction}`);
-    // let moonrise = Astronomy.SearchRiseSet('Moon', observer, date);
-    // console.log(moonrise)
     let theme = settings.theme;
     if (theme === themes.AUTO) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.DARK : themes.LIGHT;
 
@@ -503,7 +493,6 @@ function displayWeatherData(data, location = settings.activeLocation) {
     fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${settings.activeLocation.lat}&longitude=${settings.activeLocation.lon}&current=european_aqi&hourly=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,european_aqi&forecast_days=7`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             displayAirQuality(data);
         })
         .catch(error => console.error("Error:", error));
