@@ -16,6 +16,7 @@ function displayAirQualityChart(airQualityData, dayIndex) {
 
     let style = getComputedStyle(document.body);
     let secondTextColor = style.getPropertyValue("--secondTextColor");
+    let gridColor = style.getPropertyValue("--chartGridColor");
 
     const ctx = document.getElementById('aqi-chart').getContext('2d');
 
@@ -46,6 +47,9 @@ function displayAirQualityChart(airQualityData, dayIndex) {
                 x: {
                     ticks: {
                         color: secondTextColor
+                    },
+                    grid: {
+                        color: gridColor,
                     }
                 },
                 y: {
@@ -55,6 +59,12 @@ function displayAirQualityChart(airQualityData, dayIndex) {
                         color: secondTextColor,
                         stepSize: 50,
                         callback: value => `${value} AQI`
+                    },
+                    grid: {
+                        color: gridColor,
+                    },
+                    border: {
+                        color: gridColor,
                     }
                 }
             },
@@ -100,6 +110,7 @@ function displayWindChart(data, dayIndex) {
 
     let style = getComputedStyle(document.body);
     let secondTextColor = style.getPropertyValue("--secondTextColor");
+    let gridColor = style.getPropertyValue("--chartGridColor");
 
     const ctx = document.getElementById('wind-chart').getContext('2d');
 
@@ -116,7 +127,7 @@ function displayWindChart(data, dayIndex) {
             datasets: [{
                 data: windData,
                 backgroundColor: gradient,
-                borderRadius: 3
+                borderRadius: 3,
             }]
         },
         options: {
@@ -126,12 +137,21 @@ function displayWindChart(data, dayIndex) {
                 x: {
                     ticks: {
                         color: secondTextColor
+                    },
+                    grid: {
+                        color: gridColor,
                     }
                 },
                 y: {
                     ticks: {
                         color: secondTextColor,
                         callback: value => `${value} ${settings.windUnit.value}`
+                    },
+                    grid: {
+                        color: gridColor,
+                    },
+                    border: {
+                        color: gridColor,
                     }
                 }
             },
@@ -177,6 +197,7 @@ function displayUVIndexChart(data, dayIndex) {
 
     let style = getComputedStyle(document.body);
     let secondTextColor = style.getPropertyValue("--secondTextColor");
+    let gridColor = style.getPropertyValue("--chartGridColor");
 
     let uvIndexColors = [
         style.getPropertyValue("--uvIndexLow"),
@@ -217,6 +238,9 @@ function displayUVIndexChart(data, dayIndex) {
                 x: {
                     ticks: {
                         color: secondTextColor
+                    },
+                    grid: {
+                        color: gridColor,
                     }
                 },
                 y: {
@@ -226,6 +250,12 @@ function displayUVIndexChart(data, dayIndex) {
                         color: secondTextColor,
                         stepSize: 1,
                         callback: value => `${value}`
+                    },
+                    grid: {
+                        color: gridColor,
+                    },
+                    border: {
+                        color: gridColor,
                     }
                 }
             },
@@ -261,10 +291,8 @@ let isQuarterlyForecast = false;
  * Display precipitation chart in modal.
  * @param data - Weather data object from API.
  * @param day - The index of the day for which to display data.
- * @param isQuarterlyForecast - Whether to display a quarterly forecast.
  */
 function displayPrecipitationChart(data, day) {
-    // quarterlyForecast = isQuarterlyForecast;
     selectedPrecipitationDay = day;
 
     if (precipitationChart) precipitationChart.destroy();
@@ -285,6 +313,7 @@ function displayPrecipitationChart(data, day) {
     let mainColor = style.getPropertyValue("--mainColor");
     let secondBorderColor = style.getPropertyValue("--secondBorderColor");
     let secondTextColor = style.getPropertyValue("--secondTextColor");
+    let gridColor = style.getPropertyValue("--chartGridColor");
 
     const ctx = document.getElementById('precipitation-chart').getContext('2d');
 
@@ -332,12 +361,21 @@ function displayPrecipitationChart(data, day) {
                 x: {
                     ticks: {
                         color: secondTextColor
-                    }
+                    },
+                    grid: {
+                        color: gridColor,
+                    },
                 },
                 y: {
                     ticks: {
                         color: secondTextColor,
                         callback: value => `${value} mm`
+                    },
+                    grid: {
+                        color: gridColor,
+                    },
+                    border: {
+                        color: gridColor,
                     }
                 }
             },

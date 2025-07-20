@@ -65,6 +65,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    margin-bottom: 20px;
 }
 
 .autocomplete {
@@ -186,6 +187,10 @@
     cursor: pointer;
     transition-duration: 500ms;
     transition-property: background-color;
+}
+
+.location:last-child {
+    margin-bottom: 0;
 }
 
 .location--active {

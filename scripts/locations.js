@@ -97,7 +97,6 @@ function displayLocations(data) {
         location.addEventListener("click", () => {
             if (editMode) return;
             settings.activeLocation = settings.locations[0];
-            console.log(settings.locations[0]);
             saveSettings();
             fetchWeather();
             let locationElements = document.querySelectorAll(".location");

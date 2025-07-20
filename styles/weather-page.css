@@ -18,8 +18,8 @@
 }
 
 .weather-data-fetch-time {
-    font-size: 14px;
-    color: var(--mainColor);
+    font-size: 13px;
+    color: var(--secondTextColor);
     margin-bottom: 15px;
 }
 

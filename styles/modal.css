@@ -26,7 +26,6 @@
     height: 650px;
     min-height: 650px;
     border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     font-size: 14px;
     z-index: 1000;
     visibility: hidden;
@@ -36,6 +35,7 @@
     flex-direction: column;
     transition-duration: 300ms;
     color: var(--mainTextColor);
+    border: 1px solid var(--borderColor);
 }
 
 .welcome {
@@ -85,10 +85,17 @@
     color: var(--mainColor);
     display: flex;
     align-items: center;
+    justify-content: center;
     font-size: 15px;
     line-height: 20px;
     margin-left: auto;
-    height: auto;
+    height: 34px;
+    width: 34px;
+}
+
+.modal__header .close-button img {
+    height: 18px;
+    width: 18px;
 }
 
 .modal-subpage {

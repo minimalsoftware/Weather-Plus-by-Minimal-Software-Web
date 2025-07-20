@@ -7,7 +7,7 @@
     <meta name="keywords" content="weather, forecast, minimal software, air quality">
     <meta name="author" content="Minimal Software">
 
-    <title>(Beta) Weather+ by Minimal Software</title>
+    <title>Weather+ by Minimal Software</title>
     <link rel="icon" type="image/x-icon" href="graphics/logo.png">
 
     <link rel="stylesheet" href="styles/main.css">
@@ -98,7 +98,7 @@
                     <div class="segmented-button" id="segmented-button--theme">
                         <button class="segmented-button__item segmented-button__item--selected" onclick="toggleTheme(themes.LIGHT)">Light</button>
                         <button class="segmented-button__item" onclick="toggleTheme(themes.DARK)">Dark</button>
-                        <button class="segmented-button__item" onclick="toggleTheme(themes.AUTO)">Auto</button>
+                        <button class="segmented-button__item" onclick="toggleTheme(themes.AUTO)">Follow system</button>
                     </div>
                 </div>
             </div>
@@ -465,7 +465,7 @@
                 <button class="top-bar__button" id="top-bar__button--share" title="Share link to current location" onclick="copyLinkToClipboard();">
                     <img class="icon--main-color" src="graphics/svg/link-main-color.svg" alt="Share link">
                 </button>
-                <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')">
+                <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')" title="Refresh weather data for current location">
                     <img class="icon--main-color" src="graphics/svg/refresh-main-color.svg" alt="Refresh">
                     <span>Refresh</span>
                 </button>
@@ -817,8 +817,7 @@
                 </div>
             </div>
             <div class="weather-data-provider">
-                <p>Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://docs.google.com/document/d/1L5-aVByHTkiVng2kg9L8VezhBPFyA3HL0stZSRusevI/edit#heading=h.ongkfaaa7i73">Privacy policy</a>&nbsp;•&nbsp;Developer
-                    Beta Version 0.0.1&nbsp;•&nbsp;<a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAABAtYydUMjlFUUxaU0VVMUVGRDFKSEdTWTgwOThTTi4u">Report an issue</a></p>
+                <p>Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://1drv.ms/w/c/98907bf91a84c77f/Ea0BVJJnH8FEjnEWHYb-CQMB4BzUgBW2XT3-gF4cHExNGQ?e=J2OYml">Privacy policy</a>&nbsp;•&nbsp;Version 2025.1&nbsp;•&nbsp;<a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAABAtYydUMjlFUUxaU0VVMUVGRDFKSEdTWTgwOThTTi4u">Report an issue</a></p>
             </div>
         </div>
     </div>

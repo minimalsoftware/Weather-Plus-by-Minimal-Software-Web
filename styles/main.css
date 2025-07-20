@@ -59,6 +59,8 @@ html[data-theme='light'] {
     --uvIndexExtreme: #800080;
     --uvIndexHazardous: #7E0023;
 
+    --chartGridColor: rgba(0, 0, 0, 0.1);
+
     --segmentedButtonAnimation: 300ms;
 }
 
@@ -101,6 +103,8 @@ html[data-theme='dark'] {
 
     --airQualityHazardous-main: #330005;
     --airQualityHazardous-border: #66000A;
+
+    --chartGridColor: rgba(255, 255, 255, 0.3);
 }
 
 ::-webkit-scrollbar {
