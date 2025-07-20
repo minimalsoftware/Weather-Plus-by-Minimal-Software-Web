@@ -11,4 +11,4 @@ _See more screenshots in the [screenshots](screenshots) directory._
 
 ### Roadmap:
 - [ ] Translate the application to other languages including German, Polish, French, Spanish, Italian, Chinese (simplified), Hindi, Arabic, Ukrainian, Japanese, Turkish, Portuguese, Korean, Swedish, Dutch, Greek and Bulgarian.
-- [ ] Improve responsive web design (RWD) for mobile devices.
+- [x] Improve responsive web design (RWD) for mobile devices.

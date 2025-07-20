@@ -151,13 +151,12 @@ function attachLocationClickListeners() {
 window.addEventListener("DOMContentLoaded", () => {
     fetchLocationsData();
     attachLocationClickListeners();
-
     new Sortable(locationsContainer, {
         delay: 250,
-        delayOnTouchOnly: false,
+        delayOnTouchOnly: true,
         animation: 150,
         ghostClass: 'sortable-ghost',
-        onEnd: function (/**Event*/evt) {
+        onEnd: function (evt) {
             const movedItem = settings.locations.splice(evt.oldIndex, 1)[0];
             settings.locations.splice(evt.newIndex, 0, movedItem);
 
