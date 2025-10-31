@@ -1,0 +1,9 @@
+/* Import all existing styles */
+@import './main.css';
+@import './sidebar.css';
+@import './locations.css';
+@import './weather-page.css';
+@import './modal.css';
+@import './map.css';
+@import './settings.css';
+@import './rwd/mobile.css';

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weather+ by Minimal Software">
+    <meta name="keywords" content="weather, forecast, minimal software, air quality">
+    <meta name="author" content="Minimal Software">
+
+    <title>Weather+ by Minimal Software</title>
+    <link rel="icon" type="image/x-icon" href="graphics/logo.png">
+
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/locations.css">
+    <link rel="stylesheet" href="styles/weather-page.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/map.css">
+    <link rel="stylesheet" href="styles/settings.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link rel="stylesheet" href="rwd/mobile.css">
+
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/settings.js" defer></script>
+    <script src="scripts/theme.js" defer></script>
+    <script src="scripts/storage.js" defer></script>
+    <script src="scripts/locations.js" defer></script>
+    <script src="scripts/sidebar.js" defer></script>
+    <script src="scripts/bottomNotification.js" defer></script>
+    <script src="scripts/map.js" defer></script>
+    <script src="scripts/weather.js" defer></script>
+    <script src="scripts/weather-insights.js" defer></script>
+    <script src="scripts/modal.js" defer></script>
+    <script src="scripts/urlParams.js" defer></script>
+    <script src="scripts/segmentedButtons.js" defer></script>
+    <script src="scripts/weatherCharts.js" defer></script>
+    <script src="scripts/weatherModals.js" defer></script>
+
+    <script src="assets/weather-conditions.js" defer></script>
+    <script src="assets/compass.js" defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script src="libraries/astronomy.browser.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="page no-user-select">
+    <div class="overlay"></div>
+    <div class="map">
+        <div class="map__layer-switcher segmented-button">
+            <button class="segmented-button__item segmented-button__item--selected" onclick="switchMapLayer(mapLayers[0])">Standard</button>
+<!--            <button class="segmented-button__item" onclick="switchMapLayer(mapLayers[1])">Satellite</button>-->
+        </div>
+        <div class="map__zoom-controls" id="map__zoom-controls">
+            <button class="map__zoom-in">
+                <img class="icon--main-color" src="graphics/svg/add-main-color.svg" alt="Zoom in">
+            </button>
+            <button class="map__zoom-out">
+                <img class="icon--main-color" src="graphics/svg/remove-main-color.svg" alt="Zoom out">
+            </button>
+        </div>
+        <button class="map__close-button" onclick="closeMap()">
+            <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            <span>Close</span>
+        </button>
+        <div class="map__selected-location">
+            <div class="title">Click on the map to select location</div>
+            <div class="name"></div>
+            <div class="coordinates">
+                <div class="lat"></div>
+                <div class="lon"></div>
+            </div>
+            <button class="select-location-btn" onclick="fetchSelectedLocation()">Select</button>
+        </div>
+        <div class="osm" id="osm"></div>
+    </div>
+    <div class="settings modal" id="modal--settings">
+        <div class="modal__header">
+            <div class="title">Settings</div>
+            <button class="close-button" onclick="closeModal('modal--settings')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="modal__content">
+            <div class="settings__label">General</div>
+            <div class="settings-item">
+                <div class="settings-item__title">Appearance</div>
+                <div class="settings-item__content">
+                    <div class="segmented-button" id="segmented-button--theme">
+                        <button class="segmented-button__item segmented-button__item--selected" onclick="toggleTheme(themes.LIGHT)">Light</button>
+                        <button class="segmented-button__item" onclick="toggleTheme(themes.DARK)">Dark</button>
+                        <button class="segmented-button__item" onclick="toggleTheme(themes.AUTO)">Follow system</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-item" id="settings-item--lock-weather-page-layout">
+                <div class="settings-item__title">Lock weather page layout</div>
+                <div class="settings-item__content">
+                    <label class="switch">
+                        <input type="checkbox" id="switch-weather-page-layout-lock" onchange="toggleWeatherPageLayoutLocked()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings__label">Units</div>
+            <div class="settings-item">
+                <div class="settings-item__title">Temperature unit</div>
+                <div class="settings-item__content">
+                    <div class="segmented-button" id="segmented-button--temperature">
+                        <button class="segmented-button__item segmented-button__item--selected" onclick="changeTemperatureUnit(temperatureUnits.CELSIUS)">°C</button>
+                        <button class="segmented-button__item" onclick="changeTemperatureUnit(temperatureUnits.FAHRENHEIT)">°F</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item__title">Wind speed unit</div>
+                <div class="settings-item__content">
+                    <div class="segmented-button" id="segmented-button--wind">
+                        <button class="segmented-button__item segmented-button__item--selected" onclick="changeWindUnit(windUnits.KPH)">km/h</button>
+                        <button class="segmented-button__item" onclick="changeWindUnit(windUnits.MPH)">mph</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item__title">Pressure unit</div>
+                <div class="settings-item__content">
+                    <div class="segmented-button" id="segmented-button--pressure">
+                        <button class="segmented-button__item segmented-button__item--selected" onclick="changePressureUnit(pressureUnits.HPA)">hPa</button>
+                        <button class="segmented-button__item" onclick="changePressureUnit(pressureUnits.MBAR)">mbar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="welcome modal modal--with-subpages" id="modal--welcome">
+        <div class="modal-subpage modal-subpage--active">
+            <div class="welcome__header">
+                <h1>Welcome to</h1>
+                <h1 class="main-color">Weather+</h1>
+                <h5>by Minimal Software</h5>
+                <p>Weather app, wrapped in a minimalist design, with constantly updated weather data.</p>
+            </div>
+            <div class="welcome__content">
+                <div class="welcome-points">
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/weather-mix-black.svg" alt="Welcome point nr. 1">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Weather forecast for 14 days.</div>
+                            <div class="welcome-point__description">See weather conditions and all the most necessary weather data.</div>
+                        </div>
+                    </div>
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/routine-black.svg" alt="Welcome point nr. 2">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Sunrise and sunset</div>
+                            <div class="welcome-point__description">Sunrise and sunset times, graphic designation.</div>
+                        </div>
+                    </div>
+                    <div class="welcome-point">
+                        <div class="welcome-point__icon">
+                            <img class="icon--gray" src="graphics/svg/air-black.svg" alt="Welcome point nr. 3">
+                        </div>
+                        <div class="welcome-point__section">
+                            <div class="welcome-point__title">Air quality</div>
+                            <div class="welcome-point__description">AQI air quality index based on measurements of air pollution indicators.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome__footer">
+                <button class="welcome__button" onclick="switchModalSubpage('modal--welcome', 'modal-subpage--select-initial-location')">Select initial location</button>
+            </div>
+        </div>
+        <div class="modal-subpage" id="modal-subpage--select-initial-location">
+            <div class="welcome__header">
+                <h1>Select the initial location</h1>
+                <p>Search for a location: Enter text in the search bar or select directly on the map.</p>
+            </div>
+            <div class="welcome__content initial-location-content">
+                <div class="autocomplete">
+                    <div class="location-search-bar-container">
+                        <div class="location-search-bar">
+                            <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
+                            <label>
+                                <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                            </label>
+                            <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                        </div>
+                    </div>
+                    <div class="autocomplete-results"></div>
+                </div>
+                <button class="sidebar-buttons__item" onclick="openMap()">
+                    <img class="icon--main-color" src="graphics/svg/map-main-color.svg" alt="Map">
+                    <span>Find on a map</span>
+                </button>
+            </div>
+            <div class="welcome__footer">
+                <button class="welcome__button--second" onclick="hideWelcomePage()">Skip setting initial location</button>
+            </div>
+        </div>
+    </div>
+    <template class="day-picker-item" id="day-picker-item-template">
+        <div class="day-picker-item__day"></div>
+        <div class="day-picker-item__weekday"></div>
+    </template>
+    <div class="modal" id="modal--precipitation">
+        <div class="modal__header">
+            <div class="title">Precipitation</div>
+            <button class="close-button" onclick="closeModal('modal--precipitation')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="day-picker" id="day-picker--precipitation">
+            <div class="day-picker__scroll"></div>
+        </div>
+        <div class="modal__content">
+            <div class="chart-type-switch">
+                <div class="segmented-button" id="segmented-button-precipitation-chart-type">
+                    <button class="segmented-button__item segmented-button__item--selected" onclick="isQuarterlyForecast = false; displayPrecipitationChart(fetchedData, selectedPrecipitationDay);">Hourly</button>
+                    <button class="segmented-button__item" onclick="isQuarterlyForecast = true; displayPrecipitationChart(fetchedData, selectedPrecipitationDay)">15-Minutely</button>
+                </div>
+            </div>
+            <div class="total-precipitation">
+                <div class="total-precipitation__value"></div>
+                <div class="total-precipitation__title">Total precipitation for the day</div>
+            </div>
+            <div class="modal__chart precipitation__chart">
+                <canvas id="precipitation-chart">Your browser does not support the canvas element.</canvas>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal--air-quality">
+        <div class="modal__header">
+            <div class="title">Air Quality</div>
+            <button class="close-button" onclick="closeModal('modal--air-quality')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="day-picker" id="day-picker--air-quality">
+            <div class="day-picker__scroll"></div>
+        </div>
+        <div class="modal__content">
+            <div class="aqi">
+                <div class="aqi__value" id="modal-aqi-value"></div>
+                <div class="aqi__description" id="modal-aqi-description"></div>
+            </div>
+            <div class="aqi-indicator">
+                <div class="aqi-indicator__bar"></div>
+                <div class="aqi-indicator__thumb"></div>
+            </div>
+            <div class="aqi-pollutants">
+                <div class="aqi-pollutant pm10">
+                    <div class="aqi-pollutant__name">pm10</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant pm2_5">
+                    <div class="aqi-pollutant__name">pm2.5</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant carbon-monoxide">
+                    <div class="aqi-pollutant__name">CO</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant nitrogen-dioxide">
+                    <div class="aqi-pollutant__name">NO₂</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant sulphur-dioxide">
+                    <div class="aqi-pollutant__name">SO₂</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+                <div class="aqi-pollutant ozone">
+                    <div class="aqi-pollutant__name">O₃</div>
+                    <div class="aqi-pollutant__value"></div>
+                </div>
+            </div>
+            <div class="modal__chart aqi__chart">
+                <canvas id="aqi-chart">Your browser does not support the canvas element.</canvas>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal--wind">
+        <div class="modal__header">
+            <div class="title">Wind</div>
+            <button class="close-button" onclick="closeModal('modal--wind')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="day-picker" id="day-picker--wind">
+            <div class="day-picker__scroll"></div>
+        </div>
+        <div class="modal__content">
+            <div class="wind__container">
+                <div class="wind__section">
+                    <div class="wind__description"></div>
+                    <div class="wind-speed wind__value">
+                        <div class="wind-speed__value"></div>
+                        <div class="wind-speed__title">
+                            <span class="unit">km/h</span>
+                            <span class="name">Wind speed</span>
+                        </div>
+                    </div>
+                    <div class="wind-gust wind__value">
+                        <div class="wind-gust__value"></div>
+                        <div class="wind-gust__title">
+                            <span class="unit">km/h</span>
+                            <span class="name">Wind gusts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="wind__direction"></div>
+            </div>
+            <div class="modal__chart wind__chart">
+                <canvas id="wind-chart">Your browser does not support the canvas element.</canvas>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal--uv-index">
+        <div class="modal__header">
+            <div class="title">UV Index</div>
+            <button class="close-button" onclick="closeModal('modal--uv-index')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="day-picker" id="day-picker--uv-index">
+            <div class="day-picker__scroll"></div>
+        </div>
+        <div class="modal__content">
+            <div class="uv-index__section">
+                <div class="uv-index__value"></div>
+                <div class="uv-index__description"></div>
+            </div>
+            <div class="uv-index-indicator">
+                <div class="uv-index-indicator__bar"></div>
+                <div class="uv-index-indicator__thumb"></div>
+            </div>
+            <div class="uv-index__advice"></div>
+            <div class="modal__chart uv-index__chart">
+                <canvas id="uv-index-chart">Your browser does not support the canvas element.</canvas>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal--astronomy">
+        <div class="modal__header">
+            <div class="title">Moon phases calendar</div>
+            <button class="close-button" onclick="closeModal('modal--astronomy')">
+                <img class="icon--main-color" src="graphics/svg/close-main-color.svg" alt="Close">
+            </button>
+        </div>
+        <div class="modal__content modal__content--astronomy">
+            <template id="template--moon-phase-calendar-item">
+                <div class="day"></div>
+                <img class="moon-phase" alt="Moon phase" src="">
+            </template>
+            <div class="moon-phases-calendar">
+                <div class="moon-phases-calendar__header">
+                    <button class="moon-phases-calendar__change-month" onclick="changeMoonPhaseCalendarMonth(-1)">
+                        <img class="icon--gray" src="graphics/svg/chevron-left-gray.svg" alt="Previous month">
+                    </button>
+                    <div class="moon-phases-calendar__month"></div>
+                    <button class="moon-phases-calendar__change-month" onclick="changeMoonPhaseCalendarMonth(1)">
+                        <img class="icon--gray" src="graphics/svg/chevron-right-gray.svg" alt="Next month">
+                    </button>
+                </div>
+                <div class="moon-phases-calendar__weekdays">
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                    <div>Sun</div>
+                </div>
+                <div class="moon-phases-calendar__content"></div>
+                <div class="moon-phases-calendar__info-container">
+                    <div class="moon-phases-calendar__info moon-phases-calendar__info--next-new-moon">Next new moon:&nbsp;<span></span></div>
+                    <div class="moon-phases-calendar__info moon-phases-calendar__info--next-full-moon">Next full moon:&nbsp;<span></span></div>
+                </div>
+                <div class="moon-phases-calendar__footer">
+                    <button class="moon-phases-calendar__current-month-button" onclick="changeMoonPhaseCalendarMonth(0, true)">Show current month</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="sidebar__container">
+            <div class="sidebar__header">
+                <div class="logo">
+                    <span class="logo__title">Weather+</span>
+                    <br>
+                    <span class="logo__company">by Minimal Software</span>
+                </div>
+                <button class="sidebar__toggle-button" onclick="toggleSidebar()">
+                    <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Close">
+                </button>
+            </div>
+            <template id="autocomplete-result-template">
+                <div class="autocomplete-result__container">
+                    <div class="autocomplete-result__name"></div>
+                    <div class="autocomplete-result__state"></div>
+                </div>
+            </template>
+            <div class="autocomplete">
+                <div class="location-search-bar-container">
+                    <div class="location-search-bar">
+                        <img class="search-bar__icon icon--gray" src="graphics/svg/search--gray.svg" alt="Search">
+                        <label>
+                            <input type="text" class="location-search" placeholder="Search for location" oninput="searchLocations(this.value)">
+                        </label>
+                        <img class="search-bar__cancel-icon icon--gray" src="graphics/svg/cancel-black.svg" onclick="clearLocationSearchBar()" alt="Clear">
+                    </div>
+                </div>
+                <div class="autocomplete-results"></div>
+            </div>
+            <template id="location-template">
+                <div class="location__section">
+                    <div class="location__info">
+                        <div class="location__name"></div>
+                        <div class="location__time"></div>
+                    </div>
+                    <div class="location__temperature"></div>
+                </div>
+                <div class="location__weather-condition marquee">
+                    <span></span>
+                </div>
+                <button class="location__delete-btn">Delete</button>
+            </template>
+            <div class="sidebar-buttons">
+                <button class="sidebar-buttons__item" onclick="openMap()">
+                    <img class="icon--main-color" src="graphics/svg/map-main-color.svg" alt="Map">
+                    <span>Find on a map</span>
+                </button>
+                <button class="sidebar-buttons__item" onclick="openModal('modal--settings')">
+                    <img class="icon--main-color" src="graphics/svg/settings-main-color.svg" alt="Settings">
+                    <span>Settings</span>
+                </button>
+                <button class="sidebar-buttons__item edit-locations-btn" onclick="toggleEditLocationMode()">
+                    <img class="icon--main-color" src="graphics/svg/edit-main-color.svg" alt="Edit">
+                    <span>Edit locations</span>
+                </button>
+            </div>
+            <div class="locations-container"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="notification"></div>
+        <div class="top-bar">
+            <button class="top-bar__button" title="Toggle sidebar" onclick="toggleSidebar()">
+                <img class="icon--main-color" src="graphics/svg/menu-open-main-color.svg" alt="Toggle sidebar">
+            </button>
+            <div class="top-bar__section">
+                <button class="top-bar__button" id="top-bar__button--share" title="Share link to current location" onclick="copyLinkToClipboard();">
+                    <img class="icon--main-color" src="graphics/svg/link-main-color.svg" alt="Share link">
+                </button>
+                <button class="top-bar__button" onclick="fetchWeather(); showNotification('Updated weather data with latest information.')" title="Refresh weather data for current location">
+                    <img class="icon--main-color" src="graphics/svg/refresh-main-color.svg" alt="Refresh">
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+        <div class="no-locations">
+            <img class="icon--main-color" src="graphics/svg/location-off-main-color.svg" alt="No locations">
+            <p>Add an initial location to see the weather</p>
+        </div>
+        <div class="weather-page">
+            <div class="current-weather">
+                <div class="current-weather__location"></div>
+                <div class="current-weather__temperature"></div>
+                <div class="current-weather__weather-condition"></div>
+                <div class="current-weather__max-min-temperature">
+                    <img class="icon--gray" src="graphics/svg/north-gray.svg" alt="Max">
+                    <span class="max-temperature"></span>
+                    <img class="icon--gray" src="graphics/svg/south-gray.svg" alt="Min">
+                    <span class="min-temperature"></span>
+                </div>
+            </div>
+            <div class="weather-data-fetch-time">Weather data last updated at: <span></span>.</div>
+            <div class="weather-page__container">
+                <div class="weather-component hourly-forecast" data-id="1">
+                    <div class="weather-component__header">
+                        <div class="weather-component__title">Hourly forecast</div>
+                        <div class="segmented-button">
+                            <button class="segmented-button__item segmented-button__item--selected" onclick="switchHourlyForecastLength(24)">24 Hours</button>
+                            <button class="segmented-button__item" onclick="switchHourlyForecastLength(48)">48 hours</button>
+                            <button class="segmented-button__item" onclick="switchHourlyForecastLength(72)">Next 3 days</button>
+                            <button class="segmented-button__item" onclick="switchHourlyForecastLength(168)">Next 7 days</button>
+                        </div>
+                    </div>
+                    <template id="hourly-forecast-item-details-template">
+                        <div class="hourly-forecast-item-details__header">
+                            <div class="hourly-forecast-item-details__datetime"></div>
+                            <div class="hourly-forecast-item-details__condition"></div>
+                        </div>
+                        <div class="hourly-forecast-item-details__content">
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Precipitation:</div>
+                                <div class="value precipitation"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Precipitation Probability:</div>
+                                <div class="value precipitation-probability"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Relative Humidity:</div>
+                                <div class="value relative-humidity"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Dewpoint:</div>
+                                <div class="value dewpoint"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Apparent Temperature:</div>
+                                <div class="value apparent-temperature"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Pressure:</div>
+                                <div class="value pressure"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Cloud cover:</div>
+                                <div class="value cloud-cover"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Visibility:</div>
+                                <div class="value visibility"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Wind Speed:</div>
+                                <div class="value wind-speed"></div>
+                            </div>
+                            <div class="hourly-forecast-item-details__item">
+                                <div class="title">Wind Gusts:</div>
+                                <div class="value wind-gusts"></div>
+                            </div>
+                        </div>
+                    </template>
+                    <template id="hourly-forecast-item-template">
+                        <div class="hourly-forecast-item__time"></div>
+                        <div class="hourly-forecast-item__icon">
+                            <img src="" alt="Weather condition icon" class="hourly-forecast-item__icon">
+                        </div>
+                        <div class="hourly-forecast-item__precipitation"></div>
+                        <div class="hourly-forecast-item__temperature"></div>
+                    </template>
+                    <div class="hourly-forecast-items"></div>
+                </div>
+
+                <div class="weather-page__section" data-id="2">
+                    <div class="weather-component daily-forecast" data-id="3">
+                        <div class="weather-component__header">
+                            <div class="weather-component__title">Daily forecast</div>
+                            <div class="segmented-button">
+                                <button class="segmented-button__item segmented-button__item--selected" onclick="switchDailyForecastPeriod(0, 7)">7-Day Forecast</button>
+                                <button class="segmented-button__item" onclick="switchDailyForecastPeriod(7, 14)">Next 7 Days</button>
+                            </div>
+                        </div>
+                        <div class="daily-forecast__content">
+                            <div class="daily-forecast__section">
+                                <template class="daily-forecast-item-details" id="daily-forecast-item-details-template">
+                                    <div class="daily-forecast-item-details__header">
+                                        <div class="daily-forecast-item-details__day"></div>
+                                        <div class="daily-forecast-item-details__condition"></div>
+                                    </div>
+                                    <div class="daily-forecast-item-details__content">
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Sunrise:</div>
+                                            <div class="value sunrise"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Sunset:</div>
+                                            <div class="value sunset"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Precipitation:</div>
+                                            <div class="value precipitation"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Max Precipitation Probability:</div>
+                                            <div class="value max-precipitation-probability"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Dewpoint:</div>
+                                            <div class="value dewpoint"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Apparent Temperature:</div>
+                                            <div class="value apparent-temperature"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Pressure:</div>
+                                            <div class="value pressure"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Cloud cover:</div>
+                                            <div class="value cloud-cover"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Visibility:</div>
+                                            <div class="value visibility"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Wind Speed:</div>
+                                            <div class="value wind-speed"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">UV Index</div>
+                                            <div class="value uv-index"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Min temperature:</div>
+                                            <div class="value min-temperature"></div>
+                                        </div>
+                                        <div class="daily-forecast-item-details__item">
+                                            <div class="title">Max temperature:</div>
+                                            <div class="value max-temperature"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template id="daily-forecast-item-template">
+                                    <div class="daily-forecast-item__left-section">
+                                        <div class="daily-forecast-item__day"></div>
+                                        <div class="daily-forecast-item__weather-condition"></div>
+                                    </div>
+                                    <div class="daily-forecast-item__middle-section">
+                                        <div class="daily-forecast-item__icon">
+                                            <img src="" alt="Weather condition icon" class="daily-forecast-item__icon">
+                                        </div>
+                                    </div>
+                                    <div class="daily-forecast-item__right-section">
+                                        <div class="daily-forecast-item__max-min-temperature">
+                                            <img class="icon--gray" src="graphics/svg/north-black.svg" alt="Max">
+                                            <span class="max-temperature"></span>
+                                            <img class="icon--gray" src="graphics/svg/south-black.svg" alt="Min">
+                                            <span class="min-temperature"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="daily-forecast-items"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="weather-page__column-section" data-id="4">
+                        <div class="weather-component aqi" onclick="openModal('modal--air-quality')">
+                            <div class="weather-component__header">
+                                <div class="weather-component__title">Air Quality</div>
+                            </div>
+                            <div class="aqi__content">
+                                <div class="aqi__container">
+                                    <div class="aqi__value"></div>
+                                    <div class="aqi__description"></div>
+                                </div>
+                                <div class="aqi-indicator">
+                                    <div class="aqi-indicator__bar"></div>
+                                    <div class="aqi-indicator__thumb"></div>
+                                </div>
+                                <div class="aqi-pollutants">
+                                    <div class="aqi-pollutant" id="pm10">
+                                        <div class="aqi-pollutant__name">pm10</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                    <div class="aqi-pollutant" id="pm2_5">
+                                        <div class="aqi-pollutant__name">pm2.5</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                    <div class="aqi-pollutant" id="carbon-monoxide">
+                                        <div class="aqi-pollutant__name">CO</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                    <div class="aqi-pollutant" id="nitrogen-dioxide">
+                                        <div class="aqi-pollutant__name">NO₂</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                    <div class="aqi-pollutant" id="sulphur-dioxide">
+                                        <div class="aqi-pollutant__name">SO₂</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                    <div class="aqi-pollutant" id="ozone">
+                                        <div class="aqi-pollutant__name">O₃</div>
+                                        <div class="aqi-pollutant__value"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="weather-component wind" onclick="openModal('modal--wind')">
+                            <div class="weather-component__header">
+                                <div class="weather-component__title">Wind</div>
+                            </div>
+                            <div class="wind__content">
+                                <div class="wind__container">
+                                    <div class="wind__section">
+                                        <div class="wind__description"></div>
+                                        <div class="wind-speed wind__value">
+                                            <div class="wind-speed__value"></div>
+                                            <div class="wind-speed__title">
+                                                <span class="unit">km/h</span>
+                                                <span class="name">Wind speed</span>
+                                            </div>
+                                        </div>
+                                        <div class="wind-gust wind__value">
+                                            <div class="wind-gust__value"></div>
+                                            <div class="wind-gust__title">
+                                                <span class="unit">km/h</span>
+                                                <span class="name">Wind gusts</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="wind__direction"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="weather-page__column-section" data-id="6">
+                        <div class="weather-component astronomy" onclick="openModal('modal--astronomy')">
+                            <div class="weather-component__header">
+                                <div class="weather-component__title">Astronomy</div>
+                                <div class="segmented-button" id="segmented-button--astronomy" onclick="event.stopPropagation()">
+                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.SUN, event)">Sun</button>
+                                    <button class="segmented-button__item" onclick="changeAstronomyType(astronomyTypes.MOON, event)">Moon</button>
+                                </div>
+                            </div>
+                            <div class="sun">
+                                <div class="sunrise-sunset__content">
+                                    <div class="sunrise-sunset__section">
+                                        <div class="sunrise-sunset-item">
+                                            <div class="sunrise-sunset-item__title">Sunrise</div>
+                                            <div class="sunrise-sunset-item__value" id="sunrise-value"></div>
+                                        </div>
+                                        <div class="sunrise-sunset-item">
+                                            <div class="sunrise-sunset-item__title">Sunset</div>
+                                            <div class="sunrise-sunset-item__value" id="sunset-value"></div>
+                                        </div>
+                                    </div>
+                                    <div class="sunrise__line">
+                                        <svg class="sun-path" height="54" width="298">
+                                            <path id="curve"
+                                                  d="M10 46 Q 154 -28 298 46"
+                                                  stroke-linecap="round"
+                                                  style="fill: none; stroke: #EEF2F8; stroke-width: 4"/>
+                                            <circle id="dot" class="spot3" cx="0" cy="0" r="8" fill="#FAC700" stroke="#FAC700"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="moon">
+                                <div class="moon__content">
+                                    <img class="moon__phase-graphic" src="graphics/weathers-icons/moon-phases/full-moon.svg" alt="Moon phase">
+                                    <div class="moon__section">
+                                        <div class="moon-item">
+                                            <div class="moon-item__label">Moon phase</div>
+                                            <div class="moon-item__value moon__phase"></div>
+                                        </div>
+                                        <div class="moon-item">
+                                            <div class="moon-item__label">Illumination</div>
+                                            <div class="moon-item__value moon__illumination"></div>
+                                        </div>
+                                        <div class="moon-item">
+                                            <div class="moon-item__label">Moonrise</div>
+                                            <div class="moon-item__value moon__moonrise"></div>
+                                        </div>
+                                        <div class="moon-item">
+                                            <div class="moon-item__label">Moonset</div>
+                                            <div class="moon-item__value moon__moonset"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="weather-page__row-section">
+                            <div class="weather-component uv-index" onclick="openModal('modal--uv-index')">
+                                <div class="weather-component__header">
+                                    <div class="weather-component__title">UV Index</div>
+                                </div>
+                                <div class="uv-index__content">
+                                    <div class="uv-index__section">
+                                        <div class="uv-index__value"></div>
+                                        <div class="uv-index__description"></div>
+                                    </div>
+                                    <div class="uv-index-indicator">
+                                        <div class="uv-index-indicator__bar"></div>
+                                        <div class="uv-index-indicator__thumb"></div>
+                                    </div>
+                                    <div class="uv-index__advice"></div>
+                                </div>
+                            </div>
+
+                            <div class="weather-component precipitation" onclick="openModal('modal--precipitation')">
+                                <div class="weather-component__header">
+                                    <div class="weather-component__title">Precipitation</div>
+                                </div>
+                                <div class="precipitation__content">
+                                    <div class="precipitation__section">
+                                        <div class="forecast-precipitation__value"></div>
+                                        <div class="forecast-precipitation__description">Expected in next 24 hours.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="weather-data-provider">
+                <p>Forecast data provided by&nbsp;<a href="https://open-meteo.com/">Open-Meteo</a>&nbsp;•&nbsp;<a href="https://1drv.ms/w/c/98907bf91a84c77f/Ea0BVJJnH8FEjnEWHYb-CQMB4BzUgBW2XT3-gF4cHExNGQ?e=J2OYml">Privacy policy</a>&nbsp;•&nbsp;Version 2025.1&nbsp;•&nbsp;<a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAABAtYydUMjlFUUxaU0VVMUVGRDFKSEdTWTgwOThTTi4u">Report an issue</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
