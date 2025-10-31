@@ -95,7 +95,12 @@ function displayHourlyForecast(currentTime, data, length = 168) {
         if (i === currentTime.getHours()) time = "Now";
 
         forecastItem.querySelector(".hourly-forecast-item__time").insertAdjacentText("afterbegin", time);
-        forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
+        if (i == currentTime.getHours()) {
+            forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data["current"]["temperature_2m"]))}°F` : `${Math.round(data["current"]["temperature_2m"])}°C`);
+        } else {
+            forecastItem.querySelector(".hourly-forecast-item__temperature").insertAdjacentText("afterbegin", settings.temperatureUnit.value === temperatureUnits.FAHRENHEIT.value ? `${Math.round(convertToFahrenheit(data.hourly.temperature_2m[i]))}°` : `${Math.round(data.hourly.temperature_2m[i])}°`);
+        }
+        
         const weatherConditionsCodesWithPrecipitation = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
         if (data.hourly.precipitation_probability[i] !== 0 && weatherConditionsCodesWithPrecipitation.includes(data.hourly.weather_code[i])) {
             forecastItem.querySelector(".hourly-forecast-item__precipitation").insertAdjacentText("afterbegin", `${Math.round(data.hourly.precipitation_probability[i])}%`);
