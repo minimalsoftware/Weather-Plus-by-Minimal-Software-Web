@@ -55,7 +55,7 @@ const hourlyForecastItems = document.querySelector(".hourly-forecast-items");
  * @param {Object} data - The weather data object.
  * @param {number} [length=24] - The number of hours to display.
  */
-function displayHourlyForecast(currentTime, data, length = 24) {
+function displayHourlyForecast(currentTime, data, length = 168) {
     const hourlyForecastItemTemplate = document.querySelector("#hourly-forecast-item-template");
     let date = new Date();
     date.setDate(date.getDate() + 1);
@@ -520,7 +520,10 @@ function displayWeatherData(data, location = settings.activeLocation) {
  * @param {number} length - The number of hours to display.
  */
 function switchHourlyForecastLength(length) {
-    displayHourlyForecast(new Date(), fetchedData, length);
+    const index =length === 0 ?0 :(24 - new Date().getHours())+length-24;
+
+    console.log(index)
+    hourlyForecastItems.querySelectorAll(".hourly-forecast-item")[index].scrollIntoView({behavior: "smooth", inline: "start", block: "nearest"});
 }
 
 /**

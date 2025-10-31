@@ -1,10 +1,22 @@
+.logo {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo__icon {
+    width: 32px;
+    height: 32px;
+}
+
 .logo__title {
-    font-size: 18px;
+    font-size: 17px;
+    margin-top: 8px;
+    margin-bottom: 2px;
     color: var(--mainTextColor);
 }
 
 .logo__company {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--mainColor);
 }
 
@@ -19,8 +31,8 @@
     width: 100%;
     height: 40px;
     border-radius: 10px;
-    background-color: var(--secondColor);
-    border: 1px solid var(--secondBorderColor);
+    background-color: var(--mainBackgroundColor);
+    border: 1px solid var(--borderColor);
     outline: 1px solid transparent;
     font-size: 15px;
     padding: 0 15px;
@@ -42,7 +54,7 @@
 
 .location-search-bar:focus-within {
     border-color: var(--secondColor);
-    outline: 3px solid var(--mainColor);
+    outline: 2px solid var(--mainColor);
 }
 
 .search-bar__icon {
@@ -195,6 +207,7 @@
 
 .location--active {
     background-color: var(--thirdColor);
+    border: 1px solid var(--secondBorderColor);
 }
 
 .location--active .location__name {

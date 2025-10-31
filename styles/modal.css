@@ -23,8 +23,6 @@
     transform: translate(-50%, 25%);
     background-color: var(--mainComponentColor);
     width: 500px;
-    height: 650px;
-    min-height: 650px;
     border-radius: 10px;
     font-size: 14px;
     z-index: 1000;

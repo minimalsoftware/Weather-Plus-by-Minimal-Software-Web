@@ -24,6 +24,8 @@ function toggleTheme(theme, initialLoad = false) {
     if (theme === themes.LIGHT) {
         document.documentElement.setAttribute("data-theme", "light");
         document.querySelector(".main-content").style.backgroundColor = "";
+        document.querySelector(".logo__icon").src = "graphics/logo_light-theme.png";
+
 
         if (!initialLoad) displayWeatherData(fetchedData);
         changeIconColor(true);
@@ -32,6 +34,7 @@ function toggleTheme(theme, initialLoad = false) {
 
         document.documentElement.setAttribute("data-theme", "dark");
         document.querySelector(".main-content").style.backgroundColor = "#080C12";
+        document.querySelector(".logo__icon").src = "graphics/logo_dark-theme.png";
 
         if (!initialLoad) displayWeatherData(fetchedData);
         changeIconColor();

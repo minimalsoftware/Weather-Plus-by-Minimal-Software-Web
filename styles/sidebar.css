@@ -4,11 +4,11 @@
     align-items: start;
     width: 300px;
     height: 100vh;
-    border-right: 1px solid var(--componentBorder);
+    /*border-right: 1px solid var(--componentBorder);*/
     position: relative;
     opacity: 1;
     white-space: nowrap;
-    background-color: var(--mainComponentColor);
+    background-color: var(--surface-bg);
 }
 
 .sidebar--closed {
@@ -64,7 +64,7 @@
     justify-content: end;
     border: none;
     background-color: transparent;
-    color: var(--mainColor);
+    color: var(--secondTextColor);
     margin-bottom: 15px;
     text-align: right;
     font-size: 15px;
@@ -107,14 +107,15 @@
 }
 
 .resizer {
-    width: 6px;
-    height: 100%;
+    width: 3px;
+    top: 8px;
+    height: calc(100dvh - 16px);
     background-color: transparent;
     position: absolute;
-    right: -3px;
-    top: 0;
+    right: 7px;
     cursor: col-resize;
     transition-duration: 150ms;
+    border-radius: 3px;
 }
 
 .resizer:hover,
