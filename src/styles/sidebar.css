@@ -1,0 +1,123 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 300px;
+    height: 100vh;
+    border-right: 1px solid var(--componentBorder);
+    position: relative;
+    opacity: 1;
+    white-space: nowrap;
+    background-color: var(--mainComponentColor);
+}
+
+.sidebar--closed {
+    overflow: hidden;
+    width: 0;
+    opacity: 0;
+    border: none;
+}
+
+.sidebar__container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 100%;
+    width: 100%;
+    padding: 25px 20px 0 20px;
+}
+
+.sidebar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.sidebar__toggle-button {
+    display: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 48px;
+    border-radius: 15px;
+}
+
+.sidebar__toggle-button:hover {
+    background-color: var(--secondColor);
+}
+
+.sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+}
+
+.sidebar-buttons__item {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    border: none;
+    background-color: transparent;
+    color: var(--mainColor);
+    margin-bottom: 15px;
+    text-align: right;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.sidebar-buttons__item img {
+    width: 16px;
+    margin-right: 10px;
+}
+
+.top-bar__button {
+    border: none;
+    background-color: transparent;
+    transition-duration: 500ms;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-bar__button:has(span) {
+    padding: 0 10px;
+}
+
+.top-bar__button span {
+    margin-left: 10px;
+    color: var(--mainColor);
+}
+
+.top-bar__button:hover {
+    background-color: var(--mainComponentColor);
+}
+
+.sidebar__toggle-button--reversed {
+    transform: rotate(180deg);
+}
+
+.resizer {
+    width: 6px;
+    height: 100%;
+    background-color: transparent;
+    position: absolute;
+    right: -3px;
+    top: 0;
+    cursor: col-resize;
+    transition-duration: 150ms;
+}
+
+.resizer:hover,
+.resizer.resizing {
+    background-color: var(--secondBorderColor);
+}

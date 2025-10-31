@@ -1,0 +1,27 @@
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.settings-item:last-child {
+    margin-bottom: 0;
+}
+
+.settings-item__title {
+    font-size: 16px;
+    color: var(--mainTextColor);
+}
+
+.settings__label {
+    font-size: 14px;
+    color: var(--mainColor);
+    margin: 25px 0;
+}
+
+.settings__label:first-child {
+    margin-top: 0;
+}
