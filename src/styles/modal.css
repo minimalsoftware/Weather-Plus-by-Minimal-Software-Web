@@ -27,7 +27,7 @@
     min-height: 650px;
     border-radius: 10px;
     font-size: 14px;
-    z-index: 1000;
+    z-index: 1001;
     visibility: hidden;
     opacity: 0;
     display: flex;

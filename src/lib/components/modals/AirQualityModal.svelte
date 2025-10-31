@@ -1,12 +1,13 @@
 <script>
-  let { open = $bindable(false) } = $props();
+  let { open = false } = $props();
+  import { modals } from '../../stores/modals.js';
 </script>
 
 {#if open}
-<div class="modal" id="modal--air-quality">
+<div class="modal modal--active" id="modal--air-quality">
   <div class="modal__header">
     <div class="title">Air Quality</div>
-    <button class="close-button" onclick={() => open = false}>
+    <button class="close-button" onclick={() => modals.close('airQuality')}>
       <img class="icon--main-color" src="/graphics/svg/close-main-color.svg" alt="Close">
     </button>
   </div>

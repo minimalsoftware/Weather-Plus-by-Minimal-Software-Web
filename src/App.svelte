@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   
-  // Import components (to be created)
+  // Import components
   import Sidebar from './lib/components/Sidebar.svelte';
   import MainContent from './lib/components/MainContent.svelte';
   import MapView from './lib/components/MapView.svelte';
@@ -16,31 +16,53 @@
   // Import stores
   import { settings } from './lib/stores/settings.js';
   import { theme } from './lib/stores/theme.js';
+  import { modals } from './lib/stores/modals.js';
   
   // State variables
   let showOverlay = $state(false);
-  let sidebarOpen = $state(false);
-  let mapOpen = $state(false);
+  let sidebarOpen = $state(true);
+  
+  let currentSettings = $state({});
+  let modalStates = $state({});
+  
+  settings.subscribe(s => {
+    currentSettings = s;
+  });
+  
+  modals.subscribe(m => {
+    modalStates = m;
+    showOverlay = Object.values(m).some(v => v);
+  });
   
   onMount(() => {
     // Initialize the app
     console.log('Weather+ by Minimal Software - Svelte 5');
+    
+    // Initialize theme
+    theme.toggle(currentSettings.theme || 'auto');
+    
+    // Show welcome page if first time
+    if (!currentSettings.firstConfigurationShown) {
+      modals.open('welcome');
+    }
   });
 </script>
 
 <div class="page no-user-select">
   {#if showOverlay}
-    <div class="overlay"></div>
+    <div class="overlay overlay--active" onclick={() => {
+      Object.keys(modalStates).forEach(key => modals.close(key));
+    }}></div>
   {/if}
   
-  <MapView bind:open={mapOpen} />
-  <SettingsModal />
-  <WelcomeModal />
-  <PrecipitationModal />
-  <AirQualityModal />
-  <WindModal />
-  <UVIndexModal />
-  <AstronomyModal />
+  <MapView open={modalStates.map} />
+  <SettingsModal open={modalStates.settings} />
+  <WelcomeModal open={modalStates.welcome} />
+  <PrecipitationModal open={modalStates.precipitation} />
+  <AirQualityModal open={modalStates.airQuality} />
+  <WindModal open={modalStates.wind} />
+  <UVIndexModal open={modalStates.uvIndex} />
+  <AstronomyModal open={modalStates.astronomy} />
   
   <Sidebar bind:open={sidebarOpen} />
   <MainContent bind:sidebarOpen />

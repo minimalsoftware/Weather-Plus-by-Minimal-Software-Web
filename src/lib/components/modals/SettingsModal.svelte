@@ -1,8 +1,9 @@
 <script>
   import { settings, temperatureUnits, windUnits, pressureUnits } from '../../stores/settings.js';
   import { theme, themes } from '../../stores/theme.js';
+  import { modals } from '../../stores/modals.js';
   
-  let { open = $bindable(false) } = $props();
+  let { open = false } = $props();
   let currentSettings = $state({});
   
   settings.subscribe(s => {
@@ -11,10 +12,10 @@
 </script>
 
 {#if open}
-<div class="settings modal" id="modal--settings">
+<div class="settings modal modal--active" id="modal--settings">
   <div class="modal__header">
     <div class="title">Settings</div>
-    <button class="close-button" onclick={() => open = false}>
+    <button class="close-button" onclick={() => modals.close('settings')}>
       <img class="icon--main-color" src="/graphics/svg/close-main-color.svg" alt="Close">
     </button>
   </div>

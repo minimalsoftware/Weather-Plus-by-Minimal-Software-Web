@@ -2,6 +2,7 @@
   let { open = $bindable(false) } = $props();
   
   import { settings } from '../stores/settings.js';
+  import { modals } from '../stores/modals.js';
   import { onMount } from 'svelte';
   
   let locationsData = $state([]);
@@ -44,11 +45,11 @@
     </div>
     
     <div class="sidebar-buttons">
-      <button class="sidebar-buttons__item">
+      <button class="sidebar-buttons__item" onclick={() => modals.open('map')}>
         <img class="icon--main-color" src="/graphics/svg/map-main-color.svg" alt="Map">
         <span>Find on a map</span>
       </button>
-      <button class="sidebar-buttons__item">
+      <button class="sidebar-buttons__item" onclick={() => modals.open('settings')}>
         <img class="icon--main-color" src="/graphics/svg/settings-main-color.svg" alt="Settings">
         <span>Settings</span>
       </button>

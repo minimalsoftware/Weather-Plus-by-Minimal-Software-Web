@@ -1,9 +1,26 @@
 <script>
-  let { open = $bindable(false) } = $props();
+  let { open = false } = $props();
+  import { modals } from '../../stores/modals.js';
+  import { settings } from '../../stores/settings.js';
+  
+  let currentSettings = $state({});
+  
+  settings.subscribe(s => {
+    currentSettings = s;
+  });
+  
+  function hideWelcome() {
+    settings.update(s => {
+      s.firstConfigurationShown = true;
+      localStorage.setItem("settings", JSON.stringify(s));
+      return s;
+    });
+    modals.close('welcome');
+  }
 </script>
 
 {#if open}
-<div class="welcome modal modal--with-subpages" id="modal--welcome">
+<div class="welcome modal modal--with-subpages welcome--active" id="modal--welcome">
   <div class="modal-subpage modal-subpage--active">
     <div class="welcome__header">
       <h1>Welcome to</h1>
@@ -43,7 +60,7 @@
       </div>
     </div>
     <div class="welcome__footer">
-      <button class="welcome__button">Select initial location</button>
+      <button class="welcome__button" onclick={hideWelcome}>Select initial location</button>
     </div>
   </div>
 </div>

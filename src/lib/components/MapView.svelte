@@ -1,5 +1,6 @@
 <script>
-  let { open = $bindable(false) } = $props();
+  let { open = false } = $props();
+  import { modals } from '../stores/modals.js';
 </script>
 
 {#if open}
@@ -15,7 +16,7 @@
       <img class="icon--main-color" src="/graphics/svg/remove-main-color.svg" alt="Zoom out">
     </button>
   </div>
-  <button class="map__close-button" onclick={() => open = false}>
+  <button class="map__close-button" onclick={() => modals.close('map')}>
     <img class="icon--main-color" src="/graphics/svg/close-main-color.svg" alt="Close">
     <span>Close</span>
   </button>
