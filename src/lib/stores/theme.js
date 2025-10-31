@@ -56,11 +56,18 @@ export const theme = createTheme();
 
 // Listen for system theme changes
 if (typeof window !== 'undefined') {
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
-        settings.subscribe(s => {
-            if (s.theme === themes.AUTO) {
-                theme.toggle(themes.AUTO);
-            }
-        })();
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    let currentSettings = null;
+    
+    const settingsUnsubscribe = settings.subscribe(s => {
+        currentSettings = s;
     });
+    
+    const handleChange = (e) => {
+        if (currentSettings && currentSettings.theme === themes.AUTO) {
+            theme.toggle(themes.AUTO);
+        }
+    };
+    
+    mediaQuery.addEventListener("change", handleChange);
 }
