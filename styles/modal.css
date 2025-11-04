@@ -119,11 +119,16 @@
     left: 0;
 }
 
+#modal--welcome {
+    height: 650px;
+}
+
 .welcome--active {
     display: flex;
     visibility: visible;
     opacity: 1;
     transform: translate(-50%, -50%);
+    height: 650px;
 }
 
 .welcome__header h1 {

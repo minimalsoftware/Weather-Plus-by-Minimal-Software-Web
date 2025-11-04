@@ -24,7 +24,7 @@
     align-items: start;
     height: 100%;
     width: 100%;
-    padding: 25px 20px 0 20px;
+    padding: 25px 12px 0 20px;
 }
 
 .sidebar__header {
@@ -112,7 +112,7 @@
     height: calc(100dvh - 16px);
     background-color: transparent;
     position: absolute;
-    right: 7px;
+    right: 0;
     cursor: col-resize;
     transition-duration: 150ms;
     border-radius: 3px;

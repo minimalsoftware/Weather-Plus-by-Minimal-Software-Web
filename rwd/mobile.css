@@ -28,6 +28,9 @@
     }
 
     .main-content {
+        margin: 0;
+        border-radius: 0;
+        border: none;
         width: 100vw !important;
     }
 
@@ -54,12 +57,11 @@
 
     .weather-component__header {
         flex-wrap: wrap;
+        gap: 10px;
         align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .weather-component__title {
-        margin-bottom: 10px;
+        height: auto;
+        min-height: 48px;
+        padding: 12px 20px;
     }
 
     .current-weather {
@@ -149,5 +151,15 @@
 
     #top-bar__button--share {
         display: none;
+    }
+
+    .hide-sidebar-btn {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .moon__section {
+        grid-template-columns: 1fr;
     }
 }

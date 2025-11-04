@@ -423,6 +423,8 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .aqi__value {
@@ -583,6 +585,7 @@
 .sun,
 .moon {
     height: 100%;
+    width: 100%;
 }
 
 .sunrise-sunset__content {
@@ -669,6 +672,7 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    width: 100%;
 }
 
 .uv-index__section {
